@@ -1,0 +1,5 @@
+$ValidIfKeywordExpected$
+catch ($System.Exception$ $e$)
+{
+	$end$
+}

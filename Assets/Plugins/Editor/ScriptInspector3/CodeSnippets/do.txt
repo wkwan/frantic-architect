@@ -1,0 +1,4 @@
+$ValidAsStatement$
+do {
+	
+} while ($end$);

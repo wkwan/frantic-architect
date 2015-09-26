@@ -1,0 +1,4 @@
+$ValidAsStatement$
+try {
+	$end$
+}

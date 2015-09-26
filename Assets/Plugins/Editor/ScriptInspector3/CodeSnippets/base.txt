@@ -1,0 +1,2 @@
+$ValidAsStatement$
+base.$MethodName$($ArgumentList$);

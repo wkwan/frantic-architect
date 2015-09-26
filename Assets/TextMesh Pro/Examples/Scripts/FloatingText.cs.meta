@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 0e022c30e172c0a4599826a008e29779
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - TheFont: {fileID: 12800000, guid: 894597bfd73004d40ae48084499a0461, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

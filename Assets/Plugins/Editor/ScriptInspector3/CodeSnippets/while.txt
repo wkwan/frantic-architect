@@ -1,0 +1,5 @@
+$ValidAsStatement$
+while ($end$)
+{
+	
+}

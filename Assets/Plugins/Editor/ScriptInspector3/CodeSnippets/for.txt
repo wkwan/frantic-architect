@@ -1,0 +1,4 @@
+$ValidAsStatement$
+for (int $i$ = 0; $i$ < $count$; $i$++) {
+	$end$
+}

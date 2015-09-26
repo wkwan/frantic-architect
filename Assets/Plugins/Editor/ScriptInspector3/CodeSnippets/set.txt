@@ -1,0 +1,5 @@
+$ValidInPropertyBody$
+$NotValidAsStatement$
+set {
+	$end$
+}

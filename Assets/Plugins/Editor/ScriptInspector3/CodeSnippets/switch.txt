@@ -1,0 +1,7 @@
+$ValidAsStatement$
+switch ($end$)
+{
+
+default:
+	break;
+}

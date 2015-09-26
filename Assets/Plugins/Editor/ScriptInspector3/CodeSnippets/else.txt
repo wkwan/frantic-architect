@@ -1,0 +1,5 @@
+$ValidIfKeywordExpected$
+else
+{
+	$end$
+}
