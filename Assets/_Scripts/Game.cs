@@ -67,17 +67,22 @@ public class Game : MonoBehaviour {
 		
 		curNeighbourInd = 0;
 		
-		cubeToPlace = Instantiate<Transform>(cubePf);
-		cubeToPlace.GetComponent<BoxCollider>().enabled = false;
-		cubeToPlace.SetParent(playArea);
-		cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
-		
+
+		cubeToPlace = null;
 		InvokeRepeating("SwapHover", switchNeighbourSpeed, switchNeighbourSpeed);
 	}
 	
 	
 	void SwapHover()
 	{
+		if (cubeToPlace == null)
+		{
+			cubeToPlace = Instantiate<Transform>(cubePf);
+			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
+			cubeToPlace.SetParent(playArea);
+			cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
+		}
+		
 		curNeighbourInd++;
 		if (curNeighbourInd >= validNeighbours.Count)
 		{
@@ -91,7 +96,7 @@ public class Game : MonoBehaviour {
 	void Update () {
 		if (isPlaying)
 		{
-			if (Input.GetMouseButtonDown(0))
+			if (Input.GetMouseButtonDown(0) && cubeToPlace != null)
 			{
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
@@ -104,7 +109,6 @@ public class Game : MonoBehaviour {
 			}
 
 			isPlaying = tower.velocity.magnitude < 0.5f;
-			Debug.Log(tower.velocity.magnitude);
 			if (!isPlaying)
 			{
 				CancelInvoke("SwapHover");
