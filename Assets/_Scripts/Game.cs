@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
 	
+	public Transform playArea;
 	public Transform cubePf;
 	public Rigidbody tower;
 	public Transform startCube;
@@ -14,22 +15,31 @@ public class Game : MonoBehaviour {
 	List<Pos> validNeighbours = new List<Pos>();
 	int curNeighbourInd;
 	
-	float switchNeighbourSpeed = 0.1f;
+	float switchNeighbourSpeed = 0.3f;
 	
+	Transform cubeToPlace;
+	
+	bool isPlaying = true;
 	
 
 	// Use this for initialization
 	void Start () {
 		Input.simulateMouseWithTouches = true;
+		Init();
+	}
+	
+	void Init()
+	{
 		Pos zero = new Pos(0, 0, 0);
 		cubes[zero.Key()] = startCube;
 		curPos = zero;
 		SetupNewHover();
-		
+		isPlaying = true; //testing
 	}
 	
 	void SetupNewHover()
 	{
+		
 		Pos[] neighbours = new Pos[6]
 		{
 			new Pos(curPos.x + 1, curPos.y, curPos.z),
@@ -48,9 +58,23 @@ public class Game : MonoBehaviour {
 				validNeighbours.Add(neighbour);
 			}
 		}
+		
+		if (validNeighbours.Count == 0)
+		{
+			isPlaying = false;
+			return;
+		}
+		
 		curNeighbourInd = 0;
+		
+		cubeToPlace = Instantiate<Transform>(cubePf);
+		cubeToPlace.GetComponent<BoxCollider>().enabled = false;
+		cubeToPlace.SetParent(playArea);
+		cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
+		
 		InvokeRepeating("SwapHover", switchNeighbourSpeed, switchNeighbourSpeed);
 	}
+	
 	
 	void SwapHover()
 	{
@@ -59,22 +83,52 @@ public class Game : MonoBehaviour {
 		{
 			curNeighbourInd = 0;
 		}
+		
+		cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButtonDown(0))
+		if (isPlaying)
 		{
-			CancelInvoke("SwapHover");
-			Transform newCube = Instantiate<Transform>(cubePf);
-			newCube.transform.SetParent(tower.transform);
-			newCube.transform.localEulerAngles = Vector3.zero;
-			newCube.transform.localPosition = validNeighbours[curNeighbourInd].Vector();
-			newCube.gameObject.SetActive(true);
-			tower.WakeUp();
-			cubes[validNeighbours[curNeighbourInd].Key()] = newCube;
-			curPos = validNeighbours[curNeighbourInd];
-			SetupNewHover();
+			if (Input.GetMouseButtonDown(0))
+			{
+				CancelInvoke("SwapHover");
+				cubeToPlace.transform.SetParent(tower.transform);
+				cubeToPlace.GetComponent<BoxCollider>().enabled = true;
+				
+				tower.WakeUp();
+				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
+				curPos = validNeighbours[curNeighbourInd];
+				SetupNewHover();
+			}
+
+			isPlaying = tower.velocity.magnitude < 0.5f;
+			Debug.Log(tower.velocity.magnitude);
+			if (!isPlaying)
+			{
+				CancelInvoke("SwapHover");
+				cubeToPlace.gameObject.SetActive(false);
+			}
+		}
+		else
+		{
+			if (Input.GetMouseButtonDown(0))
+			{
+				foreach (Transform cube in cubes.Values)
+				{
+					cube.gameObject.SetActive(false);
+					Destroy(cube.gameObject);
+				}
+				cubes.Clear();
+				validNeighbours.Clear();
+
+				
+				startCube = Instantiate<Transform>(cubePf);
+				startCube.SetParent(tower.transform);
+				startCube.position = Vector3.zero;
+				Init();
+			}
 			
 		}
 	}
