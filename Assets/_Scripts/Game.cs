@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class Game : MonoBehaviour {
 	
@@ -12,14 +13,18 @@ public class Game : MonoBehaviour {
 	Pos curPos;
 
 	Dictionary<string, Transform> cubes = new Dictionary<string, Transform>();
+	int topY = 0;
 	List<Pos> validNeighbours = new List<Pos>();
 	int curNeighbourInd;
 	
 	float switchNeighbourSpeed = 0.2f;
+	//float switchNeighbourSpeed = 0.5f; //testing
+	
 	
 	Transform cubeToPlace;
 	
 	bool isPlaying = true;
+	bool isMovingCam = false;
 	
 	static System.Random rng = new System.Random();  
 	
@@ -112,7 +117,7 @@ public class Game : MonoBehaviour {
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
-			if (Input.GetMouseButtonDown(0) && cubeToPlace != null)
+			if (Input.GetMouseButtonDown(0) && cubeToPlace != null && !isMovingCam)
 			{
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
@@ -121,6 +126,15 @@ public class Game : MonoBehaviour {
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
 				curPos = validNeighbours[curNeighbourInd];
+				if (curPos.y > topY && curPos.y > 19)
+				{
+					topY = curPos.y;
+					isMovingCam = true;
+					camPivot.DOMoveY(camPivot.transform.position.y + 1, 0.2f).OnComplete(() =>
+					{
+						isMovingCam = false;
+					});
+				}
 				SetupNewHover();
 			}
 
@@ -139,19 +153,21 @@ public class Game : MonoBehaviour {
 		{
 			if (Input.GetMouseButtonDown(0))
 			{
-				foreach (Transform cube in cubes.Values)
-				{
-					cube.gameObject.SetActive(false);
-					Destroy(cube.gameObject);
-				}
-				cubes.Clear();
-				validNeighbours.Clear();
+				Application.LoadLevel("Game");
+				//foreach (Transform cube in cubes.Values)
+				//{
+				//	cube.gameObject.SetActive(false);
+				//	Destroy(cube.gameObject);
+				//}
+				//cubes.Clear();
+				//validNeighbours.Clear();
 
 				
-				startCube = Instantiate<Transform>(cubePf);
-				startCube.SetParent(tower.transform);
-				startCube.position = Vector3.zero;
-				Init();
+				//startCube = Instantiate<Transform>(cubePf);
+				//startCube.SetParent(tower.transform);
+				//startCube.position = Vector3.zero;
+				//camPivot.transform.position = Vector3.zero; //todo: tween
+				//Init();
 			}
 			
 		}
