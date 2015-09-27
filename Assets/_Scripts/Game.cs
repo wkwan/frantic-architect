@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
 	
-	public Transform playArea;
+	public Transform camPivot;
 	public Transform cubePf;
 	public Rigidbody tower;
 	public Transform startCube;
@@ -15,11 +15,25 @@ public class Game : MonoBehaviour {
 	List<Pos> validNeighbours = new List<Pos>();
 	int curNeighbourInd;
 	
-	float switchNeighbourSpeed = 0.3f;
+	float switchNeighbourSpeed = 0.2f;
 	
 	Transform cubeToPlace;
 	
 	bool isPlaying = true;
+	
+	static System.Random rng = new System.Random();  
+	
+	void Shuffle<T>(List<T> list)  
+	{  
+		int n = list.Count;  
+		while (n > 1) {  
+			n--;  
+			int k = rng.Next(n + 1);  
+			T value = list[k];  
+			list[k] = list[n];  
+			list[n] = value;  
+		}  
+	}
 	
 
 	// Use this for initialization
@@ -65,6 +79,8 @@ public class Game : MonoBehaviour {
 			return;
 		}
 		
+		Shuffle(validNeighbours);
+		
 		curNeighbourInd = 0;
 		
 
@@ -79,7 +95,6 @@ public class Game : MonoBehaviour {
 		{
 			cubeToPlace = Instantiate<Transform>(cubePf);
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
-			cubeToPlace.SetParent(playArea);
 			cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
 		}
 		
@@ -94,6 +109,7 @@ public class Game : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
 			if (Input.GetMouseButtonDown(0) && cubeToPlace != null)
@@ -112,7 +128,11 @@ public class Game : MonoBehaviour {
 			if (!isPlaying)
 			{
 				CancelInvoke("SwapHover");
-				cubeToPlace.gameObject.SetActive(false);
+				if (cubeToPlace != null)
+				{
+					cubeToPlace.gameObject.SetActive(false);
+					Destroy(cubeToPlace.gameObject);
+				}
 			}
 		}
 		else
