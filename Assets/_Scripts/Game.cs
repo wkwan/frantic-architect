@@ -43,6 +43,8 @@ public class Game : MonoBehaviour {
 	
 	const float FADE_DURATION = 0.3f;
 	
+	float timeDied;
+	
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -102,11 +104,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 		
-		if (validNeighbours.Count == 0)
-		{
-			isPlaying = false;
-			return;
-		}
+		GameOverCheck(validNeighbours.Count == 0);
 		
 		Shuffle(validNeighbours);
 		
@@ -115,6 +113,22 @@ public class Game : MonoBehaviour {
 
 		cubeToPlace = null;
 		InvokeRepeating("SwapHover", switchNeighbourSpeed, switchNeighbourSpeed);
+	}
+	
+	void GameOverCheck(bool dead)
+	{
+		if (dead)
+		{
+			isPlaying = false;
+			timeDied = Time.time;
+			
+			CancelInvoke("SwapHover");
+			if (cubeToPlace != null)
+			{
+				cubeToPlace.gameObject.SetActive(false);
+				Destroy(cubeToPlace.gameObject);
+			}
+		}
 	}
 	
 	
@@ -171,19 +185,12 @@ public class Game : MonoBehaviour {
 				}
 			}
 
-			isPlaying = tower.velocity.magnitude < 0.5f;
-			if (!isPlaying)
-			{
-				CancelInvoke("SwapHover");
-				if (cubeToPlace != null)
-				{
-					cubeToPlace.gameObject.SetActive(false);
-					Destroy(cubeToPlace.gameObject);
-				}
-			}
+			GameOverCheck(tower.velocity.magnitude > 0.5f); //todo: should stay alive if the tower is still grounded on the platform (even though there might be a slight shift in position)
+			
 		}
-		else if (Input.GetMouseButtonDown(0)&& !isReloading)
+		else if (!isReloading && Time.time > timeDied + 3f)
 		{
+			isReloading = true;
 			if (topY > best)
 			{
 				PlayerPrefs.SetInt(BEST, topY);
