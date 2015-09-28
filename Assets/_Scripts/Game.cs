@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
-	
+	public Image transition; 
 	public TextMeshProUGUI title;
 	public TextMeshProUGUI score;
 	public TextMeshProUGUI bestScore;
@@ -37,6 +38,11 @@ public class Game : MonoBehaviour {
 	
 	const string BEST = "best";
 	
+	static bool justStarted = true;
+	bool isReloading = false;
+	
+	const float FADE_DURATION = 0.3f;
+	
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -54,21 +60,25 @@ public class Game : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Input.simulateMouseWithTouches = true;
-
-		Init();
-		DOTween.To(() => title.alpha, (float newAlpha) => title.alpha = newAlpha, 1f, 0.5f);
-		best = PlayerPrefs.GetInt(BEST, 0);
-		bestScore.text = "Best: " + best;
-	}
-	
-	void Init()
-	{
 		Pos zero = new Pos(0, 0, 0);
 		cubes[zero.Key()] = startCube;
 		curPos = zero;
 		SetupNewHover();
 		isPlaying = true; //testing
+		if (justStarted)
+		{
+			justStarted = false;
+			transition.color = new Color(1, 1, 1, 0);
+		}
+		else
+		{
+			transition.color = new Color(1, 1, 1, 1);
+			transition.DOFade(0, 0.5f);
+		}
+		best = PlayerPrefs.GetInt(BEST, 0);
+		bestScore.text = "Best: " + best;
 	}
+	
 	
 	void SetupNewHover()
 	{
@@ -157,7 +167,7 @@ public class Game : MonoBehaviour {
 				if (!placedFirstBlock)
 				{
 					placedFirstBlock = true;
-					title.rectTransform.DOAnchorPos(new Vector2(title.rectTransform.anchoredPosition.x + 500, title.rectTransform.anchoredPosition.y), 0.5f).SetEase(Ease.InQuad);
+					title.rectTransform.DOAnchorPos(new Vector2(title.rectTransform.anchoredPosition.x + 500, title.rectTransform.anchoredPosition.y), 0.4f).SetEase(Ease.InQuad);
 				}
 			}
 
@@ -172,31 +182,13 @@ public class Game : MonoBehaviour {
 				}
 			}
 		}
-		else
+		else if (Input.GetMouseButtonDown(0)&& !isReloading)
 		{
-			if (Input.GetMouseButtonDown(0))
+			if (topY > best)
 			{
-				if (topY > best)
-				{
-					PlayerPrefs.SetInt(BEST, topY);
-				}
-				Application.LoadLevel("Game");
-				//foreach (Transform cube in cubes.Values)
-				//{
-				//	cube.gameObject.SetActive(false);
-				//	Destroy(cube.gameObject);
-				//}
-				//cubes.Clear();
-				//validNeighbours.Clear();
-
-				
-				//startCube = Instantiate<Transform>(cubePf);
-				//startCube.SetParent(tower.transform);
-				//startCube.position = Vector3.zero;
-				//camPivot.transform.position = Vector3.zero; //todo: tween
-				//Init();
+				PlayerPrefs.SetInt(BEST, topY);
 			}
-			
+			transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
 		}
 	}
 }
