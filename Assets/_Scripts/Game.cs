@@ -2,8 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 
 public class Game : MonoBehaviour {
+	
+	public TextMeshProUGUI title;
+	public TextMeshProUGUI score;
+	public TextMeshProUGUI bestScore;
 	
 	public Transform camPivot;
 	public Transform cubePf;
@@ -14,6 +19,7 @@ public class Game : MonoBehaviour {
 
 	Dictionary<string, Transform> cubes = new Dictionary<string, Transform>();
 	int topY = 0;
+	int best = 0;
 	List<Pos> validNeighbours = new List<Pos>();
 	int curNeighbourInd;
 	
@@ -23,10 +29,14 @@ public class Game : MonoBehaviour {
 	
 	Transform cubeToPlace;
 	
+	bool placedFirstBlock = false;
 	bool isPlaying = true;
 	bool isMovingCam = false;
 	
 	static System.Random rng = new System.Random();  
+	
+	const string BEST = "best";
+	
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -44,7 +54,11 @@ public class Game : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Input.simulateMouseWithTouches = true;
+
 		Init();
+		DOTween.To(() => title.alpha, (float newAlpha) => title.alpha = newAlpha, 1f, 0.5f);
+		best = PlayerPrefs.GetInt(BEST, 0);
+		bestScore.text = "Best: " + best;
 	}
 	
 	void Init()
@@ -126,16 +140,25 @@ public class Game : MonoBehaviour {
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
 				curPos = validNeighbours[curNeighbourInd];
-				if (curPos.y > topY && curPos.y > 19)
-				{
+				if (curPos.y > topY)
+				{					
 					topY = curPos.y;
-					isMovingCam = true;
-					camPivot.DOMoveY(camPivot.transform.position.y + 1, 0.2f).OnComplete(() =>
+					score.text = topY.ToString();
+					if (curPos.y > 19)
 					{
-						isMovingCam = false;
-					});
+						isMovingCam = true;
+						camPivot.DOMoveY(camPivot.transform.position.y + 1, 0.2f).OnComplete(() =>
+						{
+							isMovingCam = false;
+						});
+					}
 				}
 				SetupNewHover();
+				if (!placedFirstBlock)
+				{
+					placedFirstBlock = true;
+					title.rectTransform.DOAnchorPos(new Vector2(title.rectTransform.anchoredPosition.x + 500, title.rectTransform.anchoredPosition.y), 0.5f).SetEase(Ease.InQuad);
+				}
 			}
 
 			isPlaying = tower.velocity.magnitude < 0.5f;
@@ -153,6 +176,10 @@ public class Game : MonoBehaviour {
 		{
 			if (Input.GetMouseButtonDown(0))
 			{
+				if (topY > best)
+				{
+					PlayerPrefs.SetInt(BEST, topY);
+				}
 				Application.LoadLevel("Game");
 				//foreach (Transform cube in cubes.Values)
 				//{
