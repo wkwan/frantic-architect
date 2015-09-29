@@ -138,7 +138,6 @@ public class Game : MonoBehaviour {
 		{
 			cubeToPlace = Instantiate<Transform>(cubePf);
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
-			cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
 		}
 		
 		curNeighbourInd++;
@@ -147,7 +146,8 @@ public class Game : MonoBehaviour {
 			curNeighbourInd = 0;
 		}
 		
-		cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
+		//cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
+		cubeToPlace.position = validNeighbours[curNeighbourInd].Sub(curPos) + cubes[curPos.Key()].position;
 	}
 	
 	// Update is called once per frame
@@ -164,6 +164,7 @@ public class Game : MonoBehaviour {
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
 				curPos = validNeighbours[curNeighbourInd];
+				cubeToPlace.GetComponent<MeshRenderer>().materials[0].DOFade(0, 0.2f);
 				if (curPos.y > topY)
 				{					
 					topY = curPos.y;
@@ -216,6 +217,11 @@ public struct Pos
 	public Vector3 Vector()
 	{
 		return new Vector3(x, y, z);
+	}
+	
+	public Vector3 Sub(Pos other)
+	{
+		return new Vector3(x - other.x, y - other.y, z - other.z);
 	}
 	
 	public string Key()
