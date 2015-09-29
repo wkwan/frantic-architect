@@ -138,6 +138,7 @@ public class Game : MonoBehaviour {
 		{
 			cubeToPlace = Instantiate<Transform>(cubePf);
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
+			cubeToPlace.SetParent(cubes[curPos.Key()]);
 		}
 		
 		curNeighbourInd++;
@@ -147,7 +148,8 @@ public class Game : MonoBehaviour {
 		}
 		
 		//cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
-		cubeToPlace.position = validNeighbours[curNeighbourInd].Sub(curPos) + cubes[curPos.Key()].position;
+		cubeToPlace.localEulerAngles = Vector3.zero;
+		cubeToPlace.localPosition = validNeighbours[curNeighbourInd].Sub(curPos);
 	}
 	
 	// Update is called once per frame
