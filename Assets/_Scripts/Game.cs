@@ -154,6 +154,10 @@ public class Game : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//if (tower.IsSleeping())
+		//{
+		//	tower.WakeUp();
+		//}
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
