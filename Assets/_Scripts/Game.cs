@@ -6,6 +6,8 @@ using TMPro;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
+	public Material white;
+	public Material blue;
 	public Image transition; 
 	public TextMeshProUGUI title;
 	public TextMeshProUGUI score;
@@ -152,6 +154,20 @@ public class Game : MonoBehaviour {
 		cubeToPlace.localPosition = validNeighbours[curNeighbourInd].Sub(curPos);
 	}
 	
+	IEnumerator FadeCubeToPlace(Transform cubeToPlace)
+	{
+		float animTime = 0;
+		MeshRenderer cubeMesh = cubeToPlace.GetComponent<MeshRenderer>();
+		float totalDuration = 0.3f;
+		while (animTime < totalDuration)
+		{
+			cubeMesh.material.Lerp(blue, white, animTime / totalDuration);
+			yield return new WaitForEndOfFrame();
+			animTime += Time.deltaTime;
+		}
+		cubeMesh.material = white;
+	}
+	
 	// Update is called once per frame
 	void Update () {
 		//if (tower.IsSleeping())
@@ -166,11 +182,10 @@ public class Game : MonoBehaviour {
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
 				cubeToPlace.GetComponent<BoxCollider>().enabled = true;
-				
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
 				curPos = validNeighbours[curNeighbourInd];
-				cubeToPlace.GetComponent<MeshRenderer>().materials[0].DOFade(0, 0.2f);
+				StartCoroutine(FadeCubeToPlace(cubeToPlace));
 				if (curPos.y > topY)
 				{					
 					topY = curPos.y;
