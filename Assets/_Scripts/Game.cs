@@ -181,6 +181,7 @@ public class Game : MonoBehaviour {
 			{
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
+				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
 				cubeToPlace.GetComponent<BoxCollider>().enabled = true;
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
@@ -190,7 +191,7 @@ public class Game : MonoBehaviour {
 				{					
 					topY = curPos.y;
 					score.text = topY.ToString();
-					if (curPos.y > 19)
+					if (curPos.y > 13)
 					{
 						isMovingCam = true;
 						camPivot.DOMoveY(camPivot.transform.position.y + 1, 0.2f).OnComplete(() =>
@@ -207,7 +208,8 @@ public class Game : MonoBehaviour {
 				}
 			}
 
-			GameOverCheck(tower.velocity.magnitude > 0.5f); //todo: should stay alive if the tower is still grounded on the platform (even though there might be a slight shift in position)
+			GameOverCheck(tower.velocity.magnitude > 0.3f); //todo: should stay alive if the tower is still grounded on the platform (even though there might be a slight shift in position)
+			//Debug.Log(tower.velocity.magnitude);
 			
 		}
 		else if (!isReloading && Time.time > timeDied + 3f)
