@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
+	public AudioSource[] placeSounds;
 	public Material white;
 	public Material blue;
 	public Image transition; 
@@ -179,6 +180,7 @@ public class Game : MonoBehaviour {
 		{
 			if (Input.GetMouseButtonDown(0) && cubeToPlace != null && !isMovingCam)
 			{
+				placeSounds[Random.Range(0, placeSounds.Length)].Play();
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
 				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
