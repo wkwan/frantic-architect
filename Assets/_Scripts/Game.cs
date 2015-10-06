@@ -6,6 +6,8 @@ using TMPro;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
+	int target = 10;
+	int curScore = 0;
 	public AudioSource[] placeSounds;
 	public Material white;
 	public Material blue;
@@ -27,15 +29,16 @@ public class Game : MonoBehaviour {
 	List<Pos> validNeighbours = new List<Pos>();
 	int curNeighbourInd;
 	
-	float switchNeighbourSpeed = 0.2f;
-	//float switchNeighbourSpeed = 0.5f; //testing
+	//float switchNeighbourSpeed = 0.2f;
+	//float switchNeighbourSpeed = 0.1f; //testing
+	float switchNeighbourSpeed = 0.35f;
 	
 	
 	Transform cubeToPlace;
 	
 	bool placedFirstBlock = false;
 	bool isPlaying = true;
-	bool isMovingCam = false;
+	//bool isMovingCam = false;
 	
 	static System.Random rng = new System.Random();  
 	
@@ -48,6 +51,7 @@ public class Game : MonoBehaviour {
 	
 	float timeDied;
 	
+	const int LEVEL_HEIGHT = 10;
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -63,7 +67,8 @@ public class Game : MonoBehaviour {
 	
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		Input.simulateMouseWithTouches = true;
 		Pos zero = new Pos(0, 0, 0);
 		cubes[zero.Key()] = startCube;
@@ -82,6 +87,12 @@ public class Game : MonoBehaviour {
 		}
 		best = PlayerPrefs.GetInt(BEST, 0);
 		bestScore.text = "Best: " + best;
+		SetScore();
+	}
+	
+	void SetScore()
+	{
+		score.text = curScore.ToString() + " / " + target.ToString();
 	}
 	
 	
@@ -150,7 +161,6 @@ public class Game : MonoBehaviour {
 			curNeighbourInd = 0;
 		}
 		
-		//cubeToPlace.position = validNeighbours[curNeighbourInd].Vector();
 		cubeToPlace.localEulerAngles = Vector3.zero;
 		cubeToPlace.localPosition = validNeighbours[curNeighbourInd].Sub(curPos);
 	}
@@ -169,16 +179,12 @@ public class Game : MonoBehaviour {
 		cubeMesh.material = white;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		//if (tower.IsSleeping())
-		//{
-		//	tower.WakeUp();
-		//}
+	void Update () 
+	{
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
-			if (Input.GetMouseButtonDown(0) && cubeToPlace != null && !isMovingCam)
+			if (Input.GetMouseButtonDown(0) && cubeToPlace != null)
 			{
 				placeSounds[Random.Range(0, placeSounds.Length)].Play();
 				CancelInvoke("SwapHover");
@@ -188,19 +194,51 @@ public class Game : MonoBehaviour {
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
 				curPos = validNeighbours[curNeighbourInd];
-				StartCoroutine(FadeCubeToPlace(cubeToPlace));
+
 				if (curPos.y > topY)
 				{					
 					topY = curPos.y;
-					score.text = topY.ToString();
-					if (curPos.y > 13)
+					curScore++;
+
+					if (topY % LEVEL_HEIGHT == 0)
 					{
-						isMovingCam = true;
-						camPivot.DOMoveY(camPivot.transform.position.y + 1, 0.2f).OnComplete(() =>
+						target += 10;
+						
+						topY = 0;
+						tower.Sleep();
+						tower.gameObject.SetActive(false);
+						
+						List<string> cubesToRemove = new List<string>();
+						foreach (string cubeKey in cubes.Keys)
 						{
-							isMovingCam = false;
-						});
+							if (cubes[cubeKey].GetInstanceID() != startCube.GetInstanceID())
+							{
+								cubes[cubeKey].gameObject.SetActive(false);
+								Destroy(cubes[cubeKey].gameObject);
+								curPos = new Pos(0, 0, 0);
+								cubesToRemove.Add(cubeKey);
+							}
+						}
+						
+						foreach (string cubeToRemove in cubesToRemove)
+						{
+							cubes.Remove(cubeToRemove);
+						}
+						
+						tower.gameObject.SetActive(true);
+						tower.WakeUp();
+						switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
+						
 					}
+					else
+					{
+						StartCoroutine(FadeCubeToPlace(cubeToPlace));
+					}
+					SetScore();
+				}
+				else
+				{
+					StartCoroutine(FadeCubeToPlace(cubeToPlace));
 				}
 				SetupNewHover();
 				if (!placedFirstBlock)
@@ -210,16 +248,16 @@ public class Game : MonoBehaviour {
 				}
 			}
 
-			GameOverCheck(tower.velocity.magnitude > 0.3f); //todo: should stay alive if the tower is still grounded on the platform (even though there might be a slight shift in position)
+			GameOverCheck(tower != null && tower.velocity.magnitude > 0.3f); //todo: should stay alive if the tower is still grounded on the platform (even though there might be a slight shift in position)
 			//Debug.Log(tower.velocity.magnitude);
 			
 		}
 		else if (!isReloading && Time.time > timeDied + 3f)
 		{
 			isReloading = true;
-			if (topY > best)
+			if (curScore > best)
 			{
-				PlayerPrefs.SetInt(BEST, topY);
+				PlayerPrefs.SetInt(BEST, curScore);
 			}
 			transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
 		}
