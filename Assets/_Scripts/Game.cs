@@ -5,12 +5,18 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 
-public class Game : MonoBehaviour {
-	int target = 10;
+//todo: make shadow fade out with tower
+
+public class Game : MonoBehaviour 
+{
+	bool goingToNextStage = false;	
+	
+	
 	int curScore = 0;
 	public AudioSource[] placeSounds;
 	public Material white;
 	public Material blue;
+	public Material red;
 	public Image transition; 
 	public TextMeshProUGUI title;
 	public TextMeshProUGUI score;
@@ -52,6 +58,7 @@ public class Game : MonoBehaviour {
 	float timeDied;
 	
 	const int LEVEL_HEIGHT = 10;
+	int target = LEVEL_HEIGHT;
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -179,12 +186,77 @@ public class Game : MonoBehaviour {
 		cubeMesh.material = white;
 	}
 	
+	IEnumerator FadeOutTower()
+	{
+		goingToNextStage = true;
+		//yield return new WaitForSeconds(0.7f);
+		tower.isKinematic = true;
+		
+		List<string> cubeKeysToRemove = new List<string>();
+		foreach (string cubeKey in cubes.Keys)
+		{
+			if (cubes[cubeKey].GetInstanceID() != startCube.GetInstanceID())
+			{
+				cubes[cubeKey].GetComponent<BoxCollider>().enabled = false;
+				cubeKeysToRemove.Add(cubeKey);
+			}
+		}
+		
+		float TOWER_RED_DURATION = 0.7f;
+		float startTime = Time.time;
+		while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
+		{
+			foreach (string cubeKey in cubeKeysToRemove)
+			{
+				Material startMaterial = white;
+				if (cubeToPlace.GetInstanceID() == cubes[cubeKey].GetInstanceID())
+				{
+					startMaterial = blue;
+				}
+				cubes[cubeKey].GetComponent<MeshRenderer>().material.Lerp(startMaterial, red, (Time.time - startTime) / TOWER_RED_DURATION);
+			}
+			yield return new WaitForEndOfFrame();
+		}
+		
+		yield return new WaitForSeconds(0.2f);
+		
+		float TOWER_FADE_DURATION = 0.2f;
+		startTime = Time.time;
+		while (Time.time < startTime + TOWER_FADE_DURATION - Time.deltaTime/2)
+		{
+			float newAlpha = Mathf.Lerp(1, 0, (Time.time - startTime) / TOWER_FADE_DURATION);
+			foreach (string cubeKey in cubeKeysToRemove)
+			{
+				cubes[cubeKey].GetComponent<MeshRenderer>().material.color = new Color(red.color.r, red.color.g, red.color.b, newAlpha);
+			}
+			yield return new WaitForEndOfFrame();
+		}
+		
+		
+		foreach (string cubeKey in cubeKeysToRemove)
+		{
+			cubes[cubeKey].gameObject.SetActive(false);
+			Destroy(cubes[cubeKey].gameObject);
+			cubes.Remove(cubeKey);
+		}
+		tower.isKinematic = false;
+		SetupNewHover();
+		goingToNextStage = false;
+	}
+
+	void FadeCubeToPlaceAndSetupHover(Transform cubeToPlace)
+	{
+		//must start fading before we setup the hover or else cubeTopPlace will be null when we try to fade
+		StartCoroutine(FadeCubeToPlace(cubeToPlace));
+		SetupNewHover();
+	}
+	
 	void Update () 
 	{
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
-			if (Input.GetMouseButtonDown(0) && cubeToPlace != null)
+			if (Input.GetMouseButtonDown(0) && cubeToPlace != null && !goingToNextStage)
 			{
 				placeSounds[Random.Range(0, placeSounds.Length)].Play();
 				CancelInvoke("SwapHover");
@@ -202,45 +274,23 @@ public class Game : MonoBehaviour {
 
 					if (topY % LEVEL_HEIGHT == 0)
 					{
-						target += 10;
-						
+						target += LEVEL_HEIGHT;
 						topY = 0;
-						tower.Sleep();
-						tower.gameObject.SetActive(false);
-						
-						List<string> cubesToRemove = new List<string>();
-						foreach (string cubeKey in cubes.Keys)
-						{
-							if (cubes[cubeKey].GetInstanceID() != startCube.GetInstanceID())
-							{
-								cubes[cubeKey].gameObject.SetActive(false);
-								Destroy(cubes[cubeKey].gameObject);
-								curPos = new Pos(0, 0, 0);
-								cubesToRemove.Add(cubeKey);
-							}
-						}
-						
-						foreach (string cubeToRemove in cubesToRemove)
-						{
-							cubes.Remove(cubeToRemove);
-						}
-						
-						tower.gameObject.SetActive(true);
-						tower.WakeUp();
+						curPos = new Pos(0, 0, 0);
 						switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
-						
-					}
+						StartCoroutine(FadeOutTower());
+					} 
 					else
 					{
-						StartCoroutine(FadeCubeToPlace(cubeToPlace));
+						FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					}
 					SetScore();
 				}
 				else
 				{
-					StartCoroutine(FadeCubeToPlace(cubeToPlace));
+					FadeCubeToPlaceAndSetupHover(cubeToPlace);
 				}
-				SetupNewHover();
+
 				if (!placedFirstBlock)
 				{
 					placedFirstBlock = true;
