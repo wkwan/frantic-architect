@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 
 //todo: make shadow fade out with tower
+//todo: maybe steady the start cube when the level is complete so we don't die from the acceleration caused by the now disappeared cubes
 
 public class Game : MonoBehaviour 
 {
@@ -14,6 +15,8 @@ public class Game : MonoBehaviour
 	
 	int curScore = 0;
 	public AudioSource[] placeSounds;
+	public AudioSource levelUpSound;
+	public AudioSource dieSound;
 	public Material white;
 	public Material blue;
 	public Material red;
@@ -140,6 +143,7 @@ public class Game : MonoBehaviour
 	{
 		if (dead)
 		{
+			dieSound.Play();
 			isPlaying = false;
 			timeDied = Time.time;
 			
@@ -168,6 +172,12 @@ public class Game : MonoBehaviour
 			curNeighbourInd = 0;
 		}
 		
+		//todo: ArgumentOutOfRangeException: Argument is out of range.
+		//occurred when tower falling but staying alive in a rotated position
+		//Parameter name: index
+		//System.Collections.Generic.List`1[Pos].get_Item (Int32 index) (at /Users/builduser/buildslave/mono-runtime-and-classlibs/build/mcs/class/corlib/System.Collections.Generic/List.cs:633)
+		//Game.SwapHover () (at Assets/_Scripts/Game.cs:175)
+
 		cubeToPlace.localEulerAngles = Vector3.zero;
 		cubeToPlace.localPosition = validNeighbours[curNeighbourInd].Sub(curPos);
 	}
@@ -202,7 +212,7 @@ public class Game : MonoBehaviour
 			}
 		}
 		
-		float TOWER_RED_DURATION = 0.7f;
+		float TOWER_RED_DURATION = 0.9f;
 		float startTime = Time.time;
 		while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
 		{
@@ -218,9 +228,9 @@ public class Game : MonoBehaviour
 			yield return new WaitForEndOfFrame();
 		}
 		
-		yield return new WaitForSeconds(0.2f);
+		yield return new WaitForSeconds(0.3f);
 		
-		float TOWER_FADE_DURATION = 0.2f;
+		float TOWER_FADE_DURATION = 0.9f;
 		startTime = Time.time;
 		while (Time.time < startTime + TOWER_FADE_DURATION - Time.deltaTime/2)
 		{
@@ -258,7 +268,6 @@ public class Game : MonoBehaviour
 		{
 			if (Input.GetMouseButtonDown(0) && cubeToPlace != null && !goingToNextStage)
 			{
-				placeSounds[Random.Range(0, placeSounds.Length)].Play();
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
 				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
@@ -269,11 +278,13 @@ public class Game : MonoBehaviour
 
 				if (curPos.y > topY)
 				{					
+	
 					topY = curPos.y;
 					curScore++;
 
 					if (topY % LEVEL_HEIGHT == 0)
 					{
+						levelUpSound.Play();
 						target += LEVEL_HEIGHT;
 						topY = 0;
 						curPos = new Pos(0, 0, 0);
@@ -282,12 +293,14 @@ public class Game : MonoBehaviour
 					} 
 					else
 					{
+						placeSounds[Random.Range(0, placeSounds.Length)].Play();
 						FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					}
 					SetScore();
 				}
 				else
 				{
+					placeSounds[Random.Range(0, placeSounds.Length)].Play();
 					FadeCubeToPlaceAndSetupHover(cubeToPlace);
 				}
 
