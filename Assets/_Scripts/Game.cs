@@ -11,9 +11,38 @@ using UnityEngine.UI;
 
 public class Game : MonoBehaviour 
 {
+	bool menuFinishedOpening = true;
+	public RectTransform menuPanel;
+	public Button stats;
+	public Button leaderboard;
+	public Button achievements;
+	public Button removeAds;
+	public Button restorePurchases;
+	public Button rate;
+	public Button mute;
+	
+	public RectTransform statsRect;
+	public RectTransform leaderboardRect;
+	public RectTransform achievementsRect;
+	public RectTransform removeAdsRect;
+	public RectTransform restorePurchasesRect;
+	public RectTransform rateRect;
+	public RectTransform muteRect;
+	
+	
+	public RectTransform statsPanel;
+	public TextMeshProUGUI statBest;
+	public TextMeshProUGUI statAve;
+	public TextMeshProUGUI statDaily;
+	public TextMeshProUGUI statGames;
+	public TextMeshProUGUI statCubes;
+	public Button statsBack;
+	
+	
 	public Button retry;
 	public Button share;
 	public Button menu;
+	public TextMeshProUGUI menuText;
 	
 	bool goingToNextStage = false;	
 	
@@ -69,7 +98,9 @@ public class Game : MonoBehaviour
 	int target = LEVEL_HEIGHT;
 	
 	float visibleRetryX = 90f;
-	float visibleMenuY = -110f;
+	float visibleMenuY = 280f;
+	
+	bool menuOpened = false;
 	
 	
 	void Shuffle<T>(List<T> list)  
@@ -118,6 +149,53 @@ public class Game : MonoBehaviour
 					PlayerPrefs.SetInt(BEST, curScore);
 				}
 				transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
+			}
+		});
+		
+		menu.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead && menuFinishedOpening)
+			{
+				if (!menuOpened)
+				{
+					menuFinishedOpening = false;
+					menuPanel.gameObject.SetActive(true);
+					float rightStartPos = 600f;
+					float duration = 1f;
+					statsRect.DOAnchorPos(new Vector2(1000f, statsRect.anchoredPosition.y), duration).From();
+					leaderboardRect.DOAnchorPos(new Vector2(1000f, leaderboardRect.anchoredPosition.y), duration).From().SetDelay(0.1f);
+					achievementsRect.DOAnchorPos(new Vector2(1000f, achievementsRect.anchoredPosition.y), duration).From().SetDelay(0.2f);
+					removeAdsRect.DOAnchorPos(new Vector2(1000f, removeAdsRect.anchoredPosition.y), duration).From().SetDelay(0.3f);
+					restorePurchasesRect.DOAnchorPos(new Vector2(1000f, restorePurchasesRect.anchoredPosition.y), duration).From().SetDelay(0.4f);
+					rateRect.DOAnchorPos(new Vector2(1000f, rateRect.anchoredPosition.y), duration).From().SetDelay(0.5f);
+					menuText.text = "Close";
+					muteRect.DOAnchorPos(new Vector2(1000f, muteRect.anchoredPosition.y), duration).From().SetDelay(0.6f).OnComplete(() =>
+					{
+						menuFinishedOpening = true;
+					});
+				}
+				else
+				{
+					menuPanel.gameObject.SetActive(false);
+					menuText.text = "Menu";
+				}
+				menuOpened = !menuOpened;
+			}
+		});
+		
+		stats.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				statsPanel.gameObject.SetActive(true);
+			}
+		});
+		
+		statsBack.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				statsPanel.gameObject.SetActive(false);
 			}
 		});
 	}
