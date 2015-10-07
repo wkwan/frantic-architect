@@ -20,6 +20,7 @@ public class Game : MonoBehaviour
 	public Button restorePurchases;
 	public Button rate;
 	public Button mute;
+	public TextMeshProUGUI muteText;
 	
 	public RectTransform statsRect;
 	public RectTransform leaderboardRect;
@@ -91,6 +92,9 @@ public class Game : MonoBehaviour
 	const string GAMES = "games";
 	const string CUBES = "cubes";
 	
+	const string MUTED = "muted";
+	bool muted;
+	
 	static bool justStarted = true;
 	bool isReloading = false;
 	
@@ -123,6 +127,26 @@ public class Game : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		muted = PlayerPrefs.HasKey(MUTED);
+		if (muted)
+		{
+			muteText.text = "Unmute";
+		}
+		mute.onClick.AddListener(() =>
+		{
+			muted = !muted;
+			if (muted)
+			{
+				muteText.text = "Unmute";
+				PlayerPrefs.SetInt(MUTED, 1);
+			}
+			else
+			{
+				muteText.text = "Mute";
+				PlayerPrefs.DeleteKey(MUTED);
+			}
+		});
+		
 		Input.simulateMouseWithTouches = true;
 		Pos zero = new Pos(0, 0, 0);
 		cubes[zero.Key()] = startCube;
@@ -244,7 +268,7 @@ public class Game : MonoBehaviour
 		if (dead)
 		{
 			isDead = true;
-			dieSound.Play();
+			if (!muted) dieSound.Play();
 			isPlaying = false;
 			
 			CancelInvoke("SwapHover");
@@ -287,7 +311,7 @@ public class Game : MonoBehaviour
 			
 			int numCubes = PlayerPrefs.GetInt(CUBES, 0) + cubes.Count - 1;
 			PlayerPrefs.SetInt(CUBES, numCubes);
-			statCubes.text = "Total Cubes Placed: " + numCubes.ToString();
+			statCubes.text = "Total Cubes: " + numCubes.ToString();
 		}
 	}
 	
@@ -419,7 +443,7 @@ public class Game : MonoBehaviour
 
 					if (topY % LEVEL_HEIGHT == 0)
 					{
-						levelUpSound.Play();
+						if (!muted) levelUpSound.Play();
 						target += LEVEL_HEIGHT;
 						topY = 0;
 						curPos = new Pos(0, 0, 0);
@@ -428,14 +452,14 @@ public class Game : MonoBehaviour
 					} 
 					else
 					{
-						placeSounds[Random.Range(0, placeSounds.Length)].Play();
+						if (!muted) placeSounds[Random.Range(0, placeSounds.Length)].Play();
 						FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					}
 					SetScore();
 				}
 				else
 				{
-					placeSounds[Random.Range(0, placeSounds.Length)].Play();
+					if (!muted) placeSounds[Random.Range(0, placeSounds.Length)].Play();
 					FadeCubeToPlaceAndSetupHover(cubeToPlace);
 				}
 
