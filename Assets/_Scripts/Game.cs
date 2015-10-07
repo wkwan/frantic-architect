@@ -7,9 +7,14 @@ using UnityEngine.UI;
 
 //todo: make shadow fade out with tower
 //todo: maybe steady the start cube when the level is complete so we don't die from the acceleration caused by the now disappeared cubes
+//todo: fade is black on iPad 2
 
 public class Game : MonoBehaviour 
 {
+	public Button retry;
+	public Button share;
+	public Button menu;
+	
 	bool goingToNextStage = false;	
 	
 	
@@ -58,10 +63,14 @@ public class Game : MonoBehaviour
 	
 	const float FADE_DURATION = 0.3f;
 	
-	float timeDied;
+	bool isDead = false;
 	
 	const int LEVEL_HEIGHT = 10;
 	int target = LEVEL_HEIGHT;
+	
+	float visibleRetryX = 90f;
+	float visibleMenuY = -110f;
+	
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -98,6 +107,19 @@ public class Game : MonoBehaviour
 		best = PlayerPrefs.GetInt(BEST, 0);
 		bestScore.text = "Best: " + best;
 		SetScore();
+		
+		retry.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				isReloading = true;
+				if (curScore > best)
+				{
+					PlayerPrefs.SetInt(BEST, curScore);
+				}
+				transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
+			}
+		});
 	}
 	
 	void SetScore()
@@ -143,9 +165,9 @@ public class Game : MonoBehaviour
 	{
 		if (dead)
 		{
+			isDead = true;
 			dieSound.Play();
 			isPlaying = false;
-			timeDied = Time.time;
 			
 			CancelInvoke("SwapHover");
 			if (cubeToPlace != null)
@@ -153,6 +175,14 @@ public class Game : MonoBehaviour
 				cubeToPlace.gameObject.SetActive(false);
 				Destroy(cubeToPlace.gameObject);
 			}
+			
+			RectTransform retryRect = retry.GetComponent<RectTransform>();
+			RectTransform shareRect = share.GetComponent<RectTransform>();
+			RectTransform menuRect = menu.GetComponent<RectTransform>();
+			retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
+			shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
+			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
+			
 		}
 	}
 	
@@ -315,15 +345,16 @@ public class Game : MonoBehaviour
 			//Debug.Log(tower.velocity.magnitude);
 			
 		}
-		else if (!isReloading && Time.time > timeDied + 3f)
-		{
-			isReloading = true;
-			if (curScore > best)
-			{
-				PlayerPrefs.SetInt(BEST, curScore);
-			}
-			transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
-		}
+		//else if (!isReloading && Time.time > timeDied + 3f)
+		//{
+		//	isReloading = true;
+			
+			//if (curScore > best)
+			//{
+			//	PlayerPrefs.SetInt(BEST, curScore);
+			//}
+			//transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
+		//}
 	}
 }
 
