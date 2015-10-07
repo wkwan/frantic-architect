@@ -86,6 +86,10 @@ public class Game : MonoBehaviour
 	static System.Random rng = new System.Random();  
 	
 	const string BEST = "best";
+	const string DAILY_RECORD = "dailyRecord";
+	const string TOTAL = "total";
+	const string GAMES = "games";
+	const string CUBES = "cubes";
 	
 	static bool justStarted = true;
 	bool isReloading = false;
@@ -144,10 +148,6 @@ public class Game : MonoBehaviour
 			if (!isReloading && isDead)
 			{
 				isReloading = true;
-				if (curScore > best)
-				{
-					PlayerPrefs.SetInt(BEST, curScore);
-				}
 				transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
 			}
 		});
@@ -261,6 +261,33 @@ public class Game : MonoBehaviour
 			shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
 			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
 			
+			
+			if (curScore > best)
+			{
+				PlayerPrefs.SetInt(BEST, curScore);
+			}
+			
+			int newBest = System.Math.Max(curScore, best);
+			statBest.text = "Best Score: " + newBest.ToString();
+			
+			int dailyRecord = PlayerPrefs.GetInt(DAILY_RECORD + System.DateTime.Today.ToString(), 0);
+			if (curScore > dailyRecord)
+			{
+				dailyRecord = curScore;
+			}
+			statDaily.text = "Daily Record: " + dailyRecord;
+			
+			int games = PlayerPrefs.GetInt(GAMES, 0) + 1;
+			PlayerPrefs.SetInt(GAMES, games);
+			statGames.text = "Games Played: " + games.ToString();
+			
+			int total = PlayerPrefs.GetInt(TOTAL, 0) + curScore;
+			PlayerPrefs.SetInt(TOTAL, total);
+			statAve.text = "Average Score: " + Mathf.RoundToInt((float)total/games).ToString();
+			
+			int numCubes = PlayerPrefs.GetInt(CUBES, 0) + cubes.Count - 1;
+			PlayerPrefs.SetInt(CUBES, numCubes);
+			statCubes.text = "Total Cubes Placed: " + numCubes.ToString();
 		}
 	}
 	
