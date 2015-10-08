@@ -5,6 +5,9 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Advertisements;
+#if UNITY_IOS
+using UnityEngine.SocialPlatforms.GameCenter;
+#endif
 
 //todo: make shadow fade out with tower
 //todo: maybe steady the start cube when the level is complete so we don't die from the acceleration caused by the now disappeared cubes
@@ -12,6 +15,8 @@ using UnityEngine.Advertisements;
 
 public class Game : MonoBehaviour 
 {
+	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud";
+	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
 	bool menuFinishedOpening = true;
 	public RectTransform menuPanel;
 	public Button stats;
@@ -132,6 +137,15 @@ public class Game : MonoBehaviour
 		{
 			Advertisement.Initialize("79857", true);
 		}
+		#if UNITY_IOS
+		if (!Social.localUser.authenticated)
+		{
+			Social.localUser.Authenticate((success) =>
+			{
+				Debug.Log("authenticated game center");
+			});
+		}
+		#endif
 	}
 	
 
@@ -233,6 +247,26 @@ public class Game : MonoBehaviour
 				statsPanel.gameObject.SetActive(false);
 			}
 		});
+		
+		leaderboard.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				#if UNITY_IOS
+				if (Social.localUser.authenticated)
+				{
+					GameCenterPlatform.ShowLeaderboardUI(LEADERBOARD_ID, UnityEngine.SocialPlatforms.TimeScope.AllTime);
+				}
+				else
+				{
+					Social.localUser.Authenticate((success) =>
+					{
+						GameCenterPlatform.ShowLeaderboardUI(LEADERBOARD_ID, UnityEngine.SocialPlatforms.TimeScope.AllTime);
+					});
+				}
+				#endif
+			}
+		});
 	}
 	
 	void SetScore()
@@ -327,10 +361,30 @@ public class Game : MonoBehaviour
 			if (curScore > best)
 			{
 				PlayerPrefs.SetInt(BEST, curScore);
+				#if UNITY_IOS
+				PlayerPrefs.SetInt(BEST_SCORE_NOT_SAVED_TO_CLOUD, 0);
+				#endif
 			}
+			
 			
 			int newBest = System.Math.Max(curScore, best);
 			statBest.text = "Best Score: " + newBest.ToString();
+			
+			#if UNITY_IOS
+			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
+			{
+				Debug.Log("should submit score");
+				Social.ReportScore(newBest, LEADERBOARD_ID, (submitSuccess) =>
+				{
+					Debug.Log("submit score complete");
+					if (submitSuccess)
+					{
+						PlayerPrefs.DeleteKey(BEST_SCORE_NOT_SAVED_TO_CLOUD);
+						Debug.Log("submit score success");
+					}
+				});
+			}
+			#endif
 			
 			int dailyRecord = PlayerPrefs.GetInt(DAILY_RECORD + System.DateTime.Today.ToString(), 0);
 			if (curScore > dailyRecord)
