@@ -1,0 +1,128 @@
+{
+         "BILLER_NOT_READY" :
+         "The Biller is initialising. If, and only if, Biller.Ready may you call any other Biller methods."
+      ,
+      
+         "STOREKIT_BILLING_UNAVAILABLE" :
+         "Storekit reported In App purchasing as unavailable."
+      ,
+      
+         "STOREKIT_RETURNED_NO_PRODUCTS" :
+         "Storekit requestProducts returned no products."
+      ,
+      
+         "STOREKIT_REQUESTPRODUCTS_MISSING_PRODUCT" :
+         "Storekit product identifier is invalid for product {0}, iTunes id {1}"
+      ,
+      
+         "STOREKIT_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_STOREKIT" :
+         "Attempting to purchase product {0} which was not returned by storekit requestProductData(). Verify the item's status in iTunes Connect."
+      ,
+      
+         "STOREKIT_FAILED_TO_RETRIEVE_PRODUCT_DATA" :
+         "Storekit was unable to retrieve product data. You may not have Internet connectivity."
+      ,
+      
+      	 "STOREKIT_UNKNOWN_PRODUCT_ID" :
+      	 "Storekit returned an unknown product identifier: {0}. Ensure your identifiers are correctly set up in the inventory editor."
+      ,
+      
+         "GOOGLEPLAY_BILLING_UNAVAILABLE" :
+         "Google play reported In App purchasing as unavailable."
+      ,
+      
+         "GOOGLEPLAY_PUBLICKEY_INVALID" :
+         "You must configure the correct public key from Google Play. {0} is invalid."
+      ,
+      
+         "GOOGLEPLAY_PUBLICKEY_NOTCONFIGURED" :
+         "You must configure your Google Play public key. {0} is a placeholder value."
+      ,
+      
+         "GOOGLEPLAY_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_GOOGLEPLAY" :
+         "You are attempting to purchase product: {0} which was not listed as an available product by Google Play. Verify that you have you created the item in the Google Play publisher console."
+      ,
+      
+         "GOOGLEPLAY_NO_PRODUCTS_RETURNED" :
+         "Google Play returned no products as available for purchase. Have you defined your purchasable items in the Google Play publisher console?"
+      ,
+      
+         "GOOGLEPLAY_MISSING_PRODUCT" :
+         "Google Play returned product {0} as unavailable for purchase. Have you defined it in the Google Play publisher console?"
+      ,
+      
+         "AMAZONAPPSTORE_GETITEMDATAREQUEST_FAILED" :
+         "An error occured retrieving the product list - GetItemDataRequest failed."
+      ,
+      
+         "AMAZONAPPSTORE_GETITEMDATAREQUEST_NO_PRODUCTS_RETURNED" :
+         "GetItemDataRequest returned an empty product list. Have you created your purchases on the Amazon developer portal?"
+      ,
+      
+         "AMAZONAPPSTORE_GETITEMDATAREQUEST_MISSING_PRODUCT" :
+         "Product: {0} was not returned by GetItemDataRequest. Have you created it on the Amazon developer portal?"
+      ,
+      
+         "AMAZONAPPSTORE_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_AMAZON" :
+         "Attempting to purchase product: {0} which was not returned by GetItemDataRequest. Have you created it on the Amazon developer portal?"
+      ,
+      
+         "WP8_NO_PRODUCTS_RETURNED" :
+         "GetItemDataRequest returned an empty product list. Have you created your purchases on the Microsoft developer portal?"
+      ,
+      
+         "WP8_MISSING_PRODUCT" :
+         "Product: {0} was not returned by Microsoft. Have you created it on the Microsoft developer portal?"
+      ,
+      
+         "WP8_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_MICROSOFT" :
+         "Attempting to purchase product: {0} which was not returned as available by Microsoft. Have you created it on the Microsoft developer portal?"
+      ,
+      
+         "WP8_APP_ID_NOT_KNOWN" :
+         "Your App ID may be incorrect. Have you set your product ID in your WMAppManifest?"
+      ,
+
+	     "WIN_8_1_NO_PRODUCTS_RETURNED" :
+         "GetItemDataRequest returned an empty product list. Have you created your purchases on the Microsoft developer portal?"
+      ,
+      
+         "WIN_8_1_MISSING_PRODUCT" :
+         "Product: {0} was not returned by Microsoft. Have you created it on the Microsoft developer portal?"
+      ,
+      
+         "WIN_8_1_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_MICROSOFT" :
+         "Attempting to purchase product: {0} which was not returned as available by Microsoft. Have you created it on the Microsoft developer portal?"
+      ,
+      
+         "WIN_8_1_APP_NOT_KNOWN" :
+         "Have you uploaded your App to the Microsoft developer portal?"
+      ,
+      
+         "UNIBILL_UNKNOWN_PRODUCTID" :
+         "Product: {0} is not known to Unibill. Ensure your product IDs are set correctly in your unibill configuration."
+      ,
+            
+         "UNIBILL_MISSING_PRODUCT" :
+         "Product: {0} is reported as unavailable for purchase by the billing system. Ensure your product IDs are set correctly in your unibill configuration and registered with the billing provider."
+      ,
+      
+         "UNIBILL_INITIALISE_FAILED_WITH_CRITICAL_ERROR" :
+         "Unibill initialisation failed with a critical error. Check the Errors property to diagnose the problem."
+      ,
+      
+         "UNIBILL_NO_PRODUCTS_DEFINED" :
+         "You have not defined any products to be purchased. Define your products with the inventory editor, found at Unibill/Inventory editor."
+      ,
+         "UNIBILL_ATTEMPTING_TO_PURCHASE_ALREADY_OWNED_NON_CONSUMABLE" :
+         "You have attempted to purchase a Non-Consumable product that is already owned by the player. If it is intended that the product be purchasable multiple times, make it Consumable in the inventory editor. Otherwise you should check whether the product is already owned and, if so, prevent the user purchasing it."
+      ,
+      	"SAMSUNG_APPS_MISSING_PRODUCT" :
+      	"Product: {0} was not returned as available by Samsung. Have you created it on the Samsung developer portal?"
+      ,
+		"SAMSUNG_APPS_NO_PRODUCTS_RETURNED" :
+		"Samsung returned an empty product list. Have you created your purchases on the Samsung developer portal?"
+	  ,
+		"SAMSUNG_APPS_ATTEMPTING_TO_PURCHASE_PRODUCT_NOT_RETURNED_BY_SAMSUNG" :
+	  	"You have attempted to purchase a product that was not listed as available for purchase by Samsung."
+}

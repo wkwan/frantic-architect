@@ -17,6 +17,8 @@ public class Game : MonoBehaviour
 {
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud";
 	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
+	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
+	
 	bool menuFinishedOpening = true;
 	public RectTransform menuPanel;
 	public Button stats;
@@ -118,6 +120,8 @@ public class Game : MonoBehaviour
 	
 	static int gamesPlayedThisSession = 0;
 	
+	static bool initialized = false;
+	
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -133,19 +137,24 @@ public class Game : MonoBehaviour
 	
 	void Awake()
 	{
-		if (!Advertisement.isInitialized)
+		if (!initialized)
 		{
-			Advertisement.Initialize("79857", true);
-		}
-		#if UNITY_IOS
-		if (!Social.localUser.authenticated)
-		{
+			initialized = true;
+			Unibiller.onBillerReady += (state) => {
+				Debug.Log("done initializing unibill: " + state);
+			};
+			Unibiller.Initialise();
+			
+			UnityEngine.Advertisements.Advertisement.Initialize("79857", true);
+			
+			#if UNITY_IOS
 			Social.localUser.Authenticate((success) =>
 			{
-				Debug.Log("authenticated game center");
+				Debug.Log("done authenticating game center: " + success);
 			});
+			#endif
 		}
-		#endif
+
 	}
 	
 
@@ -280,6 +289,38 @@ public class Game : MonoBehaviour
 				});
 			}
 		});
+		
+		removeAds.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				if (!Unibiller.Initialised)
+				{
+			//todo: error msg or initiate purchase on complete
+					Unibiller.Initialise();
+				}
+				else if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0)
+				{
+					Unibiller.initiatePurchase(NO_ADS_ID);
+				}
+			}
+		});
+		
+		restorePurchases.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				if (!Unibiller.Initialised)
+				{
+				//todo: error msg or restore purchase on complete
+					Unibiller.Initialise();
+				}
+				else
+				{
+					Unibiller.restoreTransactions();
+				}
+			}
+		});
 	}
 	
 	void SetScore()
@@ -324,10 +365,10 @@ public class Game : MonoBehaviour
 	IEnumerator ShowAdAndBringInUI(float delay)
 	{
 		gamesPlayedThisSession++;
-		if (gamesPlayedThisSession % 3 == 0 && Advertisement.IsReady())
+		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && UnityEngine.Advertisements.Advertisement.IsReady())
 		{
 			yield return new WaitForSeconds(delay);
-			Advertisement.Show(null, new ShowOptions {
+			UnityEngine.Advertisements.Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
 				resultCallback = result => {
 					BringInUI(0f);
 				}});

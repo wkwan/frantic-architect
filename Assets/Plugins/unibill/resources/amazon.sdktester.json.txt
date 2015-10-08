@@ -1,0 +1,1 @@
+{"com.voidupdate.franticarchitect.noads":{"itemType":"ENTITLED", "title":"No Ads", "description":"Remove the ads.", "price":0.99, "smallIconUrl":"http://example.com"}}

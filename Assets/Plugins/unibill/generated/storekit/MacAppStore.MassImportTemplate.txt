@@ -1,0 +1,2 @@
+SKU	Product ID	Reference Name	Type	Cleared For Sale	Wholesale Price Tier	Displayed Name	Description	Screenshot Path
+	com.voidupdate.franticarchitect.noads	No Ads	Non-Consumable	yes		No Ads	Remove the ads.	

@@ -1,0 +1,2 @@
+Product ID,Published State,Purchase Type,Auto Translate,Locale; Title; Description,Auto Fill Prices,Price
+com.voidupdate.franticarchitect.noads,published,managed_by_android,false,";No Ads;Remove the ads.",true,0
