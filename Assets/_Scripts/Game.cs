@@ -16,8 +16,18 @@ using UnityEngine.SocialPlatforms.GameCenter;
 public class Game : MonoBehaviour 
 {
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud";
+	
 	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
 	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
+	
+	const string A_10_ID = "com.voidupdate.franticarchitect.intern";
+	const string A_20_ID = "com.voidupdate.franticarchitect.junior";
+	const string A_30_ID = "com.voidupdate.franticarchitect.senior";
+	const string A_40_ID = "com.voidupdate.franticarchitect.manager";
+	const string A_50_ID = "com.voidupdate.franticarchitect.vicepresident";
+	const string A_60_ID = "com.voidupdate.franticarchitect.seniorvicepresident";
+	const string A_70_ID = "com.voidupdate.franticarchitect.chiefexecutiveofficer";
+	
 	
 	bool menuFinishedOpening = true;
 	public RectTransform menuPanel;
@@ -152,6 +162,7 @@ public class Game : MonoBehaviour
 			{
 				Debug.Log("done authenticating game center: " + success);
 			});
+			GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
 			#endif
 		}
 
@@ -271,6 +282,27 @@ public class Game : MonoBehaviour
 					Social.localUser.Authenticate((success) =>
 					{
 						GameCenterPlatform.ShowLeaderboardUI(LEADERBOARD_ID, UnityEngine.SocialPlatforms.TimeScope.AllTime);
+					});
+				}
+				#endif
+			}
+		});
+		
+		achievements.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				#if UNITY_IOS
+				if (Social.localUser.authenticated)
+				{
+					Social.ShowAchievementsUI();
+				}
+				else
+				{
+					Social.localUser.Authenticate((success) =>
+					{
+						Social.ShowAchievementsUI();
+						
 					});
 				}
 				#endif
@@ -428,6 +460,44 @@ public class Game : MonoBehaviour
 				PlayerPrefs.SetInt(BEST, curScore);
 				#if UNITY_IOS
 				PlayerPrefs.SetInt(BEST_SCORE_NOT_SAVED_TO_CLOUD, 0);
+				Social.LoadAchievements((achievements) =>
+				{
+					Debug.Log("num achievements:" + achievements.Length);
+					Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
+					foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
+					{
+						doneAchievements[achievement.id] = true;
+					}
+					if (curScore >= 10 && !doneAchievements.ContainsKey(A_10_ID))
+					{
+						Social.ReportProgress(A_10_ID, 100.0, null);
+					}
+					if (curScore >= 20 && !doneAchievements.ContainsKey(A_20_ID))
+					{
+						Social.ReportProgress(A_20_ID, 100.0, null);
+					}
+					if (curScore >= 30 && !doneAchievements.ContainsKey(A_30_ID))
+					{
+						Social.ReportProgress(A_30_ID, 100.0, null);
+					}
+					if (curScore >= 40 && !doneAchievements.ContainsKey(A_40_ID))
+					{
+						Social.ReportProgress(A_40_ID, 100.0, null);
+					}
+					if (curScore >= 50 && !doneAchievements.ContainsKey(A_50_ID))
+					{
+						Social.ReportProgress(A_50_ID, 100.0, null);
+					}
+					if (curScore >= 60 && !doneAchievements.ContainsKey(A_60_ID))
+					{
+						Social.ReportProgress(A_60_ID, 100.0, null);
+					}
+					if (curScore >= 70 && !doneAchievements.ContainsKey(A_70_ID))
+					{
+						Social.ReportProgress(A_70_ID, 100.0, null);
+					}
+
+				});
 				#endif
 			}
 			
