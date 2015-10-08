@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/np_webview_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/np_transparent"
+    android:gravity="right"
+    android:orientation="vertical"
+    android:paddingTop="1dp"
+    tools:ignore="ContentDescription" >
+
+    <LinearLayout
+        android:id="@+id/np_topbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_gravity="top"
+        android:background="@color/np_topbar_color"
+        android:contentDescription="TODO"
+        android:gravity="top"
+        android:showDividers="end"
+        tools:ignore="HardcodedText" >
+
+        <ImageButton
+            android:id="@+id/np_toolbar_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="TODO"
+            android:scaleType="fitCenter"
+            android:src="@drawable/np_webview_back_button_normal" />
+
+        <ImageButton
+            android:id="@+id/np_toolbar_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/np_webview_forward_button_normal" />
+
+        <ImageButton
+            android:id="@+id/np_toolbar_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/np_webview_reload_button_normal" />
+
+        <View
+            android:id="@+id/np_toolbar_top_spacer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.67"
+            android:contentDescription="TODO" />
+
+        <ImageButton
+            android:id="@+id/np_toolbar_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/np_webview_close_button_normal" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/np_webview_frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/np_transparent" >
+
+        <WebView
+            android:id="@+id/np_webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:background="@color/np_transparent" />
+
+        <ImageButton
+            android:id="@+id/np_webview_closebutton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right"
+            android:layout_margin="1dp"
+            android:adjustViewBounds="true"
+            android:background="@color/np_transparent"
+            android:baselineAlignBottom="false"
+            android:contentDescription="Used for closing the webview"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:src="@drawable/np_webview_close_button_normal"
+            tools:ignore="HardcodedText" />
+
+    </FrameLayout>
+
+</LinearLayout>

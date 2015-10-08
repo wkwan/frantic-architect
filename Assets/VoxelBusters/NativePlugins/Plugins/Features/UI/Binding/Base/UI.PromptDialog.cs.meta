@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 35c38fde3393e43d3866d9351aae4e15
+labels:
+- Alerts
+- NativeDialogs
+- Ui
+- Plugins
+- Dialog
+- Login
+- Message
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

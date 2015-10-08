@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f03854340af5b4f4cbc7e6baeba36524
+labels:
+- Addressbook
+- Native
+- Plugins
+- Contacts
+- Profile
+- Picture
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

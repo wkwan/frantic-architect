@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <!--For webview -->
+    <item name="np_topbar_color" type="color">#FF555555</item>
+    
+     <!-- Common  -->
+    <item name="np_transparent" type="color">#00000000</item>
+    <item name="np_semi_transparent" type="color">#AA000000</item>
+    
+</resources>

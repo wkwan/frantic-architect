@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">Native Plugins</string>
+    <string name="Loading">Loading, please wait.</string>
+
+    <string name="np_toolbar_back">Back</string>
+    <string name="np_toolbar_forward">Forward</string>
+    <string name="np_toolbar_reload">Reload</string>
+    <string name="np_toolbar_done">Done</string>
+    
+    <string name="gameservices_sign_in_failed">Sign in failed</string>
+    <string name="gameservices_app_misconfigured">App misconfigured</string>
+    <string name="gameservices_license_failed">License failed</string>
+
+</resources>

@@ -1,0 +1,52 @@
+1.1
+New Features:	
+	- Game Services feature: Game application will make use Game Center, Google Play Services in iOS, Android platforms respectively for Leaderboard, Achievement, Score reporting etc.
+
+Feature Request:
+	- Added repeat functionality for Notifications. (Request: ksolo)
+	- Added launch notifications support. (Request: notnotalan)
+
+Changes:
+	- [iOS] Notification payload format change.
+	- [Android] Small icon for notifications selectable from inspector. 
+	- [Android] Removed conflicts with other plugins regarding Billing interface.
+	- [Android] Cancel Notification, Local Notification bug fixes. Thanks Craig for reporting!
+	- [Android] Restore transaction state fix. Thanks notnotalan for reporting!
+	- [Android] Added support for billing items more than 20. Thanks notnotalan for reporting!
+
+Important: Delete package folders before updating.
+
+1.04
+	- *Delete* package folders before updating.
+	- Auto Android Manifest Generator based on features used within the game. Just Make sure you have the required flags in your root manifest file. Check sample file for flags.
+	- Added options in NPSettings/Application settings to select features which are required.
+	- Twitter framework inclusion is selective i.e, from now its added only if required on iOS.
+	- Fixed random crashes related to feature initialisation.
+	- Fixed issues related to il2cpp iOS builds. Now works well on 4.6.7 and 5.1.1 .Thanks to Brian Su for reporting.
+	- Fixed issues related to singleton component. Thanks to Brian Su for reporting.
+	- Fixed other minor issues.
+
+
+1.03
+	- *Delete* package folders before updating.
+	- [Android] Added new features for Notification customization. Now can configure LargeIcon and Custom Sound
+	- [Android] Pick Image and Camera access fixes on Android 4.4 versions. Thanks to *Kino Lam* for reporting!
+	- [Android] Network Data Usage fix. Thanks to *Sauli Kiviranta* for reporting!
+	- [Android] Now for sharing files, it picks external directory if available. Else it will use content provider.
+	- Changed from hostName to IPAddress in NetoworkConnectivity.
+	- Added method to initialize Network Connectivity instead of making default call.
+	- Some Minor bug fixes.
+	
+
+1.02
+	- *Delete* package folders before updating.
+	- Critical issue fix in notifications
+	- Added RemoteNotificationDemo 
+
+1.01
+	- [Android] Fileprovider authority issue bug fix
+	- Moved reusable code to Common folder. Now it won’t conflict with future VB plugins.
+	- Added PASTE_BUILD_IDENTIFIER_HERE to replace with project’s build identifier in AndroidManifest.xml of native_plugins_lib. Now .apk won’t install until identifier is updated which is intended for easy integration and functionality.
+
+1.0
+	- Initial Release

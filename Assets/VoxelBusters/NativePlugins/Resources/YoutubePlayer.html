@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>  
+<head>
+	<style>
+	body { margin: 0; width:100%%; height:100%%; }
+	html { width:100%%; height:100%%; }
+	 	.embed-container {
+ 		position: relative;
+		padding-bottom: 56.25%%; /* 16/9 ratio */
+		height: 0;
+		width: 100%% !important;
+		height: 100%% !important;
+ 		overflow: hidden;
+        vertical-align: middle;
+ 	}
+ 	.embed-container iframe,
+ 	.embed-container object,
+ 	.embed-container embed {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: table;
+		vertical-align: middle;
+	}
+	</style>
+</head>
+<body bgcolor="#00000">
+	<div class='embed-container'>
+		<div id='player'></div>
+	<div>
+	<script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+      
+	// This function creates an <iframe> (and YouTube player)
+	var player;
+	function onYouTubeIframeAPIReady() {
+		player = new YT.Player('player', {
+	  	videoId: '%@',
+	  	origin: 'https://www.google.com',
+	  	playerVars: {'enablejsapi': 1, 'playsinline':1 },
+	  	events: {
+			'onReady': onPlayerReady,
+			'onStateChange': onPlayerStateChange,
+			'onError': onPlayerError
+	  	}
+	  	});
+	}
+
+	// API will call this function when the video player is ready.
+	function onPlayerReady(event) {
+		var ytPlayer = event.target;
+
+		// Set window size
+		ytPlayer.setSize(window.innerWidth, window.innerHeight);
+
+		// Set volume to max and start playing
+		ytPlayer.setVolume(100);
+
+		// Send callback
+		window.location = 'embeddedplayer://OnReady';
+	}
+
+	// API calls this function when the player's state changes.
+	function onPlayerStateChange(event) {
+		var state;
+		
+		if (event.data == YT.PlayerState.ENDED)
+			state	= 'ENDED';
+		else if (event.data == YT.PlayerState.PLAYING)
+			state	= 'PLAYING';
+		else if (event.data == YT.PlayerState.PAUSED)
+			state	= 'PAUSED';
+		else if (event.data == YT.PlayerState.BUFFERING)
+			state	= 'BUFFERING';
+		else if (event.data == YT.PlayerState.CUED)
+			state	= 'CUED';
+		else
+			 state	= 'UNSTARTED';
+			 
+		// Send callback
+		window.location = 'embeddedplayer://OnStateChange?value=' + state; 
+	}
+
+	// API calls this function when the player's throws error
+	function onPlayerError(event) {
+		var error;
+		
+		if (event.data == 2)
+			error	= 'INVALID_PARAMETER';
+		else if (event.data == 5)
+			error	= 'CANT_BE_PLAYED';
+		else if (event.data == 100)
+			error	= 'VIDEO_NOT_FOUND';
+		else
+			error	= 'PLAY_NOT_ALLOWED';		
+	
+		// Send callback
+		window.location = 'embeddedplayer://OnError?value=' + error; 
+	}
+	
+	function playVideo ()
+	{
+		if (player)
+			player.playVideo();
+	}
+
+	function stopPlayer () {
+		if (player)
+			player.stopVideo();
+	}
+
+	function pausePlayer () {
+		if (player)
+			player.pauseVideo();
+	}
+
+	window.onresize = function() {
+		if (player)
+			player.setSize(window.innerWidth, window.innerHeight);
+	}
+	</script>
+</body>
+</html>

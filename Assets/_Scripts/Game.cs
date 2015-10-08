@@ -267,6 +267,19 @@ public class Game : MonoBehaviour
 				#endif
 			}
 		});
+		
+		share.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				Debug.Log("share clicked");
+				NPBinding.UI.SetPopoverPointAtLastTouchPosition();
+				NPBinding.Sharing.ShareTextMessageOnSocialNetwork("test", (result) =>
+				{
+					Debug.Log("share result " + result);
+				});
+			}
+		});
 	}
 	
 	void SetScore()

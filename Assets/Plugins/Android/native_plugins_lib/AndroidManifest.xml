@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--AUTO GENERATED MANIFEST FILE FROM AndroidManifestGenerator. DONT MODIFY HERE.-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.voxelbusters.androidnativeplugin" android:versionCode="1" android:versionName="1.0">
+  <application>
+    <!--Sharing-->
+    <activity android:name="com.voxelbusters.nativeplugins.features.sharing.SharingActivity" android:theme="@style/FloatingActivityTheme" />
+    <!--UI  : Generic helper activity for launching Dialogs-->
+    <activity android:name="com.voxelbusters.nativeplugins.features.ui.UiActivity" android:theme="@style/FloatingActivityTheme" />
+    <!--Custom File Provider. Sharing from internal folders  "com.voxelbusters.nativeplugins.extensions.FileProviderExtended"-->
+    <provider android:name="com.voxelbusters.nativeplugins.extensions.FileProviderExtended" android:authorities="com.voidupdate.franticarchitect.fileprovider" android:exported="false" android:grantUriPermissions="true">
+      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/nativeplugins_file_paths" />
+    </provider>
+  </application>
+  <!--Permissions-->
+  <!--Address Book-->
+  <uses-permission android:name="android.permission.READ_CONTACTS" />
+  <!--Network Connectivity-->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <!--Required for internet access-->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <!--For Saving to external directory - Save to Gallery Feature in MediaLibrary / Used for sharing-->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+</manifest>

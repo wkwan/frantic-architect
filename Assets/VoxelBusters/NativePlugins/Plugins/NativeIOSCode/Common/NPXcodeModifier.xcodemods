@@ -1,0 +1,27 @@
+{
+    "group": "NativePlugins",
+    "libs": [],
+    "frameworks": [
+        "AddressBook.framework",
+        "MessageUI.framework",
+        "StoreKit.framework",
+		"Security.framework",
+		"MobileCoreServices.framework"
+    ],
+    "headerpaths": [],
+    "files": [],
+    "folders": [
+        "Source:-fno-objc-arc",
+        "Assets",
+        "External/Code/Reachability:-fno-objc-arc",
+        "External/Code/VerificationController:-fobjc-arc"
+    ],
+    "excludes": [
+        "^.*.meta$",
+        "^.*.mdown$",
+        "^.*.pdf$",
+        "^.*.DS_Store"
+    ],
+    "compiler_flags": [],
+    "linker_flags": []
+}
