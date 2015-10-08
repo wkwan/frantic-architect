@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingRight="3dp"
+                android:paddingBottom="3dp">
+
+    <View
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="-15dp"
+        android:layout_marginStart="-15dp"
+        android:background="@drawable/unityads_icon_speaker_triangle"
+        android:layout_centerVertical="true"/>
+
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="15dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/unityads_icon_speaker_base" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="18dp"
+        android:layout_marginStart="18dp"
+        android:id="@+id/unityAdsMuteButtonSpeakerWaves"
+        android:visibility="visible">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="10dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/unityads_icon_speaker_waves" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="15dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/unityads_icon_speaker_waves" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/unityads_icon_speaker_waves" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:text="@string/mute_character"
+        android:textColor="#FFFFFFFF"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:layout_marginLeft="18dp"
+        android:layout_marginStart="18dp"
+        android:id="@+id/unityAdsMuteButtonSpeakerX"/>
+
+</RelativeLayout>

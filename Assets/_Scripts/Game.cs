@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Advertisements;
 
 //todo: make shadow fade out with tower
 //todo: maybe steady the start cube when the level is complete so we don't die from the acceleration caused by the now disappeared cubes
@@ -110,6 +111,8 @@ public class Game : MonoBehaviour
 	
 	bool menuOpened = false;
 	
+	static int gamesPlayedThisSession = 0;
+	
 	
 	void Shuffle<T>(List<T> list)  
 	{  
@@ -121,6 +124,14 @@ public class Game : MonoBehaviour
 			list[k] = list[n];  
 			list[n] = value;  
 		}  
+	}
+	
+	void Awake()
+	{
+		if (!Advertisement.isInitialized)
+		{
+			Advertisement.Initialize("79857", true);
+		}
 	}
 	
 
@@ -263,6 +274,33 @@ public class Game : MonoBehaviour
 		InvokeRepeating("SwapHover", switchNeighbourSpeed, switchNeighbourSpeed);
 	}
 	
+	IEnumerator ShowAdAndBringInUI(float delay)
+	{
+		gamesPlayedThisSession++;
+		if (gamesPlayedThisSession % 3 == 0 && Advertisement.IsReady())
+		{
+			yield return new WaitForSeconds(delay);
+			Advertisement.Show(null, new ShowOptions {
+				resultCallback = result => {
+					BringInUI(0f);
+				}});
+		}
+		else
+		{
+			BringInUI(0.5f);
+		}
+	}
+	
+	void BringInUI(float delay)
+	{
+		RectTransform retryRect = retry.GetComponent<RectTransform>();
+		RectTransform shareRect = share.GetComponent<RectTransform>();
+		RectTransform menuRect = menu.GetComponent<RectTransform>();
+		retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay);
+	}
+	
 	void GameOverCheck(bool dead)
 	{
 		if (dead)
@@ -278,13 +316,13 @@ public class Game : MonoBehaviour
 				Destroy(cubeToPlace.gameObject);
 			}
 			
-			RectTransform retryRect = retry.GetComponent<RectTransform>();
-			RectTransform shareRect = share.GetComponent<RectTransform>();
-			RectTransform menuRect = menu.GetComponent<RectTransform>();
-			retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
-			shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
-			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
-			
+			//RectTransform retryRect = retry.GetComponent<RectTransform>();
+			//RectTransform shareRect = share.GetComponent<RectTransform>();
+			//RectTransform menuRect = menu.GetComponent<RectTransform>();
+			//retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
+			//shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
+			//menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
+			StartCoroutine(ShowAdAndBringInUI(1f));
 			
 			if (curScore > best)
 			{
