@@ -321,6 +321,17 @@ public class Game : MonoBehaviour
 				}
 			}
 		});
+		
+		rate.onClick.AddListener(() =>
+		{
+			if (!isReloading && isDead)
+			{
+				#if UNITY_IOS
+			//todo: real url
+				Application.OpenURL("itms-apps:itunes.apple.com/app/hasty-enemies/id1000237335");
+				#endif
+			}
+		});
 	}
 	
 	void SetScore()
