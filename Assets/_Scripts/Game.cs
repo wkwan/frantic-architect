@@ -456,7 +456,7 @@ public class Game : MonoBehaviour
 			//menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
 			StartCoroutine(ShowAdAndBringInUI(1f));
 			
-			
+			#if UNITY_IOS
 			Social.LoadAchievements((achievements) =>
 			{
 				Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
@@ -509,6 +509,7 @@ public class Game : MonoBehaviour
 				}
 				
 			});
+			#endif
 			
 			if (curScore > best)
 			{
@@ -569,17 +570,40 @@ public class Game : MonoBehaviour
 			cubeToPlace.SetParent(cubes[curPos.Key()]);
 		}
 		
-		curNeighbourInd++;
-		if (curNeighbourInd >= validNeighbours.Count)
-		{
-			curNeighbourInd = 0;
-		}
-		
+		//METHOD 1: same order each loop
+		//curNeighbourInd++;
+		//if (curNeighbourInd >= validNeighbours.Count)
+		//{
+		//	curNeighbourInd = 0;
+		//}
 		//todo: ArgumentOutOfRangeException: Argument is out of range.
 		//occurred when tower falling but staying alive in a rotated position
 		//Parameter name: index
 		//System.Collections.Generic.List`1[Pos].get_Item (Int32 index) (at /Users/builduser/buildslave/mono-runtime-and-classlibs/build/mcs/class/corlib/System.Collections.Generic/List.cs:633)
 		//Game.SwapHover () (at Assets/_Scripts/Game.cs:175)
+		
+		//METHOD 2: random each time
+		//int oldCurInd = curNeighbourInd;
+		//curNeighbourInd = Random.Range(0, validNeighbours.Count - 1); 
+		////we don't want to get the same ind consecutively
+		//if (curNeighbourInd >= oldCurInd) curNeighbourInd++;
+		
+		//METHOD 3: shuffle every time we reach the end of the list, make sure we don't get two consecutive
+		Pos oldPos = validNeighbours[curNeighbourInd];
+		curNeighbourInd++;
+		if (curNeighbourInd >= validNeighbours.Count)
+		{
+			Shuffle(validNeighbours);
+			curNeighbourInd = 0;
+			Pos zeroIndPos = validNeighbours[curNeighbourInd];
+			if (zeroIndPos.Key() == oldPos.Key())
+			{
+				int switchZeroWithInd = Random.Range(1, validNeighbours.Count);
+				validNeighbours[0] = validNeighbours[switchZeroWithInd];
+				validNeighbours[switchZeroWithInd] = zeroIndPos;
+			}
+		}
+
 
 		cubeToPlace.localEulerAngles = Vector3.zero;
 		cubeToPlace.localPosition = validNeighbours[curNeighbourInd].Sub(curPos);
