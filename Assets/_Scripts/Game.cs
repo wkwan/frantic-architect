@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.Advertisements;
 #if UNITY_IOS
 using UnityEngine.SocialPlatforms.GameCenter;
+using UnityEngine.SocialPlatforms;
 #endif
 
 //todo: make shadow fade out with tower
@@ -162,7 +163,7 @@ public class Game : MonoBehaviour
 			{
 				Debug.Log("done authenticating game center: " + success);
 			});
-			GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
+			//GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
 			#endif
 		}
 
@@ -455,49 +456,65 @@ public class Game : MonoBehaviour
 			//menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
 			StartCoroutine(ShowAdAndBringInUI(1f));
 			
+			
+			Social.LoadAchievements((achievements) =>
+			{
+				Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
+				foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
+				{
+					doneAchievements[achievement.id] = true;
+				}
+				if (curScore >= 10 && !doneAchievements.ContainsKey(A_10_ID))
+				{
+						//Social.ReportProgress(A_10_ID, 100.0, null);
+					GKAchievementReporter.ReportAchievement(A_10_ID, 100f, true);
+					
+				}
+				if (curScore >= 20 && !doneAchievements.ContainsKey(A_20_ID))
+				{
+						//Social.ReportProgress(A_20_ID, 100.0, null);
+					GKAchievementReporter.ReportAchievement(A_20_ID, 100f, true);
+					
+				}
+				if (curScore >= 30 && !doneAchievements.ContainsKey(A_30_ID))
+				{
+						//Social.ReportProgress(A_30_ID, 100.0, null);
+					GKAchievementReporter.ReportAchievement(A_30_ID, 100f, true);
+					
+				}
+				if (curScore >= 40 && !doneAchievements.ContainsKey(A_40_ID))
+				{
+						//Social.ReportProgress(A_40_ID, 100.0, null);
+					GKAchievementReporter.ReportAchievement(A_40_ID, 100f, true);
+					
+				}
+				if (curScore >= 50 && !doneAchievements.ContainsKey(A_50_ID))
+				{
+						//Social.ReportProgress(A_50_ID, 100.0, null);
+					GKAchievementReporter.ReportAchievement(A_50_ID, 100f, true);
+					
+				}
+				if (curScore >= 60 && !doneAchievements.ContainsKey(A_60_ID))
+				{
+						//Social.ReportProgress(A_60_ID, 100.0, null);
+					GKAchievementReporter.ReportAchievement(A_60_ID, 100f, true);
+					
+				}
+				
+				if (curScore >= 70 && !doneAchievements.ContainsKey(A_70_ID))
+				{
+						//Social.ReportProgress(A_70_ID, 100.0, null);
+					GKAchievementReporter.ReportAchievement(A_70_ID, 100f, true);
+					
+				}
+				
+			});
+			
 			if (curScore > best)
 			{
 				PlayerPrefs.SetInt(BEST, curScore);
 				#if UNITY_IOS
 				PlayerPrefs.SetInt(BEST_SCORE_NOT_SAVED_TO_CLOUD, 0);
-				Social.LoadAchievements((achievements) =>
-				{
-					Debug.Log("num achievements:" + achievements.Length);
-					Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
-					foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
-					{
-						doneAchievements[achievement.id] = true;
-					}
-					if (curScore >= 10 && !doneAchievements.ContainsKey(A_10_ID))
-					{
-						Social.ReportProgress(A_10_ID, 100.0, null);
-					}
-					if (curScore >= 20 && !doneAchievements.ContainsKey(A_20_ID))
-					{
-						Social.ReportProgress(A_20_ID, 100.0, null);
-					}
-					if (curScore >= 30 && !doneAchievements.ContainsKey(A_30_ID))
-					{
-						Social.ReportProgress(A_30_ID, 100.0, null);
-					}
-					if (curScore >= 40 && !doneAchievements.ContainsKey(A_40_ID))
-					{
-						Social.ReportProgress(A_40_ID, 100.0, null);
-					}
-					if (curScore >= 50 && !doneAchievements.ContainsKey(A_50_ID))
-					{
-						Social.ReportProgress(A_50_ID, 100.0, null);
-					}
-					if (curScore >= 60 && !doneAchievements.ContainsKey(A_60_ID))
-					{
-						Social.ReportProgress(A_60_ID, 100.0, null);
-					}
-					if (curScore >= 70 && !doneAchievements.ContainsKey(A_70_ID))
-					{
-						Social.ReportProgress(A_70_ID, 100.0, null);
-					}
-
-				});
 				#endif
 			}
 			
