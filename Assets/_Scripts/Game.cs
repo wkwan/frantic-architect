@@ -69,6 +69,7 @@ public class Game : MonoBehaviour
 	
 	int curScore = 0;
 	public AudioSource[] placeSounds;
+	public AudioSource[] scoreSounds;
 	public AudioSource levelUpSound;
 	public AudioSource dieSound;
 	public Material white;
@@ -720,7 +721,7 @@ public class Game : MonoBehaviour
 					} 
 					else
 					{
-						if (!muted) placeSounds[Random.Range(0, placeSounds.Length)].Play();
+						if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
 						FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					}
 					SetScore();
