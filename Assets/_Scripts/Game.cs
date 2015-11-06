@@ -600,6 +600,8 @@ public class Game : MonoBehaviour
 			if (zeroIndPos.Key() == oldPos.Key())
 			{
 				int switchZeroWithInd = Random.Range(1, validNeighbours.Count);
+				//TODO: argument out of range
+				
 				validNeighbours[0] = validNeighbours[switchZeroWithInd];
 				validNeighbours[switchZeroWithInd] = zeroIndPos;
 			}
