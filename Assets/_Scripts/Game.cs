@@ -124,8 +124,8 @@ public class Game : MonoBehaviour
 	
 	bool isDead = false;
 	
-	//const int LEVEL_HEIGHT = 10;
-	const int LEVEL_HEIGHT = 2;
+	const int LEVEL_HEIGHT = 10;
+	//const int LEVEL_HEIGHT = 2;
 	
 	int target = LEVEL_HEIGHT;
 	
@@ -234,21 +234,22 @@ public class Game : MonoBehaviour
 			{
 				if (!menuOpened)
 				{
-					menuFinishedOpening = false;
-					menuPanel.gameObject.SetActive(true);
-					float rightStartPos = 600f;
-					float duration = 1f;
-					statsRect.DOAnchorPos(new Vector2(1000f, statsRect.anchoredPosition.y), duration).From();
-					leaderboardRect.DOAnchorPos(new Vector2(1000f, leaderboardRect.anchoredPosition.y), duration).From().SetDelay(0.1f);
-					achievementsRect.DOAnchorPos(new Vector2(1000f, achievementsRect.anchoredPosition.y), duration).From().SetDelay(0.2f);
-					removeAdsRect.DOAnchorPos(new Vector2(1000f, removeAdsRect.anchoredPosition.y), duration).From().SetDelay(0.3f);
-					restorePurchasesRect.DOAnchorPos(new Vector2(1000f, restorePurchasesRect.anchoredPosition.y), duration).From().SetDelay(0.4f);
-					rateRect.DOAnchorPos(new Vector2(1000f, rateRect.anchoredPosition.y), duration).From().SetDelay(0.5f);
-					menuText.text = "Close";
-					muteRect.DOAnchorPos(new Vector2(1000f, muteRect.anchoredPosition.y), duration).From().SetDelay(0.6f).OnComplete(() =>
-					{
-						menuFinishedOpening = true;
-					});
+					StartCoroutine(OpenMenu());
+					//menuFinishedOpening = false;
+					//menuPanel.gameObject.SetActive(true);
+					//float rightStartPos = 600f;
+					//float duration = 1f;
+					//statsRect.DOAnchorPos(new Vector2(1000f, statsRect.anchoredPosition.y), duration).From();
+					//leaderboardRect.DOAnchorPos(new Vector2(1000f, leaderboardRect.anchoredPosition.y), duration).From().SetDelay(0.1f);
+					//achievementsRect.DOAnchorPos(new Vector2(1000f, achievementsRect.anchoredPosition.y), duration).From().SetDelay(0.2f);
+					//removeAdsRect.DOAnchorPos(new Vector2(1000f, removeAdsRect.anchoredPosition.y), duration).From().SetDelay(0.3f);
+					//restorePurchasesRect.DOAnchorPos(new Vector2(1000f, restorePurchasesRect.anchoredPosition.y), duration).From().SetDelay(0.4f);
+					//muteRect.DOAnchorPos(new Vector2(1000f, muteRect.anchoredPosition.y), duration).From().SetDelay(0.5f);
+					//menuText.text = "Close";
+					//rateRect.DOAnchorPos(new Vector2(1000f, rateRect.anchoredPosition.y), duration).From().SetDelay(0.6f).OnComplete(() =>
+					//{
+					//	menuFinishedOpening = true;
+					//});
 				}
 				else
 				{
@@ -370,6 +371,43 @@ public class Game : MonoBehaviour
 				Application.OpenURL("itms-apps:itunes.apple.com/app/hasty-enemies/id1000237335");
 				#endif
 			}
+		});
+	}
+	
+	IEnumerator OpenMenu()
+	{
+		menuFinishedOpening = false;
+		menuText.text = "Close";
+		
+		float outsideX = 1000f;
+		
+		statsRect.anchoredPosition = new Vector2(outsideX, statsRect.anchoredPosition.y);
+		leaderboardRect.anchoredPosition = new Vector2(outsideX, leaderboardRect.anchoredPosition.y);
+		achievementsRect.anchoredPosition = new Vector2(outsideX, achievementsRect.anchoredPosition.y);
+		removeAdsRect.anchoredPosition = new Vector2(outsideX, removeAdsRect.anchoredPosition.y);
+		restorePurchasesRect.anchoredPosition = new Vector2(outsideX, restorePurchasesRect.anchoredPosition.y);
+		muteRect.anchoredPosition = new Vector2(outsideX, muteRect.anchoredPosition.y);
+		rateRect.anchoredPosition = new Vector2(outsideX, rateRect.anchoredPosition.y);
+		
+		menuPanel.gameObject.SetActive(true);
+		float rightStartPos = 600f;
+		float duration = 1f;
+		
+		statsRect.DOAnchorPos(new Vector2(0, statsRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		leaderboardRect.DOAnchorPos(new Vector2(0, leaderboardRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		achievementsRect.DOAnchorPos(new Vector2(0, achievementsRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		removeAdsRect.DOAnchorPos(new Vector2(0, removeAdsRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		restorePurchasesRect.DOAnchorPos(new Vector2(0, restorePurchasesRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		muteRect.DOAnchorPos(new Vector2(0, muteRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		rateRect.DOAnchorPos(new Vector2(0, rateRect.anchoredPosition.y), duration).OnComplete(() =>
+		{
+			menuFinishedOpening = true;
 		});
 	}
 	
