@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
 	const string A_70_ID = "com.voidupdate.franticarchitect.chiefexecutiveofficer";
 	
 	
-	bool menuFinishedOpening = true;
+	bool menuFinishedTransitioning = true;
 	public RectTransform menuPanel;
 	public Button stats;
 	public Button leaderboard;
@@ -230,31 +230,15 @@ public class Game : MonoBehaviour
 		
 		menu.onClick.AddListener(() =>
 		{
-			if (!isReloading && isDead && menuFinishedOpening)
+			if (!isReloading && isDead && menuFinishedTransitioning)
 			{
 				if (!menuOpened)
 				{
 					StartCoroutine(OpenMenu());
-					//menuFinishedOpening = false;
-					//menuPanel.gameObject.SetActive(true);
-					//float rightStartPos = 600f;
-					//float duration = 1f;
-					//statsRect.DOAnchorPos(new Vector2(1000f, statsRect.anchoredPosition.y), duration).From();
-					//leaderboardRect.DOAnchorPos(new Vector2(1000f, leaderboardRect.anchoredPosition.y), duration).From().SetDelay(0.1f);
-					//achievementsRect.DOAnchorPos(new Vector2(1000f, achievementsRect.anchoredPosition.y), duration).From().SetDelay(0.2f);
-					//removeAdsRect.DOAnchorPos(new Vector2(1000f, removeAdsRect.anchoredPosition.y), duration).From().SetDelay(0.3f);
-					//restorePurchasesRect.DOAnchorPos(new Vector2(1000f, restorePurchasesRect.anchoredPosition.y), duration).From().SetDelay(0.4f);
-					//muteRect.DOAnchorPos(new Vector2(1000f, muteRect.anchoredPosition.y), duration).From().SetDelay(0.5f);
-					//menuText.text = "Close";
-					//rateRect.DOAnchorPos(new Vector2(1000f, rateRect.anchoredPosition.y), duration).From().SetDelay(0.6f).OnComplete(() =>
-					//{
-					//	menuFinishedOpening = true;
-					//});
 				}
 				else
 				{
-					menuPanel.gameObject.SetActive(false);
-					menuText.text = "Menu";
+					StartCoroutine(CloseMenu());
 				}
 				menuOpened = !menuOpened;
 			}
@@ -374,12 +358,14 @@ public class Game : MonoBehaviour
 		});
 	}
 	
+	//for some reason, coroutine seems less laggy than DOTween's SetDelay
 	IEnumerator OpenMenu()
 	{
-		menuFinishedOpening = false;
+		menuFinishedTransitioning = false;
 		menuText.text = "Close";
 		
-		float outsideX = 1000f;
+		float outsideX = 500f;
+		float duration = 0.7f;
 		
 		statsRect.anchoredPosition = new Vector2(outsideX, statsRect.anchoredPosition.y);
 		leaderboardRect.anchoredPosition = new Vector2(outsideX, leaderboardRect.anchoredPosition.y);
@@ -390,9 +376,7 @@ public class Game : MonoBehaviour
 		rateRect.anchoredPosition = new Vector2(outsideX, rateRect.anchoredPosition.y);
 		
 		menuPanel.gameObject.SetActive(true);
-		float rightStartPos = 600f;
-		float duration = 1f;
-		
+		yield return new WaitForSeconds(0.05f); //to prevent the statsRect from suddenly appearing on the screen
 		statsRect.DOAnchorPos(new Vector2(0, statsRect.anchoredPosition.y), duration);
 		yield return new WaitForSeconds(0.1f);
 		leaderboardRect.DOAnchorPos(new Vector2(0, leaderboardRect.anchoredPosition.y), duration);
@@ -407,8 +391,39 @@ public class Game : MonoBehaviour
 		yield return new WaitForSeconds(0.1f);
 		rateRect.DOAnchorPos(new Vector2(0, rateRect.anchoredPosition.y), duration).OnComplete(() =>
 		{
-			menuFinishedOpening = true;
+			menuFinishedTransitioning = true;
 		});
+	}
+	
+	IEnumerator CloseMenu()
+	{
+		menuFinishedTransitioning = false;
+		menuText.text = "Menu";
+		
+		float outsideX = 500f;
+		float duration = 0.7f;
+		
+		rateRect.DOAnchorPos(new Vector2(outsideX, rateRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		muteRect.DOAnchorPos(new Vector2(outsideX, muteRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		restorePurchasesRect.DOAnchorPos(new Vector2(outsideX, restorePurchasesRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		removeAdsRect.DOAnchorPos(new Vector2(outsideX, removeAdsRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		achievementsRect.DOAnchorPos(new Vector2(outsideX, achievementsRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		leaderboardRect.DOAnchorPos(new Vector2(outsideX, leaderboardRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		
+		statsRect.DOAnchorPos(new Vector2(outsideX, statsRect.anchoredPosition.y), duration).OnComplete(() =>
+		{
+			menuFinishedTransitioning = true;
+			menuPanel.gameObject.SetActive(false);
+			
+		});
+
+
 	}
 	
 	void SetScore()
