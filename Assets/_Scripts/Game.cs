@@ -16,6 +16,7 @@ using UnityEngine.SocialPlatforms;
 
 public class Game : MonoBehaviour 
 {
+	public ParticleSystem smokePf;
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud";
 	
 	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
@@ -152,6 +153,7 @@ public class Game : MonoBehaviour
 	
 	void Awake()
 	{
+		
 		if (!initialized)
 		{
 			initialized = true;
@@ -664,7 +666,6 @@ public class Game : MonoBehaviour
 		
 		float TOWER_RED_DURATION = 0.3f;
 		float startTime = Time.time;
-		Debug.Log(cubeKeysToRemove.Count);
 		while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
 		{
 			foreach (string cubeKey in cubeKeysToRemove)
@@ -722,6 +723,15 @@ public class Game : MonoBehaviour
 		SetupNewHover();
 	}
 	
+	IEnumerator DisableSmoke(ParticleSystem smoke)
+	{
+		yield return new WaitForSeconds(0.2f);
+		smoke.Stop();
+		yield return new WaitForSeconds(2f);
+		smoke.gameObject.SetActive(false);
+		Destroy(smoke.gameObject);
+	}
+	
 	void Update () 
 	{
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
@@ -731,6 +741,9 @@ public class Game : MonoBehaviour
 			{
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
+				ParticleSystem smoke = Instantiate<ParticleSystem>(smokePf);
+				smoke.transform.position = cubeToPlace.transform.position;
+				StartCoroutine(DisableSmoke(smoke));
 				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
 				cubeToPlace.GetComponent<BoxCollider>().enabled = true;
 				tower.WakeUp();
