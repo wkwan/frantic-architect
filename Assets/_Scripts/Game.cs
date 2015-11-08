@@ -75,6 +75,7 @@ public class Game : MonoBehaviour
 	public Material white;
 	public Material blue;
 	public Material red;
+	public Material redShiny;
 	public Image transition; 
 	public TextMeshProUGUI title;
 	public TextMeshProUGUI score;
@@ -122,7 +123,9 @@ public class Game : MonoBehaviour
 	
 	bool isDead = false;
 	
-	const int LEVEL_HEIGHT = 10;
+	//const int LEVEL_HEIGHT = 10;
+	const int LEVEL_HEIGHT = 2;
+	
 	int target = LEVEL_HEIGHT;
 	
 	float visibleRetryX = 90f;
@@ -626,6 +629,23 @@ public class Game : MonoBehaviour
 		cubeMesh.material = white;
 	}
 	
+	IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, Material startMaterial, Material endMaterial, float duration)
+	{
+		float startTime = Time.time;
+		
+		while (Time.time < startTime + duration - Time.deltaTime/2)
+		{
+			foreach (string cubeKey in cubeKeysToRemove)
+			{	
+				MeshRenderer cubeMesh = cubes[cubeKey].GetComponent<MeshRenderer>();
+				cubeMesh.material = startMaterial;
+				cubeMesh.material.Lerp(startMaterial, endMaterial, (Time.time - startTime) / duration);
+			}
+			
+			yield return new WaitForEndOfFrame();
+		}
+	}
+	
 	IEnumerator FadeOutTower()
 	{
 		goingToNextStage = true;
@@ -642,8 +662,9 @@ public class Game : MonoBehaviour
 			}
 		}
 		
-		float TOWER_RED_DURATION = 0.9f;
+		float TOWER_RED_DURATION = 0.3f;
 		float startTime = Time.time;
+		Debug.Log(cubeKeysToRemove.Count);
 		while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
 		{
 			foreach (string cubeKey in cubeKeysToRemove)
@@ -658,9 +679,19 @@ public class Game : MonoBehaviour
 			yield return new WaitForEndOfFrame();
 		}
 		
-		yield return new WaitForSeconds(0.3f);
+		float TOWER_FLASH_SHINY_DURATION = 0.22f;
+		float TOWER_FLASH_RED_DURATION = 0.14f;
 		
-		float TOWER_FADE_DURATION = 0.9f;
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, red, redShiny, TOWER_FLASH_SHINY_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, redShiny, red, TOWER_FLASH_RED_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, red, redShiny, TOWER_FLASH_SHINY_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, redShiny, red, TOWER_FLASH_RED_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, red, redShiny, TOWER_FLASH_SHINY_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, redShiny, red, TOWER_FLASH_RED_DURATION));
+		
+		yield return new WaitForSeconds(0.22f);
+		
+		float TOWER_FADE_DURATION = 0.65f;
 		startTime = Time.time;
 		while (Time.time < startTime + TOWER_FADE_DURATION - Time.deltaTime/2)
 		{
@@ -696,7 +727,7 @@ public class Game : MonoBehaviour
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
-			if (Input.GetMouseButtonDown(0) && cubeToPlace != null && !goingToNextStage)
+			if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) && cubeToPlace != null && !goingToNextStage)
 			{
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
