@@ -824,6 +824,10 @@ public class Game : MonoBehaviour
 						FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					}
 					SetScore();
+					DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 50f, 0.15f).SetEase(Ease.OutQuad).OnComplete(() =>
+					{
+						DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 45f, 0.15f).SetEase(Ease.InQuad);
+					});
 				}
 				else
 				{
