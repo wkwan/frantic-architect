@@ -162,8 +162,6 @@ public class Game : MonoBehaviour
 			};
 			Unibiller.Initialise();
 			
-			UnityEngine.Advertisements.Advertisement.Initialize("79857", true);
-			
 			#if UNITY_IOS
 			Social.localUser.Authenticate((success) =>
 			{
@@ -468,10 +466,10 @@ public class Game : MonoBehaviour
 	IEnumerator ShowAdAndBringInUI(float delay)
 	{
 		gamesPlayedThisSession++;
-		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && UnityEngine.Advertisements.Advertisement.IsReady())
+		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && Advertisement.IsReady())
 		{
 			yield return new WaitForSeconds(delay);
-			UnityEngine.Advertisements.Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
+			Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
 				resultCallback = result => {
 					BringInUI(0f);
 				}});
