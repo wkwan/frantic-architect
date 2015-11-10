@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.Advertisements;
+//using UnityEngine.Advertisements;
 #if UNITY_IOS
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.SocialPlatforms;
@@ -466,18 +466,21 @@ public class Game : MonoBehaviour
 	IEnumerator ShowAdAndBringInUI(float delay)
 	{
 		gamesPlayedThisSession++;
-		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && Advertisement.IsReady())
-		{
-			yield return new WaitForSeconds(delay);
-			Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
-				resultCallback = result => {
-					BringInUI(0f);
-				}});
-		}
-		else
-		{
-			BringInUI(0.5f);
-		}
+		//TODO: put ads back in once Unity bug is fixed
+		//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && Advertisement.IsReady())
+		//{
+		//	yield return new WaitForSeconds(delay);
+		//	Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
+		//		resultCallback = result => {
+		//			BringInUI(0f);
+		//		}});
+		//}
+		//else
+		//{
+		//	BringInUI(0.5f);
+		//}
+		BringInUI(0.5f);
+		yield break;
 	}
 	
 	void BringInUI(float delay)
@@ -514,58 +517,62 @@ public class Game : MonoBehaviour
 			StartCoroutine(ShowAdAndBringInUI(1f));
 			
 			#if UNITY_IOS
-			Social.LoadAchievements((achievements) =>
+			if (Social.localUser.authenticated)
 			{
-				Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
-				foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
+				Social.LoadAchievements((achievements) =>
 				{
-					doneAchievements[achievement.id] = true;
-				}
-				if (curScore >= 10 && !doneAchievements.ContainsKey(A_10_ID))
-				{
+					Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
+					foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
+					{
+						doneAchievements[achievement.id] = true;
+					}
+					if (curScore >= 10 && !doneAchievements.ContainsKey(A_10_ID))
+					{
 						//Social.ReportProgress(A_10_ID, 100.0, null);
-					GKAchievementReporter.ReportAchievement(A_10_ID, 100f, true);
-					
-				}
-				if (curScore >= 20 && !doneAchievements.ContainsKey(A_20_ID))
-				{
+						GKAchievementReporter.ReportAchievement(A_10_ID, 100f, true);
+						
+					}
+					if (curScore >= 20 && !doneAchievements.ContainsKey(A_20_ID))
+					{
 						//Social.ReportProgress(A_20_ID, 100.0, null);
-					GKAchievementReporter.ReportAchievement(A_20_ID, 100f, true);
-					
-				}
-				if (curScore >= 30 && !doneAchievements.ContainsKey(A_30_ID))
-				{
+						GKAchievementReporter.ReportAchievement(A_20_ID, 100f, true);
+						
+					}
+					if (curScore >= 30 && !doneAchievements.ContainsKey(A_30_ID))
+					{
 						//Social.ReportProgress(A_30_ID, 100.0, null);
-					GKAchievementReporter.ReportAchievement(A_30_ID, 100f, true);
-					
-				}
-				if (curScore >= 40 && !doneAchievements.ContainsKey(A_40_ID))
-				{
+						GKAchievementReporter.ReportAchievement(A_30_ID, 100f, true);
+						
+					}
+					if (curScore >= 40 && !doneAchievements.ContainsKey(A_40_ID))
+					{
 						//Social.ReportProgress(A_40_ID, 100.0, null);
-					GKAchievementReporter.ReportAchievement(A_40_ID, 100f, true);
-					
-				}
-				if (curScore >= 50 && !doneAchievements.ContainsKey(A_50_ID))
-				{
+						GKAchievementReporter.ReportAchievement(A_40_ID, 100f, true);
+						
+					}
+					if (curScore >= 50 && !doneAchievements.ContainsKey(A_50_ID))
+					{
 						//Social.ReportProgress(A_50_ID, 100.0, null);
-					GKAchievementReporter.ReportAchievement(A_50_ID, 100f, true);
-					
-				}
-				if (curScore >= 60 && !doneAchievements.ContainsKey(A_60_ID))
-				{
+						GKAchievementReporter.ReportAchievement(A_50_ID, 100f, true);
+						
+					}
+					if (curScore >= 60 && !doneAchievements.ContainsKey(A_60_ID))
+					{
 						//Social.ReportProgress(A_60_ID, 100.0, null);
-					GKAchievementReporter.ReportAchievement(A_60_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_60_ID, 100f, true);
+						
+					}
 					
-				}
-				
-				if (curScore >= 70 && !doneAchievements.ContainsKey(A_70_ID))
-				{
+					if (curScore >= 70 && !doneAchievements.ContainsKey(A_70_ID))
+					{
 						//Social.ReportProgress(A_70_ID, 100.0, null);
-					GKAchievementReporter.ReportAchievement(A_70_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_70_ID, 100f, true);
+						
+					}
 					
-				}
-				
-			});
+				});
+			}
+
 			#endif
 			
 			if (curScore > best)
