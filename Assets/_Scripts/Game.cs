@@ -16,6 +16,12 @@ using UnityEngine.SocialPlatforms;
 
 public class Game : MonoBehaviour 
 {
+	public Material mainMaterial;
+	public Color albedoBlue;
+	public Color emissionBlue;
+	
+	//public Material white;
+	
 	public ParticleSystem smokePf;
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud";
 	
@@ -73,7 +79,7 @@ public class Game : MonoBehaviour
 	public AudioSource[] scoreSounds;
 	public AudioSource levelUpSound;
 	public AudioSource dieSound;
-	public Material white;
+
 	public Material blue;
 	public Material red;
 	public Material redShiny;
@@ -124,8 +130,8 @@ public class Game : MonoBehaviour
 	
 	bool isDead = false;
 	
-	const int LEVEL_HEIGHT = 10;
-	//const int LEVEL_HEIGHT = 2;
+	//const int LEVEL_HEIGHT = 10;
+	const int LEVEL_HEIGHT = 2;
 	
 	int target = LEVEL_HEIGHT;
 	
@@ -175,8 +181,10 @@ public class Game : MonoBehaviour
 	
 
 	// Use this for initialization
-	void Start () 
+	void Start() 
 	{
+		startCube.GetComponent<MeshRenderer>().material = mainMaterial;
+		
 		muted = PlayerPrefs.HasKey(MUTED);
 		if (muted)
 		{
@@ -630,6 +638,10 @@ public class Game : MonoBehaviour
 		if (cubeToPlace == null)
 		{
 			cubeToPlace = Instantiate<Transform>(cubePf);
+			//MeshRenderer newMesh = cubeToPlace.GetComponent<MeshRenderer>();
+			//newMesh.material = mainMaterial;
+			//newMesh.material.color = emissionBlue;
+			
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
 			cubeToPlace.SetParent(cubes[curPos.Key()]);
 		}
@@ -679,14 +691,16 @@ public class Game : MonoBehaviour
 	{
 		float animTime = 0;
 		MeshRenderer cubeMesh = cubeToPlace.GetComponent<MeshRenderer>();
+		//float totalDuration = 0.3f;
 		float totalDuration = 0.3f;
+		
 		while (animTime < totalDuration)
 		{
-			cubeMesh.material.Lerp(blue, white, animTime / totalDuration);
+			cubeMesh.material.Lerp(blue, mainMaterial, animTime / totalDuration);
 			yield return new WaitForEndOfFrame();
 			animTime += Time.deltaTime;
 		}
-		cubeMesh.material = white;
+		cubeMesh.material = mainMaterial;
 	}
 	
 	IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, Material startMaterial, Material endMaterial, float duration)
@@ -723,12 +737,13 @@ public class Game : MonoBehaviour
 		}
 		
 		float TOWER_RED_DURATION = 0.3f;
+		
 		float startTime = Time.time;
 		while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
 		{
 			foreach (string cubeKey in cubeKeysToRemove)
 			{
-				Material startMaterial = white;
+				Material startMaterial = mainMaterial;
 				if (cubeToPlace.GetInstanceID() == cubes[cubeKey].GetInstanceID())
 				{
 					startMaterial = blue;
