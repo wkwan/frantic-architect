@@ -16,7 +16,15 @@ using UnityEngine.SocialPlatforms;
 
 public class Game : MonoBehaviour 
 {
-	public Material mainMaterial;
+	public MeshRenderer cubeMatExample;
+	public Material[] materials;
+	
+	public Button changeCubeLeft;
+	public Button changeCubeRight;
+	
+	static int curMat;
+	const string CUR_MAT = "curMat";
+	
 	public Color albedoBlue;
 	public Color emissionBlue;
 	
@@ -175,6 +183,10 @@ public class Game : MonoBehaviour
 			});
 			//GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
 			#endif
+			
+			
+			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
+			
 		}
 
 	}
@@ -183,7 +195,32 @@ public class Game : MonoBehaviour
 	// Use this for initialization
 	void Start() 
 	{
-		startCube.GetComponent<MeshRenderer>().material = mainMaterial;
+
+		startCube.GetComponent<MeshRenderer>().material = materials[curMat];
+		cubeMatExample.material = materials[curMat];
+		
+		changeCubeLeft.onClick.AddListener(() =>
+		{
+			curMat--;
+			if (curMat < 0)
+			{
+				curMat = materials.Length - 1;
+			}
+			cubeMatExample.material = materials[curMat];
+			PlayerPrefs.SetInt(CUR_MAT, curMat);
+		});
+		
+		changeCubeRight.onClick.AddListener(() =>
+		{
+			curMat++;
+			if (curMat >= materials.Length)
+			{
+				curMat = 0;
+			}
+			cubeMatExample.material = materials[curMat];
+			PlayerPrefs.SetInt(CUR_MAT, curMat);
+			
+		});
 		
 		muted = PlayerPrefs.HasKey(MUTED);
 		if (muted)
@@ -496,9 +533,20 @@ public class Game : MonoBehaviour
 		RectTransform retryRect = retry.GetComponent<RectTransform>();
 		RectTransform shareRect = share.GetComponent<RectTransform>();
 		RectTransform menuRect = menu.GetComponent<RectTransform>();
+		RectTransform changeCubeLeftRect = changeCubeLeft.GetComponent<RectTransform>();
+		RectTransform changeCubeRightRect = changeCubeRight.GetComponent<RectTransform>();
+		
 		retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		
 		menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay);
+		
+		cubeMatExample.gameObject.SetActive(true);
+		cubeMatExample.material.color = new Color(1, 1, 1, 0);
+		cubeMatExample.material.DOFade(1f, 1f).SetDelay(0.6f);
+		
+		changeCubeLeftRect.DOAnchorPos(new Vector2(-48, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		changeCubeRightRect.DOAnchorPos(new Vector2(48, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 	}
 	
 	void GameOverCheck(bool dead)
@@ -696,11 +744,11 @@ public class Game : MonoBehaviour
 		
 		while (animTime < totalDuration)
 		{
-			cubeMesh.material.Lerp(blue, mainMaterial, animTime / totalDuration);
+			cubeMesh.material.Lerp(blue, materials[curMat], animTime / totalDuration);
 			yield return new WaitForEndOfFrame();
 			animTime += Time.deltaTime;
 		}
-		cubeMesh.material = mainMaterial;
+		cubeMesh.material = materials[curMat];
 	}
 	
 	IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, Material startMaterial, Material endMaterial, float duration)
@@ -743,7 +791,7 @@ public class Game : MonoBehaviour
 		{
 			foreach (string cubeKey in cubeKeysToRemove)
 			{
-				Material startMaterial = mainMaterial;
+				Material startMaterial = materials[curMat];
 				if (cubeToPlace.GetInstanceID() == cubes[cubeKey].GetInstanceID())
 				{
 					startMaterial = blue;
