@@ -686,9 +686,13 @@ public class Game : MonoBehaviour
 		if (cubeToPlace == null)
 		{
 			cubeToPlace = Instantiate<Transform>(cubePf);
-			//MeshRenderer newMesh = cubeToPlace.GetComponent<MeshRenderer>();
-			//newMesh.material = mainMaterial;
-			//newMesh.material.color = emissionBlue;
+			MeshRenderer newMesh = cubeToPlace.GetComponent<MeshRenderer>();
+			newMesh.material = materials[curMat];
+			newMesh.material.color = albedoBlue;
+			newMesh.material.SetColor("_EmissionColor", emissionBlue);
+			DynamicGI.UpdateMaterials(newMesh.GetComponent<Renderer>());
+			DynamicGI.UpdateEnvironment();
+			
 			
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
 			cubeToPlace.SetParent(cubes[curPos.Key()]);
