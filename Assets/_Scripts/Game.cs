@@ -524,7 +524,7 @@ public class Game : MonoBehaviour
 		//{
 		//	BringInUI(0.5f);
 		//}
-		BringInUI(0.5f);
+		BringInUI(0.5f);    
 		yield break;
 	}
 	
@@ -545,8 +545,8 @@ public class Game : MonoBehaviour
 		cubeMatExample.material.color = new Color(1, 1, 1, 0);
 		cubeMatExample.material.DOFade(1f, 1f).SetDelay(0.6f);
 		
-		changeCubeLeftRect.DOAnchorPos(new Vector2(-48, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-		changeCubeRightRect.DOAnchorPos(new Vector2(48, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		changeCubeLeftRect.DOAnchorPos(new Vector2(-60, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		changeCubeRightRect.DOAnchorPos(new Vector2(60, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 	}
 	
 	void GameOverCheck(bool dead)
