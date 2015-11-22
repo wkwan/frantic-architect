@@ -28,6 +28,13 @@ public class Game : MonoBehaviour
 	public Color albedoBlue;
 	public Color emissionBlue;
 	
+	public Color albedoRed;
+	public Color albedoRedShiny;
+	public Color emissionRedShiny;
+	
+	Material redMat;
+	Material redShinyMat;
+	
 	//public Material white;
 	
 	public ParticleSystem smokePf;
@@ -88,9 +95,9 @@ public class Game : MonoBehaviour
 	public AudioSource levelUpSound;
 	public AudioSource dieSound;
 
-	public Material blue;
-	public Material red;
-	public Material redShiny;
+	//public Material blue;
+	//public Material red;
+	//public Material redShiny;
 	public Image transition; 
 	public TextMeshProUGUI title;
 	public TextMeshProUGUI score;
@@ -191,6 +198,17 @@ public class Game : MonoBehaviour
 
 	}
 	
+	void MakeMaterials()
+	{
+		redMat = Instantiate<Material>(cubeMatExample.material);
+		redMat.color = albedoRed;
+		
+		redShinyMat = Instantiate<Material>(cubeMatExample.material);
+		redShinyMat.color = albedoRedShiny;
+		redShinyMat.EnableKeyword("_EMISSION");
+		redShinyMat.SetColor("_Emission", emissionRedShiny);
+	}
+	
 
 	// Use this for initialization
 	void Start() 
@@ -198,6 +216,7 @@ public class Game : MonoBehaviour
 
 		startCube.GetComponent<MeshRenderer>().material = materials[curMat];
 		cubeMatExample.material = materials[curMat];
+		MakeMaterials();
 		
 		changeCubeLeft.onClick.AddListener(() =>
 		{
@@ -208,6 +227,7 @@ public class Game : MonoBehaviour
 			}
 			cubeMatExample.material = materials[curMat];
 			PlayerPrefs.SetInt(CUR_MAT, curMat);
+			MakeMaterials();
 		});
 		
 		changeCubeRight.onClick.AddListener(() =>
@@ -219,6 +239,7 @@ public class Game : MonoBehaviour
 			}
 			cubeMatExample.material = materials[curMat];
 			PlayerPrefs.SetInt(CUR_MAT, curMat);
+			MakeMaterials();
 			
 		});
 		
@@ -689,10 +710,8 @@ public class Game : MonoBehaviour
 			MeshRenderer newMesh = cubeToPlace.GetComponent<MeshRenderer>();
 			newMesh.material = materials[curMat];
 			newMesh.material.color = albedoBlue;
+			newMesh.material.EnableKeyword("_EMISSION");
 			newMesh.material.SetColor("_EmissionColor", emissionBlue);
-			DynamicGI.UpdateMaterials(newMesh.GetComponent<Renderer>());
-			DynamicGI.UpdateEnvironment();
-			
 			
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
 			cubeToPlace.SetParent(cubes[curPos.Key()]);
@@ -743,19 +762,18 @@ public class Game : MonoBehaviour
 	{
 		float animTime = 0;
 		MeshRenderer cubeMesh = cubeToPlace.GetComponent<MeshRenderer>();
-		//float totalDuration = 0.3f;
 		float totalDuration = 0.3f;
 		
 		while (animTime < totalDuration)
 		{
-			cubeMesh.material.Lerp(blue, materials[curMat], animTime / totalDuration);
+			cubeMesh.material.Lerp(cubeMesh.material, materials[curMat], animTime / totalDuration);
 			yield return new WaitForEndOfFrame();
-			animTime += Time.deltaTime;
+			animTime += Time.deltaTime;   
 		}
 		cubeMesh.material = materials[curMat];
 	}
 	
-	IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, Material startMaterial, Material endMaterial, float duration)
+	IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, bool toShiny, float duration)
 	{
 		float startTime = Time.time;
 		
@@ -764,8 +782,15 @@ public class Game : MonoBehaviour
 			foreach (string cubeKey in cubeKeysToRemove)
 			{	
 				MeshRenderer cubeMesh = cubes[cubeKey].GetComponent<MeshRenderer>();
-				cubeMesh.material = startMaterial;
-				cubeMesh.material.Lerp(startMaterial, endMaterial, (Time.time - startTime) / duration);
+				float lerpFraction = (Time.time - startTime)/duration;
+				if (toShiny)
+				{
+					cubeMesh.material.Lerp(redMat, redShinyMat, lerpFraction);
+				}
+				else
+				{
+					cubeMesh.material.Lerp(redShinyMat, redMat, lerpFraction); 
+				}
 			}
 			
 			yield return new WaitForEndOfFrame();
@@ -791,40 +816,39 @@ public class Game : MonoBehaviour
 		float TOWER_RED_DURATION = 0.3f;
 		
 		float startTime = Time.time;
+		
 		while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
 		{
 			foreach (string cubeKey in cubeKeysToRemove)
 			{
-				Material startMaterial = materials[curMat];
-				if (cubeToPlace.GetInstanceID() == cubes[cubeKey].GetInstanceID())
-				{
-					startMaterial = blue;
-				}
-				cubes[cubeKey].GetComponent<MeshRenderer>().material.Lerp(startMaterial, red, (Time.time - startTime) / TOWER_RED_DURATION);
+				MeshRenderer curRenderer = cubes[cubeKey].GetComponent<MeshRenderer>();
+				curRenderer.material.Lerp(curRenderer.material, redMat, (Time.time - startTime)/TOWER_RED_DURATION);
 			}
 			yield return new WaitForEndOfFrame();
 		}
 		
+		
 		float TOWER_FLASH_SHINY_DURATION = 0.22f;
 		float TOWER_FLASH_RED_DURATION = 0.14f;
 		
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, red, redShiny, TOWER_FLASH_SHINY_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, redShiny, red, TOWER_FLASH_RED_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, red, redShiny, TOWER_FLASH_SHINY_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, redShiny, red, TOWER_FLASH_RED_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, red, redShiny, TOWER_FLASH_SHINY_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, redShiny, red, TOWER_FLASH_RED_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
+		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
 		
 		yield return new WaitForSeconds(0.22f);
 		
 		float TOWER_FADE_DURATION = 0.65f;
 		startTime = Time.time;
+		
 		while (Time.time < startTime + TOWER_FADE_DURATION - Time.deltaTime/2)
 		{
 			float newAlpha = Mathf.Lerp(1, 0, (Time.time - startTime) / TOWER_FADE_DURATION);
 			foreach (string cubeKey in cubeKeysToRemove)
 			{
-				cubes[cubeKey].GetComponent<MeshRenderer>().material.color = new Color(red.color.r, red.color.g, red.color.b, newAlpha);
+				cubes[cubeKey].GetComponent<MeshRenderer>().material.color = new Color(albedoRed.r, albedoRed.g, albedoRed.b, newAlpha);
 			}
 			yield return new WaitForEndOfFrame();
 		}
