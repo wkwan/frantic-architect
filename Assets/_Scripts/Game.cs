@@ -145,10 +145,11 @@ public class Game : MonoBehaviour
 	
 	bool isDead = false;
 	
+	const int ZOOM_HEIGHT = 10;
 	//const int LEVEL_HEIGHT = 10;
-	const int LEVEL_HEIGHT = 2;
+	//const int LEVEL_HEIGHT = 2;
 	
-	int target = LEVEL_HEIGHT;
+	//int target = LEVEL_HEIGHT;
 	
 	float visibleRetryX = 90f;
 	float visibleMenuY = 280f;
@@ -492,7 +493,8 @@ public class Game : MonoBehaviour
 	
 	void SetScore()
 	{
-		score.text = curScore.ToString() + " / " + target.ToString();
+		//score.text = curScore.ToString() + " / " + target.ToString();
+		score.text = curScore.ToString();
 	}
 	
 	
@@ -800,7 +802,6 @@ public class Game : MonoBehaviour
 	IEnumerator FadeOutTower()
 	{
 		goingToNextStage = true;
-		//yield return new WaitForSeconds(0.7f);
 		tower.isKinematic = true;
 		
 		List<string> cubeKeysToRemove = new List<string>();
@@ -905,20 +906,23 @@ public class Game : MonoBehaviour
 					topY = curPos.y;
 					curScore++;
 
-					if (topY % LEVEL_HEIGHT == 0)
-					{
-						if (!muted) levelUpSound.Play();
-						target += LEVEL_HEIGHT;
-						topY = 0;
-						curPos = new Pos(0, 0, 0);
-						switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
-						StartCoroutine(FadeOutTower());
-					} 
-					else
-					{
-						if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
-						FadeCubeToPlaceAndSetupHover(cubeToPlace);
-					}
+					//if (topY % LEVEL_HEIGHT == 0)
+					//{
+					//	if (!muted) levelUpSound.Play();
+					//	target += LEVEL_HEIGHT;
+					//	topY = 0;
+					//	curPos = new Pos(0, 0, 0);
+					//	switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
+					//	StartCoroutine(FadeOutTower());
+					//} 
+					//else
+					//{
+					//	if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
+					//	FadeCubeToPlaceAndSetupHover(cubeToPlace);
+					//}
+					if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
+					FadeCubeToPlaceAndSetupHover(cubeToPlace);
+					
 					SetScore();
 					DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 50f, 0.15f).SetEase(Ease.OutQuad).OnComplete(() =>
 					{
