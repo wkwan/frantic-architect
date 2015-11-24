@@ -16,6 +16,11 @@ using UnityEngine.SocialPlatforms;
 
 public class Game : MonoBehaviour 
 {
+	float origCamZ;
+	public GameObject ground;
+	
+	public Camera cam;
+	
 	public MeshRenderer cubeMatExample;
 	public Material[] materials;
 	
@@ -116,8 +121,7 @@ public class Game : MonoBehaviour
 	List<Pos> validNeighbours = new List<Pos>();
 	int curNeighbourInd;
 	
-	//float switchNeighbourSpeed = 0.2f;
-	//float switchNeighbourSpeed = 0.1f; //testing
+	//float switchNeighbourSpeed = 0.7f; //testing
 	float switchNeighbourSpeed = 0.35f;
 	
 	
@@ -184,7 +188,7 @@ public class Game : MonoBehaviour
 			};
 			Unibiller.Initialise();
 			
-			#if UNITY_IOS
+			#if UNITY_IOS && !UNITY_EDITOR
 			Social.localUser.Authenticate((success) =>
 			{
 				Debug.Log("done authenticating game center: " + success);
@@ -214,7 +218,7 @@ public class Game : MonoBehaviour
 	// Use this for initialization
 	void Start() 
 	{
-
+		origCamZ = cam.transform.localPosition.z;
 		startCube.GetComponent<MeshRenderer>().material = materials[curMat];
 		cubeMatExample.material = materials[curMat];
 		MakeMaterials();
@@ -329,7 +333,7 @@ public class Game : MonoBehaviour
 		{
 			if (!isReloading && isDead)
 			{
-				#if UNITY_IOS
+				#if UNITY_IOS && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
 					GameCenterPlatform.ShowLeaderboardUI(LEADERBOARD_ID, UnityEngine.SocialPlatforms.TimeScope.AllTime);
@@ -349,7 +353,7 @@ public class Game : MonoBehaviour
 		{
 			if (!isReloading && isDead)
 			{
-				#if UNITY_IOS
+				#if UNITY_IOS && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
 					Social.ShowAchievementsUI();
@@ -415,7 +419,7 @@ public class Game : MonoBehaviour
 		{
 			if (!isReloading && isDead)
 			{
-				#if UNITY_IOS
+				#if UNITY_IOS && !UNITY_EDITOR
 			//todo: real url
 				Application.OpenURL("itms-apps:itunes.apple.com/app/hasty-enemies/id1000237335");
 				#endif
@@ -595,7 +599,7 @@ public class Game : MonoBehaviour
 			//menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
 			StartCoroutine(ShowAdAndBringInUI(1f));
 			
-			#if UNITY_IOS
+			#if UNITY_IOS && !UNITY_EDITOR
 			if (Social.localUser.authenticated)
 			{
 				Social.LoadAchievements((achievements) =>
@@ -657,7 +661,7 @@ public class Game : MonoBehaviour
 			if (curScore > best)
 			{
 				PlayerPrefs.SetInt(BEST, curScore);
-				#if UNITY_IOS
+				#if UNITY_IOS && !UNITY_EDITOR
 				PlayerPrefs.SetInt(BEST_SCORE_NOT_SAVED_TO_CLOUD, 0);
 				#endif
 			}
@@ -666,7 +670,7 @@ public class Game : MonoBehaviour
 			int newBest = System.Math.Max(curScore, best);
 			statBest.text = "Best Score: " + newBest.ToString();
 			
-			#if UNITY_IOS
+			#if UNITY_IOS && !UNITY_EDITOR 
 			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
 			{
 				Debug.Log("should submit score");
@@ -882,6 +886,30 @@ public class Game : MonoBehaviour
 		Destroy(smoke.gameObject);
 	}
 	
+	IEnumerator ZoomOut()
+	{
+		float startTime = Time.time;
+		float DURATION = 0.3f;
+		float startY = cam.transform.localPosition.y;
+		float startZ = cam.transform.localPosition.z;
+		
+		//TODO: find the exact fraction of orig so that the top of the tower is aligned at the same spot
+		float endY = startY - (origCamZ*(0.73f))/2f;
+		float endZ = startZ + (origCamZ*(0.73f));
+		Debug.Log(startZ + " " + origCamZ);
+		while (Time.time < startTime + DURATION - Time.deltaTime/2)
+		{
+			float lerpFraction = (Time.time - startTime) / DURATION;
+			cam.transform.localPosition = new Vector3(
+				cam.transform.localPosition.x, 
+				Mathf.Lerp(startY, endY, lerpFraction),
+				Mathf.Lerp(startZ, endZ, lerpFraction));
+			yield return new WaitForEndOfFrame();
+		}
+		
+		cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, endY, endZ);
+	}
+	
 	void Update () 
 	{
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
@@ -920,8 +948,17 @@ public class Game : MonoBehaviour
 					//	if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
 					//	FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					//}
+					if (topY % ZOOM_HEIGHT == 0)
+					{
+						switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
+						StartCoroutine(ZoomOut());
+					}
+					
+					
 					if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
+					
 					FadeCubeToPlaceAndSetupHover(cubeToPlace);
+					
 					
 					SetScore();
 					DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 50f, 0.15f).SetEase(Ease.OutQuad).OnComplete(() =>
