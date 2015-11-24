@@ -149,7 +149,7 @@ public class Game : MonoBehaviour
 	
 	bool isDead = false;
 	
-	const int ZOOM_HEIGHT = 10;
+	const int ZOOM_HEIGHT = 1;
 	//const int LEVEL_HEIGHT = 10;
 	//const int LEVEL_HEIGHT = 2;
 	
@@ -896,6 +896,8 @@ public class Game : MonoBehaviour
 		//TODO: find the exact fraction of orig so that the top of the tower is aligned at the same spot
 		float endY = startY - (origCamZ*(0.73f))/2f;
 		float endZ = startZ + (origCamZ*(0.73f));
+		
+		//TODO: zooming out too far shows edges of background gradient
 		while (Time.time < startTime + DURATION - Time.deltaTime/2)
 		{
 			float lerpFraction = (Time.time - startTime) / DURATION;
