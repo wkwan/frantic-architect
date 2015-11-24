@@ -889,7 +889,7 @@ public class Game : MonoBehaviour
 	IEnumerator ZoomOut()
 	{
 		float startTime = Time.time;
-		float DURATION = 0.3f;
+		float DURATION = 2.7f;
 		float startY = cam.transform.localPosition.y;
 		float startZ = cam.transform.localPosition.z;
 		
@@ -903,8 +903,8 @@ public class Game : MonoBehaviour
 			float lerpFraction = (Time.time - startTime) / DURATION;
 			cam.transform.localPosition = new Vector3(
 				cam.transform.localPosition.x, 
-				Mathf.Lerp(startY, endY, lerpFraction),
-				Mathf.Lerp(startZ, endZ, lerpFraction));
+				Mathf.SmoothStep(startY, endY, lerpFraction),
+				Mathf.SmoothStep(startZ, endZ, lerpFraction));
 			yield return new WaitForEndOfFrame();
 		}
 		
@@ -954,10 +954,16 @@ public class Game : MonoBehaviour
 						target += ZOOM_HEIGHT;
 						switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
 						StartCoroutine(ZoomOut());
+						if (!muted) levelUpSound.Play();
 					}
-					
-					
+					//else
+					//{
+						
+					//}
 					if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
+					
+					
+					
 					
 					FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					
