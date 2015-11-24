@@ -149,7 +149,7 @@ public class Game : MonoBehaviour
 	
 	bool isDead = false;
 	
-	const int ZOOM_HEIGHT = 1;
+	const int ZOOM_HEIGHT = 10;
 	//const int LEVEL_HEIGHT = 10;
 	//const int LEVEL_HEIGHT = 2;
 	
