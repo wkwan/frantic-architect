@@ -153,7 +153,7 @@ public class Game : MonoBehaviour
 	//const int LEVEL_HEIGHT = 10;
 	//const int LEVEL_HEIGHT = 2;
 	
-	//int target = LEVEL_HEIGHT;
+	int target = ZOOM_HEIGHT;
 	
 	float visibleRetryX = 90f;
 	float visibleMenuY = 280f;
@@ -497,8 +497,8 @@ public class Game : MonoBehaviour
 	
 	void SetScore()
 	{
-		//score.text = curScore.ToString() + " / " + target.ToString();
-		score.text = curScore.ToString();
+		score.text = curScore.ToString() + " / " + target.ToString();
+		//score.text = curScore.ToString();
 	}
 	
 	
@@ -896,7 +896,6 @@ public class Game : MonoBehaviour
 		//TODO: find the exact fraction of orig so that the top of the tower is aligned at the same spot
 		float endY = startY - (origCamZ*(0.73f))/2f;
 		float endZ = startZ + (origCamZ*(0.73f));
-		Debug.Log(startZ + " " + origCamZ);
 		while (Time.time < startTime + DURATION - Time.deltaTime/2)
 		{
 			float lerpFraction = (Time.time - startTime) / DURATION;
@@ -950,6 +949,7 @@ public class Game : MonoBehaviour
 					//}
 					if (topY % ZOOM_HEIGHT == 0)
 					{
+						target += ZOOM_HEIGHT;
 						switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
 						StartCoroutine(ZoomOut());
 					}
