@@ -749,11 +749,9 @@ public class Game : MonoBehaviour
 			Shuffle(validNeighbours);
 			curNeighbourInd = 0;
 			Pos zeroIndPos = validNeighbours[curNeighbourInd];
-			if (zeroIndPos.Key() == oldPos.Key())
+			if (zeroIndPos.Key() == oldPos.Key() && validNeighbours.Count > 1)
 			{
 				int switchZeroWithInd = Random.Range(1, validNeighbours.Count);
-				//TODO: argument out of range
-				
 				validNeighbours[0] = validNeighbours[switchZeroWithInd];
 				validNeighbours[switchZeroWithInd] = zeroIndPos;
 			}
