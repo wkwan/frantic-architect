@@ -155,7 +155,7 @@ public class Game : MonoBehaviour
 	
 	int target = ZOOM_HEIGHT;
 	
-	float visibleRetryX = 90f;
+	float visibleRetryX = 50f;
 	float visibleMenuY = 280f;
 	
 	bool menuOpened = false;
@@ -572,8 +572,8 @@ public class Game : MonoBehaviour
 		cubeMatExample.material.color = new Color(1, 1, 1, 0);
 		cubeMatExample.material.DOFade(1f, 1f).SetDelay(0.6f);
 		
-		changeCubeLeftRect.DOAnchorPos(new Vector2(-60, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-		changeCubeRightRect.DOAnchorPos(new Vector2(60, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		changeCubeLeftRect.DOAnchorPos(new Vector2(-visibleRetryX * 1.2f, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		changeCubeRightRect.DOAnchorPos(new Vector2(visibleRetryX * 1.2f, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 	}
 	
 	void GameOverCheck(bool dead)

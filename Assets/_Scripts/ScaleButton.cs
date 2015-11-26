@@ -16,7 +16,7 @@ public class ScaleButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		buttonRect.DOScale(new Vector3(1.2f, 1.2f, 1.2f), scaleDuration);
+		buttonRect.DOScale(new Vector3(1.1f, 1.1f, 1.1f), scaleDuration);
 	}
 	
 	
