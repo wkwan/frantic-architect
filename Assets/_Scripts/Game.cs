@@ -16,6 +16,9 @@ using UnityEngine.SocialPlatforms;
 
 public class Game : MonoBehaviour 
 {
+	
+	Texture2D sharePic;
+	
 	float origCamZ;
 	public GameObject ground;
 	
@@ -218,6 +221,8 @@ public class Game : MonoBehaviour
 	// Use this for initialization
 	void Start() 
 	{
+		sharePic = new Texture2D(Screen.width, Screen.height);
+		
 		origCamZ = cam.transform.localPosition.z;
 		startCube.GetComponent<MeshRenderer>().material = materials[curMat];
 		cubeMatExample.material = materials[curMat];
@@ -376,7 +381,13 @@ public class Game : MonoBehaviour
 			{
 				Debug.Log("share clicked");
 				NPBinding.UI.SetPopoverPointAtLastTouchPosition();
-				NPBinding.Sharing.ShareTextMessageOnSocialNetwork("test", (result) =>
+				//NPBinding.Sharing.ShareTextMessageOnSocialNetwork("test", (result) =>
+				//{
+				//	Debug.Log("share result " + result);
+				//});
+				
+
+				NPBinding.Sharing.ShareImage("OMG! I scored " + curScore.ToString() + " on #FranticArchitect", sharePic, null, (result) =>
 				{
 					Debug.Log("share result " + result);
 				});
@@ -535,8 +546,11 @@ public class Game : MonoBehaviour
 		InvokeRepeating("SwapHover", switchNeighbourSpeed, switchNeighbourSpeed);
 	}
 	
-	IEnumerator ShowAdAndBringInUI(float delay)
+	IEnumerator ShowAdTakeScreenCapAndBringInUI(float delay)
 	{
+		yield return new WaitForEndOfFrame(); //need to do this in order to call readpixels;
+		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+		sharePic.Apply();
 		gamesPlayedThisSession++;
 		//TODO: put ads back in once Unity bug is fixed
 		//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && Advertisement.IsReady())
@@ -597,7 +611,9 @@ public class Game : MonoBehaviour
 			//retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
 			//shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
 			//menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
-			StartCoroutine(ShowAdAndBringInUI(1f));
+			
+	
+			StartCoroutine(ShowAdTakeScreenCapAndBringInUI(1f));
 			
 			#if UNITY_IOS && !UNITY_EDITOR
 			if (Social.localUser.authenticated)
