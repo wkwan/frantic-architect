@@ -16,6 +16,10 @@ using UnityEngine.SocialPlatforms;
 
 public class Game : MonoBehaviour 
 {
+	public TextMeshProUGUI totalCubesScore;
+	public TextMeshProUGUI bestTotalCubesScore;
+	const string BEST_TOTAL_CUBES_SCORE = "bestTotalCubesScore";
+	int bestTotalCubes;
 	
 	Texture2D sharePic;
 	
@@ -293,6 +297,10 @@ public class Game : MonoBehaviour
 		bestScore.text = "Best: " + best;
 		SetScore();
 		
+		bestTotalCubes= PlayerPrefs.GetInt(BEST_TOTAL_CUBES_SCORE, 0);
+		bestTotalCubesScore.text = "Best: " + bestTotalCubes;
+		
+		
 		retry.onClick.AddListener(() =>
 		{
 			if (!isReloading && isDead)
@@ -387,7 +395,7 @@ public class Game : MonoBehaviour
 				//});
 				
 
-				NPBinding.Sharing.ShareImage("OMG! I scored " + curScore.ToString() + " on #FranticArchitect", sharePic, null, (result) =>
+				NPBinding.Sharing.ShareImage("OMG! I scored " + curScore.ToString() + " on #FranticArchitect.", sharePic, null, (result) =>
 				{
 					Debug.Log("share result " + result);
 				});
@@ -682,6 +690,11 @@ public class Game : MonoBehaviour
 				#endif
 			}
 			
+			if (cubes.Count > bestTotalCubes)
+			{
+				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SCORE, cubes.Count);
+			}
+			
 			
 			int newBest = System.Math.Max(curScore, best);
 			statBest.text = "Best Score: " + newBest.ToString();
@@ -942,7 +955,9 @@ public class Game : MonoBehaviour
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
 				curPos = validNeighbours[curNeighbourInd];
-
+				
+				totalCubesScore.text = cubes.Count.ToString();
+				
 				if (curPos.y > topY)
 				{					
 	
@@ -983,9 +998,9 @@ public class Game : MonoBehaviour
 					
 					
 					SetScore();
-					DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 50f, 0.15f).SetEase(Ease.OutQuad).OnComplete(() =>
+					DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 45f, 0.15f).SetEase(Ease.OutQuad).OnComplete(() =>
 					{
-						DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 45f, 0.15f).SetEase(Ease.InQuad);
+						DOTween.To(() => score.fontSize, (newFontSize) => score.fontSize = newFontSize, 35f, 0.15f).SetEase(Ease.InQuad);
 					});
 				}
 				else
