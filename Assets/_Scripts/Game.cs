@@ -52,7 +52,8 @@ public class Game : MonoBehaviour
 	
 	//public Material white;
 	
-	public ParticleSystem smokePf;
+	//public ParticleSystem smokePf;
+	public ParticleSystem[] particlePfs;
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud"; //misleading var name, 1 means saved to cloud
 	
 	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
@@ -969,9 +970,9 @@ public class Game : MonoBehaviour
 			{
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
-				ParticleSystem smoke = Instantiate<ParticleSystem>(smokePf);
+				ParticleSystem smoke = Instantiate<ParticleSystem>(particlePfs[curMat]);
 				smoke.transform.position = cubeToPlace.transform.position;
-				StartCoroutine(DisableSmoke(smoke));
+				//StartCoroutine(DisableSmoke(smoke));
 				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
 				cubeToPlace.GetComponent<BoxCollider>().enabled = true;
 				tower.WakeUp();
