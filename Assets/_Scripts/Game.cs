@@ -11,8 +11,8 @@ using UnityEngine.SocialPlatforms;
 #endif
 
 //todo: make shadow fade out with tower
-//todo: maybe steady the start cube when the level is complete so we don't die from the acceleration caused by the now disappeared cubes
-//todo: fade is black on iPad 2
+//todo: particles shouldn't render if inside cubes (maybe use material's renderqueue)
+//todo: maybe particle system should appear at welding point
 
 public class Game : MonoBehaviour 
 {
@@ -927,15 +927,6 @@ public class Game : MonoBehaviour
 		SetupNewHover();
 	}
 	
-	IEnumerator DisableSmoke(ParticleSystem smoke)
-	{
-		yield return new WaitForSeconds(0.2f);
-		smoke.Stop();
-		yield return new WaitForSeconds(2f);
-		smoke.gameObject.SetActive(false);
-		Destroy(smoke.gameObject);
-	}
-	
 	IEnumerator ZoomOut()
 	{
 		float startTime = Time.time;
@@ -971,8 +962,8 @@ public class Game : MonoBehaviour
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
 				ParticleSystem smoke = Instantiate<ParticleSystem>(particlePfs[curMat]);
-				smoke.transform.position = cubeToPlace.transform.position;
-				//StartCoroutine(DisableSmoke(smoke));
+				smoke.transform.SetParent(cubeToPlace.transform);
+				smoke.transform.localPosition = Vector3.zero;
 				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
 				cubeToPlace.GetComponent<BoxCollider>().enabled = true;
 				tower.WakeUp();
