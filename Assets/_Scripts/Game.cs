@@ -19,6 +19,9 @@ public class Game : MonoBehaviour
 	public TextMeshProUGUI totalCubesScore;
 	public TextMeshProUGUI bestTotalCubesScore;
 	const string BEST_TOTAL_CUBES_SCORE = "bestTotalCubesScore";
+	const string BEST_TOTAL_CUBES_SAVED_TO_CLOUD = "bestTotalCubesSavedToCloud";
+	const string LEADERBOARD_TOTAL_ID = "com.voidupdate.franticarchitect.total";
+	
 	int bestTotalCubes;
 	
 	Texture2D sharePic;
@@ -50,7 +53,7 @@ public class Game : MonoBehaviour
 	//public Material white;
 	
 	public ParticleSystem smokePf;
-	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud";
+	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud"; //misleading var name, 1 means saved to cloud
 	
 	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
 	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
@@ -693,11 +696,16 @@ public class Game : MonoBehaviour
 			if (cubes.Count > bestTotalCubes)
 			{
 				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SCORE, cubes.Count);
+				#if UNITY_IOS && !UNITY_EDITOR
+				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SAVED_TO_CLOUD, 0);
+				#endif
 			}
 			
 			
 			int newBest = System.Math.Max(curScore, best);
-			statBest.text = "Best Score: " + newBest.ToString();
+			statBest.text = "Tallest Tower: " + newBest.ToString();
+			
+			int newBestTotal = System.Math.Max(cubes.Count, bestTotalCubes);
 			
 			#if UNITY_IOS && !UNITY_EDITOR 
 			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
@@ -713,6 +721,20 @@ public class Game : MonoBehaviour
 					}
 				});
 			}
+			if (PlayerPrefs.HasKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD) && Social.localUser.authenticated)
+			{
+				Debug.Log("should submit score total");
+				Social.ReportScore(newBestTotal, LEADERBOARD_TOTAL_ID, (submitSuccess) =>
+				{
+					Debug.Log("submit score complete total");
+					if (submitSuccess)
+					{
+						PlayerPrefs.DeleteKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD);
+						Debug.Log("submit score success");
+					}
+				});
+			}
+			
 			#endif
 			
 			int dailyRecord = PlayerPrefs.GetInt(DAILY_RECORD + System.DateTime.Today.ToString(), 0);
@@ -720,7 +742,7 @@ public class Game : MonoBehaviour
 			{
 				dailyRecord = curScore;
 			}
-			statDaily.text = "Daily Record: " + dailyRecord;
+			statDaily.text = "Tallest Today: " + dailyRecord;
 			
 			int games = PlayerPrefs.GetInt(GAMES, 0) + 1;
 			PlayerPrefs.SetInt(GAMES, games);
@@ -728,7 +750,7 @@ public class Game : MonoBehaviour
 			
 			int total = PlayerPrefs.GetInt(TOTAL, 0) + curScore;
 			PlayerPrefs.SetInt(TOTAL, total);
-			statAve.text = "Average Score: " + Mathf.RoundToInt((float)total/games).ToString();
+			statAve.text = "Average Height: " + Mathf.RoundToInt((float)total/games).ToString();
 			
 			int numCubes = PlayerPrefs.GetInt(CUBES, 0) + cubes.Count - 1;
 			PlayerPrefs.SetInt(CUBES, numCubes);
