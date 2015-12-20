@@ -13,14 +13,14 @@ namespace Unibill.Impl {
     public class BillerFactory {
 
         private IResourceLoader loader;
-        private ILogger logger;
+		private Uniject.ILogger logger;
         private IStorage storage;
         private IRawBillingPlatformProvider platformProvider;
         private IUtil util;
         private UnibillConfiguration config;
         private IUnityAnalytics analytics;
 
-        public BillerFactory(IResourceLoader resourceLoader, ILogger logger,
+		public BillerFactory(IResourceLoader resourceLoader, Uniject.ILogger logger,
                              IStorage storage, IRawBillingPlatformProvider platformProvider,
                              UnibillConfiguration config, IUtil util, IUnityAnalytics analytics) {
             this.loader = resourceLoader;
@@ -130,7 +130,7 @@ namespace Unibill.Impl {
             return _remapper;
         }
 
-        private ILogger getLogger() {
+		private Uniject.ILogger getLogger() {
             return logger;
         }
 

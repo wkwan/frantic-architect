@@ -122,7 +122,7 @@ namespace Unibill {
     public class Biller : IBillingServiceCallback {
         public UnibillConfiguration InventoryDatabase { get; private set; }
         private TransactionDatabase transactionDatabase;
-        private ILogger logger;
+		private Uniject.ILogger logger;
         private HelpCentre help;
         private ProductIdRemapper remapper;
 		private CurrencyManager currencyManager;
@@ -149,7 +149,7 @@ namespace Unibill {
             }
         }
 
-		public Biller (UnibillConfiguration config, TransactionDatabase tDb, IBillingService billingSubsystem, ILogger logger, HelpCentre help, ProductIdRemapper remapper, CurrencyManager currencyManager) {
+		public Biller (UnibillConfiguration config, TransactionDatabase tDb, IBillingService billingSubsystem, Uniject.ILogger logger, HelpCentre help, ProductIdRemapper remapper, CurrencyManager currencyManager) {
             this.InventoryDatabase = config;
             this.transactionDatabase = tDb;
             this.billingSubsystem = billingSubsystem;

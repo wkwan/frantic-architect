@@ -22,7 +22,7 @@ namespace Unibill.Impl {
         private IBillingServiceCallback callback;
         private ProductIdRemapper remapper;
         private UnibillConfiguration db;
-        private ILogger logger;
+		private Uniject.ILogger logger;
         #if UNITY_ANDROID
         private RSACryptoServiceProvider cryptoProvider;
         #endif
@@ -30,7 +30,7 @@ namespace Unibill.Impl {
         public GooglePlayBillingService (IRawGooglePlayInterface rawInterface,
                                          UnibillConfiguration config,
                                          ProductIdRemapper remapper,
-                                         ILogger logger) {
+										 Uniject.ILogger logger) {
             this.rawInterface = rawInterface;
             this.publicKey = config.GooglePlayPublicKey;
             this.remapper = remapper;

@@ -33,7 +33,7 @@ namespace Unibill.Impl {
 
     public class UnibillConfiguration {
 
-        private ILogger logger;
+		private Uniject.ILogger logger;
 
         public BillingPlatform CurrentPlatform { get; set; }
 
@@ -55,7 +55,7 @@ namespace Unibill.Impl {
         public List<PurchasableItem> inventory = new List<PurchasableItem>();
         public List<VirtualCurrency> currencies = new List<VirtualCurrency>();
 
-        public UnibillConfiguration (string json, RuntimePlatform runtimePlatform, ILogger logger, List<ProductDefinition> runtimeProducts = null) {
+		public UnibillConfiguration (string json, RuntimePlatform runtimePlatform, Uniject.ILogger logger, List<ProductDefinition> runtimeProducts = null) {
             this.logger = logger;
             var root = (Dictionary<string, object>)Unibill.Impl.MiniJSON.jsonDecode(json);
             this.iOSSKU = root.getString("iOSSKU");

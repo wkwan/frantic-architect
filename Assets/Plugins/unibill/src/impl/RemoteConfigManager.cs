@@ -13,7 +13,7 @@ namespace Unibill.Impl
 		public UnibillConfiguration Config { get; private set; }
 		public string XML;
 
-        public RemoteConfigManager (IResourceLoader loader, IStorage storage, ILogger logger, RuntimePlatform platform, List<ProductDefinition> runtimeProducts = null) {
+		public RemoteConfigManager (IResourceLoader loader, IStorage storage, Uniject.ILogger logger, RuntimePlatform platform, List<ProductDefinition> runtimeProducts = null) {
 			this.storage = storage;
 			logger.prefix = "Unibill.RemoteConfigManager";
 			this.XML = loader.openTextFile ("unibillInventory.json").ReadToEnd ();
@@ -45,7 +45,7 @@ namespace Unibill.Impl
 			}
 		}
 		
-		private void refreshCachedConfig(string url, ILogger logger) {
+		private void refreshCachedConfig(string url, Uniject.ILogger logger) {
 			logger.Log("Trying to fetch remote config...");
 			new GameObject ().AddComponent<RemoteConfigFetcher> ().Fetch (storage, Config.HostedConfigUrl, CACHED_CONFIG_PATH);
 		}

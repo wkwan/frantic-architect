@@ -266,7 +266,7 @@ namespace TMPro
                 if (m_maskComponents[i].enabled)
                     count += 1;
 #else
-                if (m_maskComponents[i].MaskEnabled())
+                if (m_maskComponents[i].enabled)
                     count += 1;
                 #endif
             }

@@ -21,13 +21,13 @@ namespace Unibill.Impl {
 
         private IBillingServiceCallback biller;
         private ProductIdRemapper remapper;
-        private ILogger logger;
+        private Uniject.ILogger logger;
         public IStoreKitPlugin storekit { get; private set; }
 
         public event Action<string> onAppReceiptRefreshed;
         public event Action onAppReceiptRefreshFailed;
 
-        public AppleAppStoreBillingService(ProductIdRemapper mapper, IStoreKitPlugin storekit, IUtil util, ILogger logger) {
+		public AppleAppStoreBillingService(ProductIdRemapper mapper, IStoreKitPlugin storekit, IUtil util, Uniject.ILogger logger) {
             this.storekit = storekit;
             this.remapper = mapper;
             this.logger = logger;
