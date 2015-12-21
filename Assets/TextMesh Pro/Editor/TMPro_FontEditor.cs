@@ -12,7 +12,7 @@ using System.Collections;
 namespace TMPro.EditorUtilities
 {
 
-    [CustomEditor(typeof(TextMeshProFont))]
+    [CustomEditor(typeof(TMP_FontAsset))]
     public class TMPro_FontEditor : Editor
     {
         private struct UI_PanelState
@@ -22,7 +22,8 @@ namespace TMPro.EditorUtilities
             public static bool kerningInfoPanel = true;
         }
 
-        private int m_page = 0;
+        private int m_GlyphPage = 0;
+        private int m_KerningPage = 0;
 
 
         private const string k_UndoRedo = "UndoRedoPerformed";
@@ -31,6 +32,8 @@ namespace TMPro.EditorUtilities
         private SerializedProperty font_material_prop;
 
         private SerializedProperty font_normalStyle_prop;
+        private SerializedProperty font_normalSpacing_prop;
+
         private SerializedProperty font_boldStyle_prop;
         private SerializedProperty font_boldSpacing_prop;
 
@@ -46,7 +49,7 @@ namespace TMPro.EditorUtilities
         private SerializedProperty m_kerningPair_prop;
 
 
-        private TextMeshProFont m_fontAsset;
+        private TMP_FontAsset m_fontAsset;
 
         private bool isAssetDirty = false;
 
@@ -60,11 +63,15 @@ namespace TMPro.EditorUtilities
         {
             font_atlas_prop = serializedObject.FindProperty("atlas");
             font_material_prop = serializedObject.FindProperty("material");
-            font_normalStyle_prop = serializedObject.FindProperty("NormalStyle");
-            font_boldStyle_prop = serializedObject.FindProperty("BoldStyle");
+
+            font_normalStyle_prop = serializedObject.FindProperty("normalStyle");
+            font_normalSpacing_prop = serializedObject.FindProperty("normalSpacingOffset");
+
+            font_boldStyle_prop = serializedObject.FindProperty("boldStyle");
             font_boldSpacing_prop = serializedObject.FindProperty("boldSpacing");
-            font_italicStyle_prop = serializedObject.FindProperty("ItalicStyle");
-            font_tabSize_prop = serializedObject.FindProperty("TabSize");
+
+            font_italicStyle_prop = serializedObject.FindProperty("italicStyle");
+            font_tabSize_prop = serializedObject.FindProperty("tabSize");
 
             m_fontInfo_prop = serializedObject.FindProperty("m_fontInfo");
             m_glyphInfoList_prop = serializedObject.FindProperty("m_glyphInfoList");
@@ -74,7 +81,7 @@ namespace TMPro.EditorUtilities
             //m_isGlyphInfoListExpanded_prop = serializedObject.FindProperty("isGlyphInfoListExpanded");
             //m_isKerningTableExpanded_prop = serializedObject.FindProperty("isKerningTableExpanded");
 
-            m_fontAsset = target as TextMeshProFont;
+            m_fontAsset = target as TMP_FontAsset;
             m_kerningTable = m_fontAsset.kerningInfo;
 
             // Get the UI Skin and Styles for the various Editors
@@ -97,13 +104,14 @@ namespace TMPro.EditorUtilities
 
             GUI.enabled = false; // Lock UI
 
-            float labelWidth = EditorGUIUtility.labelWidth = 135f;
+            float labelWidth = EditorGUIUtility.labelWidth = 150f;
             float fieldWidth = EditorGUIUtility.fieldWidth;
 
             EditorGUILayout.PropertyField(m_fontInfo_prop.FindPropertyRelative("Name"), new GUIContent("Font Source"));
             EditorGUILayout.PropertyField(m_fontInfo_prop.FindPropertyRelative("PointSize"));
 
             GUI.enabled = true;
+            EditorGUILayout.PropertyField(m_fontInfo_prop.FindPropertyRelative("Scale"));
             EditorGUILayout.PropertyField(m_fontInfo_prop.FindPropertyRelative("LineHeight"));
 
             //GUI.enabled = false;
@@ -118,7 +126,7 @@ namespace TMPro.EditorUtilities
             EditorGUILayout.PropertyField(m_fontInfo_prop.FindPropertyRelative("SubscriptOffset"));
             
             SerializedProperty subSize_prop = m_fontInfo_prop.FindPropertyRelative("SubSize");
-            EditorGUILayout.PropertyField(subSize_prop);
+            EditorGUILayout.PropertyField(subSize_prop, new GUIContent("Super / Subscript Size"));
             subSize_prop.floatValue = Mathf.Clamp(subSize_prop.floatValue, 0.25f, 1f);
             
 
@@ -150,8 +158,7 @@ namespace TMPro.EditorUtilities
             string evt_cmd = Event.current.commandName; // Get Current Event CommandName to check for Undo Events
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = 110f;
-            EditorGUIUtility.fieldWidth = 30f;
+            EditorGUIUtility.labelWidth = 120f;
             EditorGUILayout.PropertyField(font_normalStyle_prop, new GUIContent("Normal Weight"));
             font_normalStyle_prop.floatValue = Mathf.Clamp(font_normalStyle_prop.floatValue, -3.0f, 3.0f);
             if (GUI.changed || evt_cmd == k_UndoRedo)
@@ -161,8 +168,8 @@ namespace TMPro.EditorUtilities
                 mat.SetFloat("_WeightNormal", font_normalStyle_prop.floatValue);
             }
 
-            EditorGUIUtility.labelWidth = 90f;
-            EditorGUILayout.PropertyField(font_boldStyle_prop, new GUIContent("Bold Weight"));
+
+            EditorGUILayout.PropertyField(font_boldStyle_prop, new GUIContent("Bold Weight"), GUILayout.MinWidth(100));
             font_boldStyle_prop.floatValue = Mathf.Clamp(font_boldStyle_prop.floatValue, -3.0f, 3.0f);
             if (GUI.changed || evt_cmd == k_UndoRedo)
             {
@@ -170,17 +177,26 @@ namespace TMPro.EditorUtilities
                 Material mat = font_material_prop.objectReferenceValue as Material;
                 mat.SetFloat("_WeightBold", font_boldStyle_prop.floatValue);
             }
+            EditorGUILayout.EndHorizontal();
 
-            EditorGUIUtility.labelWidth = 100f;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(font_normalSpacing_prop, new GUIContent("Spacing Offset"));
+            font_normalSpacing_prop.floatValue = Mathf.Clamp(font_normalSpacing_prop.floatValue, -100, 100);
+            if (GUI.changed || evt_cmd == k_UndoRedo)
+            {
+                GUI.changed = false;
+            }
+
             EditorGUILayout.PropertyField(font_boldSpacing_prop, new GUIContent("Bold Spacing"));
             font_boldSpacing_prop.floatValue = Mathf.Clamp(font_boldSpacing_prop.floatValue, 0, 100);
             if (GUI.changed || evt_cmd == k_UndoRedo)
             {
                 GUI.changed = false;
             }
+            EditorGUILayout.EndHorizontal();
+
             EditorGUIUtility.labelWidth = labelWidth;
             EditorGUIUtility.fieldWidth = fieldWidth;
-            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PropertyField(font_italicStyle_prop, new GUIContent("Italic Style: "));
@@ -198,9 +214,7 @@ namespace TMPro.EditorUtilities
 
 
             if (UI_PanelState.glyphInfoPanel)
-            {              
-                //Rect lastRect = GUILayoutUtility.GetLastRect();
-
+            {
                 int arraySize = m_glyphInfoList_prop.arraySize;
                 int itemsPerPage = 15;       
 
@@ -208,7 +222,7 @@ namespace TMPro.EditorUtilities
                 if (arraySize > 0)
                 {
                     // Display each GlyphInfo entry using the GlyphInfo property drawer.
-                    for (int i = itemsPerPage * m_page; i < arraySize && i < itemsPerPage * (m_page + 1); i++)
+                    for (int i = itemsPerPage * m_GlyphPage; i < arraySize && i < itemsPerPage * (m_GlyphPage + 1); i++)
                     {
                         SerializedProperty glyphInfo = m_glyphInfoList_prop.GetArrayElementAtIndex(i);
 
@@ -225,20 +239,20 @@ namespace TMPro.EditorUtilities
 
                 int shiftMultiplier = evt.shift ? 10 : 1;
 
-                if (m_page > 0) GUI.enabled = true;
+                if (m_GlyphPage > 0) GUI.enabled = true;
                 else GUI.enabled = false;
 
                 if (GUI.Button(pagePos, "Previous Page"))
-                    m_page -= 1 * shiftMultiplier;
+                    m_GlyphPage -= 1 * shiftMultiplier;
 
                 pagePos.x += pagePos.width;
-                if (itemsPerPage * (m_page + 1) < arraySize) GUI.enabled = true;
+                if (itemsPerPage * (m_GlyphPage + 1) < arraySize) GUI.enabled = true;
                 else GUI.enabled = false;
 
                 if (GUI.Button(pagePos, "Next Page"))
-                    m_page += 1 * shiftMultiplier;
+                    m_GlyphPage += 1 * shiftMultiplier;
 
-                m_page = Mathf.Clamp(m_page, 0, arraySize / itemsPerPage);
+                m_GlyphPage = Mathf.Clamp(m_GlyphPage, 0, arraySize / itemsPerPage);
             }
 
 
@@ -254,7 +268,6 @@ namespace TMPro.EditorUtilities
                 Rect pos;
 
                 SerializedProperty kerningPairs_prop = m_kerningInfo_prop.FindPropertyRelative("kerningPairs");
-                int pairCount = kerningPairs_prop.arraySize;
 
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Left Char", TMP_UIStyleManager.TMP_GUISkin.label);
@@ -265,26 +278,61 @@ namespace TMPro.EditorUtilities
 
                 GUILayout.BeginVertical(TMP_UIStyleManager.TMP_GUISkin.label);
 
-                for (int i = 0; i < pairCount; i++)
+                int arraySize = kerningPairs_prop.arraySize;
+                int itemsPerPage = 25;
+
+                if (arraySize > 0)
                 {
-                    SerializedProperty kerningPair_prop = kerningPairs_prop.GetArrayElementAtIndex(i);
-
-                    pos = EditorGUILayout.BeginHorizontal();
-
-                    EditorGUI.PropertyField(new Rect(pos.x, pos.y, pos.width - 20f, pos.height), kerningPair_prop, GUIContent.none);
-
-                    // Button to Delete Kerning Pair
-                    if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
+                    // Display each GlyphInfo entry using the GlyphInfo property drawer.
+                    for (int i = itemsPerPage * m_KerningPage; i < arraySize && i < itemsPerPage * (m_KerningPage + 1); i++)
                     {
-                        m_kerningTable.RemoveKerningPair(i);
-                        m_fontAsset.ReadFontDefinition(); // Reload Font Definition.  
-                        serializedObject.Update(); // Get an updated version of the SerializedObject.
-                        isAssetDirty = true;
-                        break;
-                    }
+                        SerializedProperty kerningPair_prop = kerningPairs_prop.GetArrayElementAtIndex(i);
 
-                    EditorGUILayout.EndHorizontal();
+                        pos = EditorGUILayout.BeginHorizontal();
+
+                        EditorGUI.PropertyField(new Rect(pos.x, pos.y, pos.width - 20f, pos.height), kerningPair_prop, GUIContent.none);
+
+                        // Button to Delete Kerning Pair
+                        if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
+                        {
+                            m_kerningTable.RemoveKerningPair(i);
+                            m_fontAsset.ReadFontDefinition(); // Reload Font Definition.  
+                            serializedObject.Update(); // Get an updated version of the SerializedObject.
+                            isAssetDirty = true;
+                            break;
+                        }
+
+                        EditorGUILayout.EndHorizontal();
+                    }
                 }
+
+                Rect pagePos = EditorGUILayout.GetControlRect(false, 20);
+                pagePos.width /= 3;
+
+                int shiftMultiplier = evt.shift ? 10 : 1;
+
+                // Previous Page
+                if (m_KerningPage > 0) GUI.enabled = true;
+                else GUI.enabled = false;
+
+                if (GUI.Button(pagePos, "Previous Page"))
+                    m_KerningPage -= 1 * shiftMultiplier;
+
+                // Page Counter
+                GUI.enabled = true;
+                pagePos.x += pagePos.width;
+                int totalPages = (int)(arraySize / (float)itemsPerPage + 0.999f);
+                GUI.Label(pagePos, "Page " + (m_KerningPage + 1) + " / " + totalPages, GUI.skin.button);
+
+                // Next Page
+                pagePos.x += pagePos.width;
+                if (itemsPerPage * (m_GlyphPage + 1) < arraySize) GUI.enabled = true;
+                else GUI.enabled = false;
+
+                if (GUI.Button(pagePos, "Next Page"))
+                    m_KerningPage += 1 * shiftMultiplier;
+
+                m_KerningPage = Mathf.Clamp(m_KerningPage, 0, arraySize / itemsPerPage);
 
                 GUILayout.EndVertical();
 

@@ -10,7 +10,7 @@ using System.Collections;
 namespace TMPro.EditorUtilities
 {
 
-    [CustomPropertyDrawer(typeof(GlyphInfo))]
+    [CustomPropertyDrawer(typeof(TMP_Glyph))]
     public class GlyphInfoDrawer : PropertyDrawer
     {
 
@@ -31,14 +31,17 @@ namespace TMPro.EditorUtilities
             rect.y -= 15;
 
             GUI.enabled = false;
-            EditorGUIUtility.LookLikeControls(40, 45);
-            EditorGUI.IntField(new Rect(rect.x + 5f, rect.y, 80f, 18), new GUIContent("Ascii:"), prop_id.intValue);
-            EditorGUI.LabelField(new Rect(rect.x + 100f, rect.y, 80, 18), "Char: [ " + (char)prop_id.intValue + " ]");
+            EditorGUIUtility.labelWidth = 40f;
+            EditorGUIUtility.fieldWidth = 45f;
+
+            GUI.enabled = true;
+            EditorGUI.LabelField(new Rect(rect.x + 5f, rect.y, 80f, 18), new GUIContent("Ascii: <color=#FFFF80>" + prop_id.intValue + "</color>"), TMP_UIStyleManager.Label);
+            EditorGUI.LabelField(new Rect(rect.x + 90f, rect.y, 80f, 18), new GUIContent("Hex: <color=#FFFF80>" + prop_id.intValue.ToString("X") + "</color>"), TMP_UIStyleManager.Label);
+            EditorGUI.LabelField(new Rect(rect.x + 170f, rect.y, 80, 18), "Char: [ <color=#FFFF80>" + (char)prop_id.intValue + "</color> ]", TMP_UIStyleManager.Label);
 
             EditorGUIUtility.labelWidth = 20f;
             EditorGUIUtility.fieldWidth = 10f;
 
-            GUI.enabled = true;
             float width = (rect.width - 5f) / 4;
             EditorGUI.PropertyField(new Rect(rect.x + 5f + width * 0, rect.y + 22, width - 5f, 18), prop_x, new GUIContent("X:"));
             EditorGUI.PropertyField(new Rect(rect.x + 5f + width * 1, rect.y + 22, width - 5f, 18), prop_y, new GUIContent("Y:"));

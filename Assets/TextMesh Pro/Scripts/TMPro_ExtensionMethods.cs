@@ -61,6 +61,17 @@ namespace TMPro
 		}
 
 
+        public static Color32 Multiply (this Color32 c1, Color32 c2)
+        {
+            byte r = (byte)((c1.r / 255f) * (c2.r / 255f) * 255);
+            byte g = (byte)((c1.g / 255f) * (c2.g / 255f) * 255);
+            byte b = (byte)((c1.b / 255f) * (c2.b / 255f) * 255);
+            byte a = (byte)((c1.a / 255f) * (c2.a / 255f) * 255);
+
+            return new Color32(r, g, b, a);
+        }
+
+
         public static Color32 Tint (this Color32 c1, Color32 c2)
         {
             byte r = (byte)((c1.r / 255f) * (c2.r / 255f) * 255);
@@ -104,10 +115,11 @@ namespace TMPro
 
     public static class TMP_Math
     {
-        public static bool Equals(float a, float b)
+        public static bool Approximately(float a, float b)
         {
-            return (b - 0.000001f) < a && a < (b + 0.000001f);
+            return (b - 0.00001f) < a && a < (b + 0.00001f);
         }
+
     }
 
 }

@@ -239,15 +239,15 @@ namespace TMPro
                                              (text.OverflowMode == TextOverflowModes.Page && currentCharInfo.pageNumber + 1 != text.pageToDisplay) ? false : true;
 
                     // Track maximum Ascender and minimum Descender for each word.
-                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.topLine);
-                    minDescender = Mathf.Min(minDescender, currentCharInfo.bottomLine);
+                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.ascender);
+                    minDescender = Mathf.Min(minDescender, currentCharInfo.descender);
 
                     if (isBeginRegion == false && isCharacterVisible)
                     {
                         isBeginRegion = true;
 
-                        bl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0);
-                        tl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0);
+                        bl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0);
+                        tl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0);
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
@@ -256,8 +256,8 @@ namespace TMPro
                         {
                             isBeginRegion = false;
 
-                            br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0);
-                            tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0);
+                            br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0);
+                            tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0);
 
                             // Transform coordinates to be relative to transform and account min descender and max ascender.
                             bl = rectTransform.TransformPoint(new Vector3(bl.x, minDescender, 0));
@@ -278,8 +278,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0);
-                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0);
+                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0);
+                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0);
 
                         // Transform coordinates to be relative to transform and account min descender and max ascender.
                         bl = rectTransform.TransformPoint(new Vector3(bl.x, minDescender, 0));
@@ -298,8 +298,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0);
-                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0);
+                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0);
+                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0);
 
                         // Transform coordinates to be relative to transform and account min descender and max ascender.
                         bl = rectTransform.TransformPoint(new Vector3(bl.x, minDescender, 0));
@@ -366,15 +366,15 @@ namespace TMPro
                                              (text.OverflowMode == TextOverflowModes.Page && currentCharInfo.pageNumber + 1 != text.pageToDisplay) ? false : true;
 
                     // Track maximum Ascender and minimum Descender for each word.
-                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.topLine);
-                    minDescender = Mathf.Min(minDescender, currentCharInfo.bottomLine);
+                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.ascender);
+                    minDescender = Mathf.Min(minDescender, currentCharInfo.descender);
 
                     if (isBeginRegion == false && isCharacterVisible)
                     {
                         isBeginRegion = true;
 
-                        bl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0);
-                        tl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0);
+                        bl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0);
+                        tl = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0);
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
@@ -383,8 +383,8 @@ namespace TMPro
                         {
                             isBeginRegion = false;
 
-                            br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0);
-                            tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0);
+                            br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0);
+                            tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0);
 
                             // Transform coordinates to be relative to transform and account min descender and max ascender.
                             bl = textTransform.TransformPoint(new Vector3(bl.x, minDescender, 0));
@@ -405,8 +405,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0);
-                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0);
+                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0);
+                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0);
 
                         // Transform coordinates to be relative to transform and account min descender and max ascender.
                         bl = textTransform.TransformPoint(new Vector3(bl.x, minDescender, 0));
@@ -425,8 +425,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0);
-                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0);
+                        br = new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0);
+                        tr = new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0);
 
                         // Transform coordinates to be relative to transform and account min descender and max ascender.
                         bl = textTransform.TransformPoint(new Vector3(bl.x, minDescender, 0));
@@ -494,8 +494,8 @@ namespace TMPro
                     {
                         isBeginRegion = true;
 
-                        bl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0));
-                        tl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0));
+                        bl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0));
+                        tl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0));
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
@@ -504,8 +504,8 @@ namespace TMPro
                         {
                             isBeginRegion = false;
 
-                            br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                            tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                            br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                            tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                             // Check for Intersection
                             if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -520,8 +520,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -534,8 +534,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -611,8 +611,8 @@ namespace TMPro
                     {
                         isBeginRegion = true;
 
-                        bl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0));
-                        tl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0));
+                        bl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0));
+                        tl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0));
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
@@ -621,8 +621,8 @@ namespace TMPro
                         {
                             isBeginRegion = false;
 
-                            br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                            tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                            br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                            tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                             // Check for Intersection
                             if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -637,8 +637,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -651,8 +651,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -712,9 +712,9 @@ namespace TMPro
                 Vector3 tr = Vector3.zero;
 
                 // Iterate through each character of the word
-                for (int j = 0; j < linkInfo.characterCount; j++)
+                for (int j = 0; j < linkInfo.linkTextLength; j++)
                 {
-                    int characterIndex = linkInfo.firstCharacterIndex + j;
+                    int characterIndex = linkInfo.linkTextfirstCharacterIndex + j;
                     TMP_CharacterInfo currentCharInfo = text.textInfo.characterInfo[characterIndex];
                     int currentLine = currentCharInfo.lineNumber;
 
@@ -722,18 +722,18 @@ namespace TMPro
                     {
                         isBeginRegion = true;
 
-                        bl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0));
-                        tl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0));
+                        bl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0));
+                        tl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0));
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
                         // If Word is one character
-                        if (linkInfo.characterCount == 1)
+                        if (linkInfo.linkTextLength == 1)
                         {
                             isBeginRegion = false;
 
-                            br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                            tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                            br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                            tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                             // Check for Intersection
                             if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -744,12 +744,12 @@ namespace TMPro
                     }
 
                     // Last Character of Word
-                    if (isBeginRegion && j == linkInfo.characterCount - 1)
+                    if (isBeginRegion && j == linkInfo.linkTextLength - 1)
                     {
                         isBeginRegion = false;
 
-                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -762,8 +762,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -807,9 +807,9 @@ namespace TMPro
                 Vector3 tr = Vector3.zero;
 
                 // Iterate through each character of the word
-                for (int j = 0; j < linkInfo.characterCount; j++)
+                for (int j = 0; j < linkInfo.linkTextLength; j++)
                 {
-                    int characterIndex = linkInfo.firstCharacterIndex + j;
+                    int characterIndex = linkInfo.linkTextfirstCharacterIndex + j;
                     TMP_CharacterInfo currentCharInfo = text.textInfo.characterInfo[characterIndex];
                     int currentLine = currentCharInfo.lineNumber;
 
@@ -817,18 +817,18 @@ namespace TMPro
                     {
                         isBeginRegion = true;
 
-                        bl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0));
-                        tl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0));
+                        bl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0));
+                        tl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0));
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
                         // If Word is one character
-                        if (linkInfo.characterCount == 1)
+                        if (linkInfo.linkTextLength == 1)
                         {
                             isBeginRegion = false;
 
-                            br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                            tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                            br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                            tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                             // Check for Intersection
                             if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -839,12 +839,12 @@ namespace TMPro
                     }
 
                     // Last Character of Word
-                    if (isBeginRegion && j == linkInfo.characterCount - 1)
+                    if (isBeginRegion && j == linkInfo.linkTextLength - 1)
                     {
                         isBeginRegion = false;
 
-                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -857,8 +857,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -905,9 +905,9 @@ namespace TMPro
                 Vector3 tr = Vector3.zero;
 
                 // Iterate through each character of the word
-                for (int j = 0; j < linkInfo.characterCount; j++)
+                for (int j = 0; j < linkInfo.linkTextLength; j++)
                 {
-                    int characterIndex = linkInfo.firstCharacterIndex + j;
+                    int characterIndex = linkInfo.linkTextfirstCharacterIndex + j;
                     TMP_CharacterInfo currentCharInfo = text.textInfo.characterInfo[characterIndex];
                     int currentLine = currentCharInfo.lineNumber;
 
@@ -915,18 +915,18 @@ namespace TMPro
                     {
                         isBeginRegion = true;
 
-                        bl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0));
-                        tl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0));
+                        bl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0));
+                        tl = rectTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0));
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
                         // If Word is one character
-                        if (linkInfo.characterCount == 1)
+                        if (linkInfo.linkTextLength == 1)
                         {
                             isBeginRegion = false;
 
-                            br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                            tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                            br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                            tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                             // Check for Intersection
                             if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -937,12 +937,12 @@ namespace TMPro
                     }
 
                     // Last Character of Word
-                    if (isBeginRegion && j == linkInfo.characterCount - 1)
+                    if (isBeginRegion && j == linkInfo.linkTextLength - 1)
                     {
                         isBeginRegion = false;
 
-                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -955,8 +955,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = rectTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -1018,9 +1018,9 @@ namespace TMPro
                 Vector3 tr = Vector3.zero;
 
                 // Iterate through each character of the word
-                for (int j = 0; j < linkInfo.characterCount; j++)
+                for (int j = 0; j < linkInfo.linkTextLength; j++)
                 {
-                    int characterIndex = linkInfo.firstCharacterIndex + j;
+                    int characterIndex = linkInfo.linkTextfirstCharacterIndex + j;
                     TMP_CharacterInfo currentCharInfo = text.textInfo.characterInfo[characterIndex];
                     int currentLine = currentCharInfo.lineNumber;
 
@@ -1028,18 +1028,18 @@ namespace TMPro
                     {
                         isBeginRegion = true;
 
-                        bl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0));
-                        tl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0));
+                        bl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0));
+                        tl = textTransform.TransformPoint(new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0));
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
                         // If Word is one character
-                        if (linkInfo.characterCount == 1)
+                        if (linkInfo.linkTextLength == 1)
                         {
                             isBeginRegion = false;
 
-                            br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                            tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                            br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                            tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                             // Check for Intersection
                             if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -1050,12 +1050,12 @@ namespace TMPro
                     }
 
                     // Last Character of Word
-                    if (isBeginRegion && j == linkInfo.characterCount - 1)
+                    if (isBeginRegion && j == linkInfo.linkTextLength - 1)
                     {
                         isBeginRegion = false;
 
-                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -1068,8 +1068,8 @@ namespace TMPro
                     {
                         isBeginRegion = false;
 
-                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.bottomLine, 0));
-                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.topLine, 0));
+                        br = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.descender, 0));
+                        tr = textTransform.TransformPoint(new Vector3(currentCharInfo.topRight.x, currentCharInfo.ascender, 0));
 
                         // Check for Intersection
                         if (PointIntersectRectangle(position, bl, tl, tr, br))
@@ -1226,15 +1226,56 @@ namespace TMPro
 
 
         /// <summary>
+        /// Table used to convert character to lowercase.
+        /// </summary>
+        const string k_lookupStringL = "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[-]^_`abcdefghijklmnopqrstuvwxyz{|}~-";
+
+        /// <summary>
+        /// Table used to convert character to uppercase.
+        /// </summary>
+        const string k_lookupStringU = "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[-]^_`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~-";
+
+
+        /// <summary>
+        /// Get lowercase version of this ASCII character.
+        /// </summary>
+        public static char ToLowerFast(char c)
+        {
+            return k_lookupStringL[c];
+        }
+
+        /// <summary>
+        /// Get uppercase version of this ASCII character.
+        /// </summary>
+        public static char ToUpperFast(char c)
+        {
+            return k_lookupStringU[c];
+        }
+
+        /// <summary>
         /// Function which returns a simple hashcode from a string.
         /// </summary>
         /// <returns></returns>
         public static int GetSimpleHashCode(string s)
         {
-            int hashCode = 0;
+            int hashCode = 0; // 5381;
 
             for (int i = 0; i < s.Length; i++)
-                hashCode = (hashCode << 5) - hashCode + s[i];
+                hashCode = (hashCode << 5) + hashCode ^ s[i];
+
+            return hashCode;
+        }
+
+        /// <summary>
+        /// Function which returns a simple hashcode from a string converted to lowercase.
+        /// </summary>
+        /// <returns></returns>
+        public static uint GetSimpleHashCodeLowercase(string s)
+        {
+            uint hashCode = 5381;
+
+            for (int i = 0; i < s.Length; i++)
+                hashCode = (hashCode << 5) + hashCode ^ ToLowerFast(s[i]);
 
             return hashCode;
         }

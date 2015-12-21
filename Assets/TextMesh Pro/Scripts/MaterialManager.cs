@@ -53,7 +53,7 @@ namespace TMPro
                 // Set Stencil Properties
                 ShaderUtilities.GetShaderPropertyIDs();
                 stencilMaterial.SetFloat(ShaderUtilities.ID_StencilID, stencilID);
-                stencilMaterial.SetFloat(ShaderUtilities.ID_StencilComp, 3);
+                stencilMaterial.SetFloat(ShaderUtilities.ID_StencilComp, 4);
 
                 MaskingMaterial temp = new MaskingMaterial();
                 temp.baseMaterial = baseMaterial;
@@ -108,7 +108,7 @@ namespace TMPro
             if (stencilID == 0)
                 material.SetFloat(ShaderUtilities.ID_StencilComp, 8);
             else
-                material.SetFloat(ShaderUtilities.ID_StencilComp, 3);
+                material.SetFloat(ShaderUtilities.ID_StencilComp, 4);
 
             return material;
         }
@@ -262,29 +262,33 @@ namespace TMPro
             m_maskComponents = obj.GetComponentsInParent<Mask>();
             for (int i = 0; i < m_maskComponents.Length; i++ )
             {
-#if UNITY_5_2
-                if (m_maskComponents[i].enabled)
+#if UNITY_5_2 || UNITY_5_3
+                //Debug.Log("Mask Enabled = " + m_maskComponents[i].enabled);
+                if (m_maskComponents[i].IsActive())
                     count += 1;
 #else
-                if (m_maskComponents[i].enabled)
+                if (m_maskComponents[i].MaskEnabled())
                     count += 1;
                 #endif
             }
 
-            switch (count)
-            {
-                case 0:
-                    return 0;
-                case 1:
-                    return 1;
-                case 2:
-                    return 3;
-                case 3:
-                    return 11;
-            }
+            //switch (count)
+            //{
+            //    case 0:
+            //        return 0;
+            //    case 1:
+            //        return 1;
+            //    case 2:
+            //        return 3;
+            //    case 3:
+            //        return 7;
+            //}
 
-            return 0;
-        }
+            //return 0;
+
+            return Mathf.Min((1 << count) - 1, 255);
+
+            }
 
 
 

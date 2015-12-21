@@ -13,7 +13,7 @@ using System.Collections;
 namespace TMPro.EditorUtilities
 {
 
-    [CustomEditor(typeof(SpriteAsset))]
+    [CustomEditor(typeof(TMP_SpriteAsset))]
     public class TMPro_SpriteAssetEditor : Editor
     {
         private struct UI_PanelState

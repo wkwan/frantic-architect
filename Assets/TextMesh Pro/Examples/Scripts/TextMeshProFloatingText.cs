@@ -28,26 +28,25 @@ namespace TMPro.Examples
         void Awake()
         {
             m_transform = transform;
-            m_floatingText = new GameObject(m_transform.name + " floating text");
+            m_floatingText = new GameObject(this.name + " floating text");
 
-            m_floatingText_Transform = m_floatingText.transform;
-            m_floatingText_Transform.position = m_transform.position + new Vector3(0, 15f, 0);
+            // Reference to Transform is lost when TMP component is added since it replaces it by a RectTransform.
+            //m_floatingText_Transform = m_floatingText.transform;
+            //m_floatingText_Transform.position = m_transform.position + new Vector3(0, 15f, 0);
 
             m_cameraTransform = Camera.main.transform;
-
-            //m_parentScript = GetComponent<TextMeshSpawner>();
-
-            //Debug.Log(m_parentScript.NumberOfNPC);
         }
 
         void Start()
         {
             if (SpawnType == 0)
             {
-                //Debug.Log("Spawning TextMesh Pro Objects.");
                 // TextMesh Pro Implementation
                 m_textMeshPro = m_floatingText.AddComponent<TextMeshPro>();
                 m_textContainer = m_floatingText.GetComponent<TextContainer>();
+                
+                m_floatingText_Transform = m_floatingText.transform;
+                m_floatingText_Transform.position = m_transform.position + new Vector3(0, 15f, 0);
 
                 m_textContainer.isAutoFitting = false;
                 //m_textMeshPro.fontAsset = Resources.Load("Fonts & Materials/JOKERMAN SDF", typeof(TextMeshProFont)) as TextMeshProFont; // User should only provide a string to the resource.
@@ -65,6 +64,9 @@ namespace TMPro.Examples
             else if (SpawnType == 1)
             {
                 //Debug.Log("Spawning TextMesh Objects.");
+
+                m_floatingText_Transform = m_floatingText.transform;
+                m_floatingText_Transform.position = m_transform.position + new Vector3(0, 15f, 0);
 
                 m_textMesh = m_floatingText.AddComponent<TextMesh>();
                 m_textMesh.font = Resources.Load("Fonts/ARIAL", typeof(Font)) as Font;
@@ -87,7 +89,7 @@ namespace TMPro.Examples
         //{
         //    if (SpawnType == 0)
         //    {
-        //        m_textMeshPro.SetText("{0}", m_frame);         
+        //        m_textMeshPro.SetText("{0}", m_frame);
         //    }
         //    else
         //    {

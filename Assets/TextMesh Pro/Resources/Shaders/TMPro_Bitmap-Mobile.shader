@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 Stephan Schaem & Stephan Bouchard - All Rights Reserved
+// Copyright (C) 2014 - 2015 Stephan Schaem - All Rights Reserved
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
@@ -8,11 +8,27 @@ Properties {
 	_MainTex		("Font Atlas", 2D) = "white" {}
 	_Color			("Text Color", Color) = (1,1,1,1)
 	_DiffusePower	("Diffuse Power", Range(1.0,4.0)) = 1.0
+
+	_StencilComp("Stencil Comparison", Float) = 8
+	_Stencil("Stencil ID", Float) = 0
+	_StencilOp("Stencil Operation", Float) = 0
+	_StencilWriteMask("Stencil Write Mask", Float) = 255
+	_StencilReadMask("Stencil Read Mask", Float) = 255
 }
 
 SubShader {
 
 	Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
+
+	Stencil
+	{
+		Ref[_Stencil]
+		Comp[_StencilComp]
+		Pass[_StencilOp]
+		ReadMask[_StencilReadMask]
+		WriteMask[_StencilWriteMask]
+	}
+
 
 	Lighting Off
 	Cull Off
@@ -50,7 +66,6 @@ SubShader {
 		{
 			v2f o;
 			o.vertex = UnityPixelSnap(mul(UNITY_MATRIX_MVP, v.vertex));
-			//o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 			o.color = v.color;
 			o.color *= _Color;
 			o.color.rgb *= _DiffusePower;

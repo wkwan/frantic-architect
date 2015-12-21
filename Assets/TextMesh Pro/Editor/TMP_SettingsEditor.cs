@@ -28,6 +28,12 @@ namespace TMPro.EditorUtilities
         private SerializedProperty prop_SpriteAsset;
         private SerializedProperty prop_StyleSheet;
 
+        private SerializedProperty prop_WordWrapping;
+        private SerializedProperty prop_Kerning;
+        private SerializedProperty prop_ExtraPadding;
+
+        private SerializedProperty prop_WarningsDisabled;
+
 
 
         public void OnEnable()
@@ -36,6 +42,11 @@ namespace TMPro.EditorUtilities
             prop_SpriteAsset = serializedObject.FindProperty("spriteAsset");
             prop_StyleSheet = serializedObject.FindProperty("styleSheet");
 
+            prop_WordWrapping = serializedObject.FindProperty("enableWordWrapping");
+            prop_Kerning = serializedObject.FindProperty("enableKerning");
+            prop_ExtraPadding = serializedObject.FindProperty("enableExtraPadding");
+
+            prop_WarningsDisabled = serializedObject.FindProperty("warningsDisabled");
 
             // Get the UI Skin and Styles for the various Editors
             TMP_UIStyleManager.GetUIStyles();
@@ -63,6 +74,21 @@ namespace TMPro.EditorUtilities
             GUILayout.Label("Select the Font Asset that will be assigned by default to newly created text objects when no Font Asset is specified.", TMP_UIStyleManager.Label);
             GUILayout.Space(5f);
             EditorGUILayout.PropertyField(prop_FontAsset);
+            EditorGUILayout.EndVertical();
+
+
+            // TEXT OBJECT DEFAULT PROPERTIES
+            EditorGUILayout.BeginVertical(TMP_UIStyleManager.SquareAreaBox85G);
+            GUILayout.Label("<b>New Text Object Default Settings</b>", TMP_UIStyleManager.Label);
+            GUILayout.Label("Default settings used by all new text objects.", TMP_UIStyleManager.Label);
+            GUILayout.Space(5f);
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(prop_WordWrapping);
+            EditorGUILayout.PropertyField(prop_Kerning);
+            EditorGUILayout.PropertyField(prop_ExtraPadding);
+            GUILayout.Space(10f);
+            GUILayout.Label("<b>Disable warnings for missing glyphs on text objects.</b>", TMP_UIStyleManager.Label);
+            EditorGUILayout.PropertyField(prop_WarningsDisabled, new GUIContent("Disable warnings"));
             EditorGUILayout.EndVertical();
 
 

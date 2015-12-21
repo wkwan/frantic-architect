@@ -12,25 +12,34 @@ using System.Linq;
 
 namespace TMPro
 {
-    // Class which contains the font also known as face information.
+    /// <summary>
+    /// Class that contains the basic information about the font.
+    /// </summary>
     [Serializable]
     public class FaceInfo
     {
         public string Name;
         public float PointSize;
-        public float Padding;
+        public float Scale;
+
+        public int CharacterCount;
+
         public float LineHeight;
         public float Baseline;
         public float Ascender;
         public float Descender;
         public float CenterLine;
+
         public float SuperscriptOffset;
         public float SubscriptOffset;
         public float SubSize;
+
         public float Underline;
         public float UnderlineThickness;
+
         public float TabWidth;
-        public int CharacterCount;
+
+        public float Padding;
         public float AtlasWidth;
         public float AtlasHeight;
     }
@@ -38,26 +47,16 @@ namespace TMPro
 
     // Class which contains the Glyph Info / Character definition for each character contained in the font asset.
     [Serializable]
-    public class GlyphInfo
+    public class TMP_Glyph : TMP_TextElement
     {
-        public int id;
-        public float x;
-        public float y;
-        public float width;
-        public float height;
-        public float xOffset;
-        public float yOffset;
-        public float xAdvance;
-
-
         /// <summary>
         /// Function to create a deep copy of a GlyphInfo.
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GlyphInfo Clone (GlyphInfo source)
+        public static TMP_Glyph Clone (TMP_Glyph source)
         {
-            GlyphInfo copy = new GlyphInfo();
+            TMP_Glyph copy = new TMP_Glyph();
 
             copy.id = source.id;
             copy.x = source.x;

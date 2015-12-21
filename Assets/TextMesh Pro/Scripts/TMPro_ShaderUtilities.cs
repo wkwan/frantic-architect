@@ -56,14 +56,14 @@ namespace TMPro
         public static int ID_EnvMatrix;
         public static int ID_EnvMatrixRotation;
 
-        public static int ID_MaskID;
-        public static int ID_MaskCoord; 
+        //public static int ID_MaskID;
+        public static int ID_MaskCoord;
+        public static int ID_ClipRect; 
         public static int ID_MaskSoftnessX; 
         public static int ID_MaskSoftnessY; 
         public static int ID_VertexOffsetX; 
         public static int ID_VertexOffsetY;
         public static int ID_UseClipRect;
-        public static int ID_ClipRect;
 
         public static int ID_StencilID;
         public static int ID_StencilComp;
@@ -140,8 +140,8 @@ namespace TMPro
                 ID_GlowPower = Shader.PropertyToID("_GlowPower");
                 ID_GlowOuter = Shader.PropertyToID("_GlowOuter");
 
-                ID_MaskID = Shader.PropertyToID("_MaskID");
-                ID_MaskCoord = Shader.PropertyToID("_ClipRect");
+                //ID_MaskID = Shader.PropertyToID("_MaskID");
+                ID_MaskCoord = Shader.PropertyToID("_MaskCoord");
                 ID_ClipRect = Shader.PropertyToID("_ClipRect");
                 ID_UseClipRect = Shader.PropertyToID("_UseClipRect");
                 ID_MaskSoftnessX = Shader.PropertyToID("_MaskSoftnessX");
@@ -240,7 +240,7 @@ namespace TMPro
         // Function to check if Masking is enabled
         public static bool IsMaskingEnabled(Material material)
         {
-            if (material == null || !material.HasProperty(ShaderUtilities.ID_MaskCoord))
+            if (material == null || !material.HasProperty(ShaderUtilities.ID_ClipRect))
                 return false;
 
             if (material.shaderKeywords.Contains(ShaderUtilities.Keyword_MASK_SOFT) || material.shaderKeywords.Contains(ShaderUtilities.Keyword_MASK_HARD) || material.shaderKeywords.Contains(ShaderUtilities.Keyword_MASK_TEX))

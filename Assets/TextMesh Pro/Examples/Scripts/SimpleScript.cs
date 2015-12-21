@@ -40,10 +40,10 @@ namespace TMPro.Examples
             //textMeshPro.lineJustification = LineJustificationTypes.Center; 
             //textMeshPro.characterSpacing = 0.2f;
             //m_textMeshPro.enableCulling = true;
-            //textMeshPro.enableWordWrapping = true; 
+            m_textMeshPro.enableWordWrapping = false; 
             //textMeshPro.lineLength = 60;
 
-            //textMeshPro.fontColor = new Color32(255, 255, 255, 255);      
+            //textMeshPro.fontColor = new Color32(255, 255, 255, 255);
 
             /*
             for (int i = 0; i <= 1000000; i++)

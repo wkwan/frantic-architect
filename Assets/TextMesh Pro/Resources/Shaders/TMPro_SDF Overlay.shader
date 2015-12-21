@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 Stephan Schaem & Stephan Bouchard - All Rights Reserved
+// Copyright (C) 2014 - 2015 Stephan Schaem - All Rights Reserved
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
@@ -71,8 +71,8 @@ Properties {
 
 	_VertexOffsetX		("Vertex OffsetX", float) = 0
 	_VertexOffsetY		("Vertex OffsetY", float) = 0
-	_MaskID				("Mask ID", float) = 0
-	_ClipRect			("Mask Coords", vector) = (0,0,0,0)
+	//_MaskID				("Mask ID", float) = 0
+	_MaskCoord			("Mask Coordinates", vector) = (0, 0, 100000, 100000)
 	_MaskSoftnessX		("Mask SoftnessX", float) = 0
 	_MaskSoftnessY		("Mask SoftnessY", float) = 0
 }
@@ -105,8 +105,12 @@ SubShader {
 		#pragma glsl
 
 		#include "UnityCG.cginc"
+		#include "UnityUI.cginc"
 		#include "TMPro_Properties.cginc"
 		#include "TMPro.cginc"
+
+		bool	_UseClipRect;
+		float4	_ClipRect;
 
 		struct vertex_t {
 			float4	vertex			: POSITION;
@@ -186,18 +190,18 @@ SubShader {
 				input.color, faceColor, outlineColor,
 				float4(input.texcoord0, UnpackUV(input.texcoord1.x)),
 				float4(alphaClip, scale, bias, weight),
-				float4(vert.xy - _ClipRect.xy, .5/pixelSize.xy),
+				float4(vert.xy, 0.5 / pixelSize.xy),
 				mul((float3x3)_EnvMatrix, _WorldSpaceCameraPos.xyz - mul(_Object2World, vert).xyz),
 			#if (UNDERLAY_ON || UNDERLAY_INNER)
 				float4(input.texcoord0 + bOffset, bScale, bBias),
-        underlayColor,
+				underlayColor,
 			#endif
 			};
 
 			return output;
 		}
 
-		fixed4 PixShader(pixel_t input) : COLOR
+		fixed4 PixShader(pixel_t input) : SV_Target
 		{
 			float c = tex2D(_MainTex, input.texcoords.xy).a;
 		#ifndef UNDERLAY_ON
@@ -256,16 +260,20 @@ SubShader {
 			faceColor.rgb += glowColor.rgb * glowColor.a * input.color.a;
 		#endif
 
+		// Support for 2D RectMask
+		if (_UseClipRect)
+			faceColor *= UnityGet2DClipping(input.mask.xy, _ClipRect);
+
 		#if MASK_HARD
-			float2 m = 1-saturate((abs(input.mask.xy) - _ClipRect.zw) * input.mask.zw);
-			faceColor *= m.x*m.y;
+			half2 m = 1 - saturate((abs(input.mask.xy) - _MaskCoord.zw) * input.mask.zw);
+			faceColor *= m.x * m.y;
 		#endif
 
 		#if MASK_SOFT
-			float2 s = half2(_MaskSoftnessX, _MaskSoftnessY)*input.mask.zw;
-			float2 m = 1-saturate(((abs(input.mask.xy) - _ClipRect.zw) * input.mask.zw+s) / (1+s));
+			half2 s = half2(_MaskSoftnessX, _MaskSoftnessY) * input.mask.zw;
+			half2 m = 1 - saturate(((abs(input.mask.xy) - _MaskCoord.zw) * input.mask.zw + s) / (1 + s));
 			m *= m;
-			faceColor *= m.x*m.y;
+			faceColor *= m.x * m.y;
 		#endif
 
 			return faceColor;

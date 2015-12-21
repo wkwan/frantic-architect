@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 Stephan Schaem & Stephan Bouchard - All Rights Reserved
+// Copyright (C) 2014 - 2015 Stephan Schaem - All Rights Reserved
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
@@ -41,8 +41,8 @@ Properties { // Serialized
 
 	_VertexOffsetX		("Vertex OffsetX", float) = 0
 	_VertexOffsetY		("Vertex OffsetY", float) = 0
-	_MaskID				("Mask ID", float) = 0
-	_ClipRect			("Mask Coords", vector) = (0,0,100000,100000)
+	//_MaskID				("Mask ID", float) = 0
+	_MaskCoord			("Mask Coordinates", vector) = (0, 0, 100000, 100000)
 	_MaskSoftnessX		("Mask SoftnessX", float) = 0
 	_MaskSoftnessY		("Mask SoftnessY", float) = 0
 }
@@ -66,12 +66,16 @@ SubShader {
 		#pragma vertex VertShader
 		#pragma fragment PixShader
 		#pragma fragmentoption ARB_precision_hint_fastest
+		#pragma shader_feature __ OUTLINE_ON
 		#pragma shader_feature __ UNDERLAY_ON UNDERLAY_INNER
 		#pragma shader_feature __ MASK_HARD MASK_SOFT
 
 		#include "UnityCG.cginc"
-
+		#include "UnityUI.cginc"
 		#include "TMPro_Properties.cginc"
+
+		bool	_UseClipRect;
+		float4	_ClipRect;
 
 		struct vertex_t {
 			float4	vertex			: POSITION;
@@ -146,7 +150,7 @@ SubShader {
 				outlineColor,
 				input.texcoord0,
 				half4(scale, bias - outline, bias + outline, bias),
-				half4(vert.xy- _ClipRect.xy, .5/pixelSize.xy),
+				half4(vert.xy, 0.5 / pixelSize.xy),
 			#if (UNDERLAY_ON | UNDERLAY_INNER)
 				input.texcoord0+layerOffset,
 				layerColor,
@@ -157,12 +161,16 @@ SubShader {
 			return output;
 		}
 
-		fixed4 PixShader(pixel_t input) : COLOR
+		fixed4 PixShader(pixel_t input) : SV_Target
 		{
 			half d = tex2D(_MainTex, input.texcoord0).a * input.param.x;
 			half sd = saturate(d - input.param.z);
-			fixed4 c = lerp(input.outlineColor, input.faceColor, saturate(d - input.param.z));
+			half4 c = input.faceColor * saturate(d - input.param.w);
+
+		#ifdef OUTLINE_ON
+			c = lerp(input.outlineColor, input.faceColor, saturate(d - input.param.z));
 			c *= saturate(d - input.param.y);
+		#endif
 
 		#if UNDERLAY_ON
 			d = tex2D(_MainTex, input.texcoord1).a * input.underlayParam.x;
@@ -174,14 +182,19 @@ SubShader {
 			c += input.underlayColor * (1 - saturate(d - input.underlayParam.y)) * sd * (1 - c.a);
 		#endif
 
+		// Support for 2D RectMask
+		if (_UseClipRect)
+			c *= UnityGet2DClipping(input.mask.xy, _ClipRect);
+
+
 		#if MASK_HARD
-			half2 m = 1-saturate((abs(input.mask.xy) - _ClipRect.zw)*input.mask.zw);
-			c *= m.x*m.y;
+			half2 m = 1 - saturate((abs(input.mask.xy) - _MaskCoord.zw) * input.mask.zw);
+			c *= m.x * m.y;
 		#endif
 
 		#if MASK_SOFT
 			half2 s = half2(_MaskSoftnessX, _MaskSoftnessY) * input.mask.zw;
-			half2 m = 1 - saturate(((abs(input.mask.xy) - _ClipRect.zw) * input.mask.zw + s) / (1 + s));
+			half2 m = 1 - saturate(((abs(input.mask.xy) - _MaskCoord.zw) * input.mask.zw + s) / (1 + s));
 			m *= m;
 			c *= m.x * m.y;
 		#endif

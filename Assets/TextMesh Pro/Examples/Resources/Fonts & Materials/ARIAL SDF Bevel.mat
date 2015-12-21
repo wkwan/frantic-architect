@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: ARIAL SDF Bevel
   m_Shader: {fileID: 4800000, guid: cafd18099dfc0114896e0a8b277b81b6, type: 3}
-  m_ShaderKeywords: BEVEL_ON MASK_OFF UNDERLAY_ON
+  m_ShaderKeywords: BEVEL_ON MASK_OFF OUTLINE_ON UNDERLAY_ON
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -19,7 +19,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2835806, guid: 316f956b856b45c448987b5018ec3ef4, type: 2}
+          m_Texture: {fileID: 2836262, guid: 316f956b856b45c448987b5018ec3ef4, type: 2}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -50,27 +50,14 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _MaskTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
-      data:
-        first:
-          name: _Stencil
-        second: 1
-      data:
-        first:
-          name: _StencilComp
-        second: 8
-      data:
-        first:
-          name: _StencilOp
-        second: 0
-      data:
-        first:
-          name: _StencilReadMask
-        second: 255
-      data:
-        first:
-          name: _StencilWriteMask
-        second: 255
       data:
         first:
           name: _FaceDilate
@@ -85,8 +72,136 @@ Material:
         second: 0
       data:
         first:
+          name: _UnderlayOffsetX
+        second: .453000009
+      data:
+        first:
+          name: _UnderlayOffsetY
+        second: -.345999986
+      data:
+        first:
+          name: _UnderlayDilate
+        second: 0
+      data:
+        first:
+          name: _UnderlaySoftness
+        second: .182999998
+      data:
+        first:
+          name: _WeightNormal
+        second: 0
+      data:
+        first:
+          name: _WeightBold
+        second: .5
+      data:
+        first:
+          name: _ShaderFlags
+        second: 0
+      data:
+        first:
+          name: _ScaleRatioA
+        second: .899999976
+      data:
+        first:
+          name: _ScaleRatioB
+        second: .75
+      data:
+        first:
+          name: _ScaleRatioC
+        second: .810000062
+      data:
+        first:
+          name: _TextureWidth
+        second: 1024
+      data:
+        first:
+          name: _TextureHeight
+        second: 1024
+      data:
+        first:
+          name: _GradientScale
+        second: 10
+      data:
+        first:
+          name: _ScaleX
+        second: 1
+      data:
+        first:
+          name: _ScaleY
+        second: 1
+      data:
+        first:
+          name: _PerspectiveFilter
+        second: 0
+      data:
+        first:
+          name: _VertexOffsetX
+        second: 0
+      data:
+        first:
+          name: _VertexOffsetY
+        second: 0
+      data:
+        first:
+          name: _MaskSoftnessX
+        second: 0
+      data:
+        first:
+          name: _MaskSoftnessY
+        second: 0
+      data:
+        first:
+          name: _MaskID
+        second: 0
+      data:
+        first:
+          name: _FaceShininess
+        second: 0
+      data:
+        first:
           name: _Bevel
         second: .5
+      data:
+        first:
+          name: _LightAngle
+        second: 3.14199996
+      data:
+        first:
+          name: _GlowOffset
+        second: 0
+      data:
+        first:
+          name: _GlowPower
+        second: .75
+      data:
+        first:
+          name: _GlowOuter
+        second: .0500000007
+      data:
+        first:
+          name: _Stencil
+        second: 1
+      data:
+        first:
+          name: _StencilComp
+        second: 8
+      data:
+        first:
+          name: _OutlineShininess
+        second: 0
+      data:
+        first:
+          name: _StencilOp
+        second: 0
+      data:
+        first:
+          name: _StencilReadMask
+        second: 255
+      data:
+        first:
+          name: _StencilWriteMask
+        second: 255
       data:
         first:
           name: _BevelOffset
@@ -103,10 +218,6 @@ Material:
         first:
           name: _BevelRoundness
         second: 0
-      data:
-        first:
-          name: _LightAngle
-        second: 3.14199996
       data:
         first:
           name: _SpecularPower
@@ -133,112 +244,8 @@ Material:
         second: 0
       data:
         first:
-          name: _UnderlayOffsetX
-        second: .453000009
-      data:
-        first:
-          name: _UnderlayOffsetY
-        second: -.345999986
-      data:
-        first:
-          name: _UnderlayDilate
-        second: 0
-      data:
-        first:
-          name: _UnderlaySoftness
-        second: .182999998
-      data:
-        first:
-          name: _GlowOffset
-        second: 0
-      data:
-        first:
           name: _GlowInner
         second: .0500000007
-      data:
-        first:
-          name: _GlowOuter
-        second: .0500000007
-      data:
-        first:
-          name: _GlowPower
-        second: .75
-      data:
-        first:
-          name: _WeightNormal
-        second: 0
-      data:
-        first:
-          name: _WeightBold
-        second: .5
-      data:
-        first:
-          name: _ShaderFlags
-        second: 0
-      data:
-        first:
-          name: _ScaleRatioA
-        second: .909090936
-      data:
-        first:
-          name: _ScaleRatioB
-        second: .75
-      data:
-        first:
-          name: _ScaleRatioC
-        second: .818181813
-      data:
-        first:
-          name: _TextureWidth
-        second: 1024
-      data:
-        first:
-          name: _TextureHeight
-        second: 1024
-      data:
-        first:
-          name: _GradientScale
-        second: 11
-      data:
-        first:
-          name: _ScaleX
-        second: 1
-      data:
-        first:
-          name: _ScaleY
-        second: 1
-      data:
-        first:
-          name: _PerspectiveFilter
-        second: .875
-      data:
-        first:
-          name: _VertexOffsetX
-        second: 0
-      data:
-        first:
-          name: _VertexOffsetY
-        second: 0
-      data:
-        first:
-          name: _MaskID
-        second: 0
-      data:
-        first:
-          name: _MaskSoftnessX
-        second: 0
-      data:
-        first:
-          name: _MaskSoftnessY
-        second: 0
-      data:
-        first:
-          name: _FaceShininess
-        second: 0
-      data:
-        first:
-          name: _OutlineShininess
-        second: 0
       data:
         first:
           name: _ColorMask
@@ -258,6 +265,10 @@ Material:
         second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
+          name: _ClipRect
+        second: {r: 0, g: 0, b: 100000, a: 100000}
+      data:
+        first:
           name: _FaceColor
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
@@ -266,20 +277,20 @@ Material:
         second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
-          name: _SpecularColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
           name: _UnderlayColor
         second: {r: 0, g: 0, b: 0, a: .5}
+      data:
+        first:
+          name: _MaskCoord
+        second: {r: 0, g: 0, b: 90, a: 40}
       data:
         first:
           name: _GlowColor
         second: {r: 0, g: 1, b: 0, a: .5}
       data:
         first:
-          name: _MaskCoord
-        second: {r: 0, g: 0, b: 90, a: 40}
+          name: _SpecularColor
+        second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
           name: _ReflectColor

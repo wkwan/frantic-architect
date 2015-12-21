@@ -11,6 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aafc3c7b9e915d64e8ec3d2c88b3a231, type: 3}
   m_Name: TMP Settings
   m_EditorClassIdentifier: 
+  enableWordWrapping: 1
+  enableKerning: 1
+  enableExtraPadding: 0
+  warningsDisabled: 1
   fontAsset: {fileID: 11400000, guid: 316f956b856b45c448987b5018ec3ef4, type: 2}
-  spriteAsset: {fileID: 11400000, guid: 72112c334b1b98d48b69106e082020ef, type: 2}
+  spriteAsset: {fileID: 11400000, guid: 273ca6c80b4b5d746b5e548f532bffd8, type: 2}
   styleSheet: {fileID: 11400000, guid: 54d1085f9a2fdea4587fcfc7dddcd4bc, type: 2}

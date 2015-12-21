@@ -53,6 +53,8 @@ namespace TMPro.Examples
         /// <returns></returns>
         IEnumerator RevealCharacters(TextMeshPro textComponent)
         {
+            textComponent.ForceMeshUpdate();
+
             TMP_TextInfo textInfo = textComponent.textInfo;
 
             int totalVisibleCharacters = textInfo.characterCount; // Get # of Visible Character in text object
@@ -84,6 +86,8 @@ namespace TMPro.Examples
         /// <returns></returns>
         IEnumerator RevealCharacters(TextMeshProUGUI textComponent)
         {
+            textComponent.ForceMeshUpdate();
+
             TMP_TextInfo textInfo = textComponent.textInfo;
 
             int totalVisibleCharacters = textInfo.characterCount; // Get # of Visible Character in text object
@@ -115,6 +119,8 @@ namespace TMPro.Examples
         /// <returns></returns>
         IEnumerator RevealWords(TextMeshPro textComponent)
         {
+            textComponent.ForceMeshUpdate();
+
             int totalWordCount = textComponent.textInfo.wordCount;
             int totalVisibleCharacters = textComponent.textInfo.characterCount; // Get # of Visible Character in text object
             int counter = 0;
@@ -154,6 +160,8 @@ namespace TMPro.Examples
         /// <returns></returns>
         IEnumerator RevealWords(TextMeshProUGUI textComponent)
         {
+            textComponent.ForceMeshUpdate();
+
             int totalWordCount = textComponent.textInfo.wordCount;
             int totalVisibleCharacters = textComponent.textInfo.characterCount; // Get # of Visible Character in text object
             int counter = 0;

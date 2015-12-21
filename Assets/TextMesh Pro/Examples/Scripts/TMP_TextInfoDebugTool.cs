@@ -174,14 +174,14 @@ namespace TMPro.Examples
                 DrawRectangle(bottomLeft, topLeft, topRight, bottomRight, color);
 
                 // Draw Ascender & Descender for each character.
-                //Vector3 ascenderStart = new Vector3(topLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.topLine, 0)).y, 0);
-                //Vector3 ascenderEnd = new Vector3(topRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.topLine, 0)).y, 0);
-                //Vector3 descenderStart = new Vector3(bottomLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.bottomLine, 0)).y, 0);
-                //Vector3 descenderEnd = new Vector3(bottomRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.bottomLine, 0)).y, 0);
+                Vector3 ascenderStart = new Vector3(topLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.ascender, 0)).y, 0);
+                Vector3 ascenderEnd = new Vector3(topRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.ascender, 0)).y, 0);
+                Vector3 descenderStart = new Vector3(bottomLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.descender, 0)).y, 0);
+                Vector3 descenderEnd = new Vector3(bottomRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.descender, 0)).y, 0);
 
-                //Gizmos.color = Color.cyan;
-                //Gizmos.DrawLine(ascenderStart, ascenderEnd);
-                //Gizmos.DrawLine(descenderStart, descenderEnd);
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawLine(ascenderStart, ascenderEnd);
+                Gizmos.DrawLine(descenderStart, descenderEnd);
 
             }
         }
@@ -216,14 +216,14 @@ namespace TMPro.Examples
                 DrawRectangle(bottomLeft, topLeft, topRight, bottomRight, color);
 
                 // Draw Ascender & Descender for each character.
-                //Vector3 ascenderStart = new Vector3(topLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.topLine, 0)).y, 0);
-                //Vector3 ascenderEnd = new Vector3(topRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.topLine, 0)).y, 0);
-                //Vector3 descenderStart = new Vector3(bottomLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.bottomLine, 0)).y, 0);
-                //Vector3 descenderEnd = new Vector3(bottomRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.bottomLine, 0)).y, 0);
+                Vector3 ascenderStart = new Vector3(topLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.ascender, 0)).y, 0);
+                Vector3 ascenderEnd = new Vector3(topRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.ascender, 0)).y, 0);
+                Vector3 descenderStart = new Vector3(bottomLeft.x, m_Transform.TransformPoint(new Vector3(0, cInfo.descender, 0)).y, 0);
+                Vector3 descenderEnd = new Vector3(bottomRight.x, m_Transform.TransformPoint(new Vector3(0, cInfo.descender, 0)).y, 0);
 
-                //Gizmos.color = Color.cyan;
-                //Gizmos.DrawLine(ascenderStart, ascenderEnd);
-                //Gizmos.DrawLine(descenderStart, descenderEnd);
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawLine(ascenderStart, ascenderEnd);
+                Gizmos.DrawLine(descenderStart, descenderEnd);
             }
         }
 
@@ -264,15 +264,15 @@ namespace TMPro.Examples
                                              (text.OverflowMode == TextOverflowModes.Page && currentCharInfo.pageNumber + 1 != text.pageToDisplay) ? false : true;
 
                     // Track Max Ascender and Min Descender
-                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.topLine);
-                    minDescender = Mathf.Min(minDescender, currentCharInfo.bottomLine);
+                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.ascender);
+                    minDescender = Mathf.Min(minDescender, currentCharInfo.descender);
 
                     if (isBeginRegion == false && isCharacterVisible)
                     {
                         isBeginRegion = true;
 
-                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0);
-                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0);
+                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0);
+                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0);
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
@@ -370,15 +370,15 @@ namespace TMPro.Examples
                                              (text.OverflowMode == TextOverflowModes.Page && currentCharInfo.pageNumber + 1 != text.pageToDisplay) ? false : true;
 
                     // Track Max Ascender and Min Descender
-                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.topLine);
-                    minDescender = Mathf.Min(minDescender, currentCharInfo.bottomLine);
+                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.ascender);
+                    minDescender = Mathf.Min(minDescender, currentCharInfo.descender);
 
                     if (isBeginRegion == false && isCharacterVisible)
                     {
                         isBeginRegion = true;
 
-                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0);
-                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0);
+                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0);
+                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0);
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
@@ -462,10 +462,10 @@ namespace TMPro.Examples
 
                 Color32 linkColor = Color.cyan;
 
-                // Iterate through each character of the word
-                for (int j = 0; j < linkInfo.characterCount; j++)
+                // Iterate through each character of the link text
+                for (int j = 0; j < linkInfo.linkTextLength; j++)
                 {
-                    int characterIndex = linkInfo.firstCharacterIndex + j;
+                    int characterIndex = linkInfo.linkTextfirstCharacterIndex + j;
                     TMP_CharacterInfo currentCharInfo = textInfo.characterInfo[characterIndex];
                     int currentLine = currentCharInfo.lineNumber;
 
@@ -474,20 +474,20 @@ namespace TMPro.Examples
                                              (text.OverflowMode == TextOverflowModes.Page && currentCharInfo.pageNumber + 1 != text.pageToDisplay) ? false : true;
 
                     // Track Max Ascender and Min Descender
-                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.topLine);
-                    minDescender = Mathf.Min(minDescender, currentCharInfo.bottomLine);
+                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.ascender);
+                    minDescender = Mathf.Min(minDescender, currentCharInfo.descender);
 
                     if (isBeginRegion == false && isCharacterVisible)
                     {
                         isBeginRegion = true;
 
-                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0);
-                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0);
+                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0);
+                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0);
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
                         // If Link is one character
-                        if (linkInfo.characterCount == 1)
+                        if (linkInfo.linkTextLength == 1)
                         {
                             isBeginRegion = false;
 
@@ -504,7 +504,7 @@ namespace TMPro.Examples
                     }
 
                     // Last Character of Link
-                    if (isBeginRegion && j == linkInfo.characterCount - 1)
+                    if (isBeginRegion && j == linkInfo.linkTextLength - 1)
                     {
                         isBeginRegion = false;
 
@@ -567,9 +567,9 @@ namespace TMPro.Examples
                 Color32 linkColor = Color.cyan;
 
                 // Iterate through each character of the word
-                for (int j = 0; j < linkInfo.characterCount; j++)
+                for (int j = 0; j < linkInfo.linkTextLength; j++)
                 {
-                    int characterIndex = linkInfo.firstCharacterIndex + j;
+                    int characterIndex = linkInfo.linkTextfirstCharacterIndex + j;
                     TMP_CharacterInfo currentCharInfo = textInfo.characterInfo[characterIndex];
                     int currentLine = currentCharInfo.lineNumber;
 
@@ -578,20 +578,20 @@ namespace TMPro.Examples
                                              (text.OverflowMode == TextOverflowModes.Page && currentCharInfo.pageNumber + 1 != text.pageToDisplay) ? false : true;
 
                     // Track Max Ascender and Min Descender
-                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.topLine);
-                    minDescender = Mathf.Min(minDescender, currentCharInfo.bottomLine);
+                    maxAscender = Mathf.Max(maxAscender, currentCharInfo.ascender);
+                    minDescender = Mathf.Min(minDescender, currentCharInfo.descender);
 
                     if (isBeginRegion == false && isCharacterVisible)
                     {
                         isBeginRegion = true;
 
-                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.bottomLine, 0);
-                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.topLine, 0);
+                        bottomLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.descender, 0);
+                        topLeft = new Vector3(currentCharInfo.bottomLeft.x, currentCharInfo.ascender, 0);
 
                         //Debug.Log("Start Word Region at [" + currentCharInfo.character + "]");
 
                         // If Link is one character
-                        if (linkInfo.characterCount == 1)
+                        if (linkInfo.linkTextLength == 1)
                         {
                             isBeginRegion = false;
 
@@ -608,7 +608,7 @@ namespace TMPro.Examples
                     }
 
                     // Last Character of Link
-                    if (isBeginRegion && j == linkInfo.characterCount - 1)
+                    if (isBeginRegion && j == linkInfo.linkTextLength - 1)
                     {
                         isBeginRegion = false;
 
@@ -669,6 +669,8 @@ namespace TMPro.Examples
                     // Get Bottom Left and Top Right position of each line
                     float ascender = lineInfo.ascender;
                     float descender = lineInfo.descender;
+                    float baseline = lineInfo.baseline;
+                    float maxAdvance = lineInfo.maxAdvance;
                     Vector3 bottomLeft = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].bottomLeft.x, descender, 0));
                     Vector3 topLeft = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].bottomLeft.x, ascender, 0));
                     Vector3 topRight = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.lastCharacterIndex].topRight.x, ascender, 0));
@@ -676,11 +678,20 @@ namespace TMPro.Examples
 
                     DrawRectangle(bottomLeft, topLeft, topRight, bottomRight, Color.green);
 
-                    Vector3 baselineStart = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].bottomLeft.x, textInfo.characterInfo[lineInfo.firstCharacterIndex].baseLine, 0));
-                    Vector3 baselineEnd = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.lastCharacterIndex].topRight.x, textInfo.characterInfo[lineInfo.lastCharacterIndex].baseLine, 0));
+                    Vector3 bottomOrigin = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].origin, descender, 0));
+                    Vector3 topOrigin = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].origin, ascender, 0));
+                    Vector3 bottomAdvance = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].origin + maxAdvance, descender, 0));
+                    Vector3 topAdvance = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].origin + maxAdvance, ascender, 0));
+
+                    DrawDottedRectangle(bottomOrigin, topOrigin, topAdvance, bottomAdvance, Color.green);
+
+                    Vector3 baselineStart = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.firstCharacterIndex].bottomLeft.x, baseline, 0));
+                    Vector3 baselineEnd = m_Transform.TransformPoint(new Vector3(textInfo.characterInfo[lineInfo.lastCharacterIndex].topRight.x, baseline, 0));
 
                     Gizmos.color = Color.cyan;
                     Gizmos.DrawLine(baselineStart, baselineEnd);
+
+
                 //}
                 //else
                 //{

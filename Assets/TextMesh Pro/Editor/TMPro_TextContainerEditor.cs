@@ -40,7 +40,7 @@ namespace TMPro.EditorUtilities
             margins_prop = serializedObject.FindProperty("m_margins");
 
             m_textContainer = (TextContainer)target;
-            m_transform = Selection.activeGameObject.transform;
+            m_transform = m_textContainer.transform;
 
 
             // Get the UI Skin and Styles for the various Editors

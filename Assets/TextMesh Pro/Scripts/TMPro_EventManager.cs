@@ -25,7 +25,7 @@ namespace TMPro
 
         //public delegate void FontProperty_Event_Handler(bool isChanged, TextMeshProFont font);
         //public static event FontProperty_Event_Handler FONT_PROPERTY_EVENT;
-        public static readonly FastAction<bool, TextMeshProFont> FONT_PROPERTY_EVENT = new FastAction<bool, TextMeshProFont>();
+        public static readonly FastAction<bool, TMP_FontAsset> FONT_PROPERTY_EVENT = new FastAction<bool, TMP_FontAsset>();
 
         //public delegate void SpriteAssetProperty_Event_Handler(bool isChanged, Object obj);
         //public static event SpriteAssetProperty_Event_Handler SPRITE_ASSET_PROPERTY_EVENT;
@@ -66,12 +66,12 @@ namespace TMPro
 
 
 
-        static TMPro_EventManager()
-        {
-            // Register to the willRenderCanvases callback once
-            // then the WILL_RENDER_CANVASES FastAction will handle the rest
-            Canvas.willRenderCanvases += WILL_RENDER_CANVASES.Call;
-        }
+        //static TMPro_EventManager()
+        //{
+        //    // Register to the willRenderCanvases callback once
+        //    // then the WILL_RENDER_CANVASES FastAction will handle the rest
+        //    Canvas.willRenderCanvases += WILL_RENDER_CANVASES.Call;
+        //}
 
         public static void ON_PRE_RENDER_OBJECT_CHANGED()
         {
@@ -83,7 +83,7 @@ namespace TMPro
             MATERIAL_PROPERTY_EVENT.Call(isChanged, mat);
         }
 
-        public static void ON_FONT_PROPERTY_CHANGED(bool isChanged, TextMeshProFont font)
+        public static void ON_FONT_PROPERTY_CHANGED(bool isChanged, TMP_FontAsset font)
         {
             FONT_PROPERTY_EVENT.Call(isChanged, font);
         }

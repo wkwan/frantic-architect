@@ -50,10 +50,25 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _MaskTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
           name: _FaceDilate
+        second: 0
+      data:
+        first:
+          name: _OutlineWidth
+        second: 0
+      data:
+        first:
+          name: _OutlineSoftness
         second: 0
       data:
         first:
@@ -81,12 +96,28 @@ Material:
         second: .75
       data:
         first:
-          name: _OutlineWidth
+          name: _ShaderFlags
         second: 0
       data:
         first:
-          name: _OutlineSoftness
-        second: 0
+          name: _ScaleRatioA
+        second: .833333313
+      data:
+        first:
+          name: _ScaleRatioB
+        second: .833333313
+      data:
+        first:
+          name: _ScaleRatioC
+        second: .833333313
+      data:
+        first:
+          name: _TextureWidth
+        second: 512
+      data:
+        first:
+          name: _TextureHeight
+        second: 512
       data:
         first:
           name: _GradientScale
@@ -102,15 +133,27 @@ Material:
       data:
         first:
           name: _PerspectiveFilter
-        second: .875
+        second: 0
       data:
         first:
-          name: _TextureWidth
-        second: 512
+          name: _VertexOffsetX
+        second: 0
       data:
         first:
-          name: _TextureHeight
-        second: 512
+          name: _VertexOffsetY
+        second: 0
+      data:
+        first:
+          name: _MaskSoftnessX
+        second: 0
+      data:
+        first:
+          name: _MaskSoftnessY
+        second: 0
+      data:
+        first:
+          name: _MaskID
+        second: 0
       data:
         first:
           name: _Bevel
@@ -133,48 +176,12 @@ Material:
         second: 0
       data:
         first:
-          name: _MaskID
-        second: 0
-      data:
-        first:
-          name: _MaskSoftnessX
-        second: 0
-      data:
-        first:
-          name: _MaskSoftnessY
-        second: 0
-      data:
-        first:
-          name: _VertexOffsetX
-        second: 0
-      data:
-        first:
-          name: _VertexOffsetY
-        second: 0
-      data:
-        first:
           name: _Stencil
         second: 0
       data:
         first:
           name: _StencilComp
         second: 8
-      data:
-        first:
-          name: _ShaderFlags
-        second: 0
-      data:
-        first:
-          name: _ScaleRatioA
-        second: .833333313
-      data:
-        first:
-          name: _ScaleRatioB
-        second: .833333313
-      data:
-        first:
-          name: _ScaleRatioC
-        second: .833333313
       data:
         first:
           name: _StencilOp
@@ -250,16 +257,24 @@ Material:
     m_Colors:
       data:
         first:
+          name: _ClipRect
+        second: {r: 0, g: 0, b: 100000, a: 100000}
+      data:
+        first:
           name: _FaceColor
         second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _OutlineColor
+        second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
           name: _UnderlayColor
         second: {r: 0, g: 0, b: 0, a: .5}
       data:
         first:
-          name: _OutlineColor
-        second: {r: 0, g: 0, b: 0, a: 1}
+          name: _MaskCoord
+        second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
           name: _EnvMatrixRotation
@@ -268,10 +283,6 @@ Material:
         first:
           name: _GlowColor
         second: {r: 0, g: 1, b: 0, a: .5}
-      data:
-        first:
-          name: _MaskCoord
-        second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
           name: _SpecularColor
@@ -293,11 +304,12 @@ Texture2D:
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
+  serializedVersion: 2
   m_Width: 512
   m_Height: 512
   m_CompleteImageSize: 262144
   m_TextureFormat: 1
-  m_MipMap: 0
+  m_MipCount: 1
   m_IsReadable: 1
   m_ReadAllowed: 1
   m_AlphaIsTransparency: 0
@@ -327,7 +339,8 @@ MonoBehaviour:
   m_fontInfo:
     Name: Arcade
     PointSize: 104
-    Padding: 0
+    Scale: 1
+    CharacterCount: 96
     LineHeight: 104
     Baseline: 0
     Ascender: 83.21875
@@ -338,14 +351,14 @@ MonoBehaviour:
     SubSize: .5
     Underline: -14.8720007
     UnderlineThickness: 2.08000016
-    TabWidth: 540.9375
-    CharacterCount: 96
+    TabWidth: 260
+    Padding: 0
     AtlasWidth: 512
     AtlasHeight: 512
-  fontHashCode: -1696940795
+  fontHashCode: 357044065
   atlas: {fileID: 2859480}
   material: {fileID: 2173394}
-  materialHashCode: -1768635902
+  materialHashCode: -2143833654
   m_glyphInfoList:
   - id: 160
     x: 6
@@ -1116,10 +1129,13 @@ MonoBehaviour:
     yOffset: 83.1875
     xAdvance: 52
   m_kerningInfo:
-    kerningPairs: []
+    kerningPairs:
+    - AscII_Left: 116
+      AscII_Right: 101
+      XadvanceOffset: -1.94000006
   m_kerningPair:
-    AscII_Left: 0
-    AscII_Right: 0
+    AscII_Left: 116
+    AscII_Right: 101
     XadvanceOffset: 0
   fontCreationSettings:
     fontSourcePath: 
@@ -1134,8 +1150,9 @@ MonoBehaviour:
     fontStlyeModifier: 0
     fontRenderMode: 0
     fontKerning: 0
-  propertiesChanged: 0
-  NormalStyle: 0
-  BoldStyle: .75
-  ItalicStyle: 35
-  TabSize: 10
+  normalStyle: 0
+  normalSpacingOffset: 0
+  boldStyle: .75
+  boldSpacing: 7
+  italicStyle: 35
+  tabSize: 10

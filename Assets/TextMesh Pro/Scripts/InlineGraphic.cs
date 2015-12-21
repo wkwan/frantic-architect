@@ -42,7 +42,7 @@ namespace TMPro
 
         protected override void Awake()
         {
-            base.Awake();
+            //base.Awake();
 
             m_manager = GetComponentInParent<InlineGraphicManager>();
         }
@@ -50,13 +50,20 @@ namespace TMPro
 
         protected override void OnEnable()
         {
-            base.OnEnable();
+            //GraphicRegistry.UnregisterGraphicForCanvas(this.canvas, this);
+            //base.OnEnable();
 
             if (m_RectTransform == null) m_RectTransform = gameObject.GetComponent<RectTransform>();
 
             if (m_manager != null && m_manager.spriteAsset != null)
                 texture = m_manager.spriteAsset.spriteSheet;
         }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+        }
+
 
 #if UNITY_EDITOR
         protected override void OnValidate()
@@ -65,6 +72,18 @@ namespace TMPro
         }
 #endif
 
+
+        //protected override void OnBeforeTransformParentChanged()
+        //{
+        //    //GraphicRegistry.UnregisterGraphicForCanvas(this.canvas, this);
+        //}
+
+
+        protected override void OnTransformParentChanged()
+        {
+            //Debug.Log("OnTransformParentChanged()");
+            //base.OnTransformParentChanged();
+        }
 
         protected override void OnRectTransformDimensionsChange()
         {
@@ -77,6 +96,32 @@ namespace TMPro
         }
 
 
+        //protected override void OnCanvasHierarchyChanged()
+        //{
+        //    Debug.Log("OnCanvasHierarchyChanged()");
+
+        //    //base.OnCanvasHierarchyChanged();
+        //}
+
+
+        //public override void SetLayoutDirty()
+        //{
+        //    //base.SetLayoutDirty();
+        //}
+
+
+        //public override void SetVerticesDirty()
+        //{
+        //    //base.SetVerticesDirty();
+        //}
+
+
+        //public override void SetMaterialDirty()
+        //{
+        //    //base.SetMaterialDirty();
+        //}
+
+
         public new void UpdateMaterial()
         {
             base.UpdateMaterial();
@@ -87,18 +132,8 @@ namespace TMPro
         {
             // This function needs to be override otherwise Unity alters the content of the geometry.
             //Debug.Log("UpdateGeometry called.");
-            
         }
 
-
-        //protected override void OnFillVBO(List<UIVertex> vbo)
-        //{
-        //    base.OnFillVBO(vbo);
-        //    //Debug.Log("OnFillVBO called.");
-
-        //    //vbo = m_manager.uiVertex.ToList();
-
-        //}
     }
 }
 

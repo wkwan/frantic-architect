@@ -1,15 +1,17 @@
-﻿using UnityEngine;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
+﻿// Copyright (C) 2014 - 2015 Stephan Bouchard - All Rights Reserved
+// This code can only be used under the standard Unity Asset Store End User License Agreement
+// A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
+
+using UnityEngine;
+using System.Collections.Generic;
 
 
 namespace TMPro
 {
-    
+
     //[System.Serializable]
-    public class SpriteAsset : ScriptableObject
+    public class TMP_SpriteAsset : TMP_Asset
     {
 
         // The texture which contains the sprites.
@@ -19,7 +21,7 @@ namespace TMPro
         public Material material;
 
         // List which contains the SpriteInfo for the sprites contained in the sprite sheet.
-        public List<SpriteInfo> spriteInfoList;
+        public List<TMP_Sprite> spriteInfoList;
 
 
         // List which contains the individual sprites.

@@ -73,17 +73,26 @@ namespace TMPro.Examples
 
                     int vertexIndex = m_TextMeshPro.textInfo.characterInfo[charIndex].vertexIndex;
 
-                    UIVertex[] uiVertices = m_TextMeshPro.textInfo.meshInfo.uiVertices;
+                    //UIVertex[] uiVertices = m_TextMeshPro.textInfo.meshInfo[0].uiVertices;
+                    Color32[] vertexColors = m_TextMeshPro.textInfo.meshInfo[0].colors32;
 
-                    uiVertices[vertexIndex + 0].color = c;
-                    uiVertices[vertexIndex + 1].color = c;
-                    uiVertices[vertexIndex + 2].color = c;
-                    uiVertices[vertexIndex + 3].color = c;
+                    vertexColors[vertexIndex + 0] = c;
+                    vertexColors[vertexIndex + 1] = c;
+                    vertexColors[vertexIndex + 2] = c;
+                    vertexColors[vertexIndex + 3] = c;
 
-                    if (m_TextMeshPro.textInfo.characterInfo[charIndex].type == TMP_CharacterType.Character)
-                        m_TextMeshPro.canvasRenderer.SetVertices(uiVertices, uiVertices.Length);
-                    else if (m_TextMeshPro.textInfo.characterInfo[charIndex].type == TMP_CharacterType.Sprite)
-                        m_TextMeshPro.inlineGraphicManager.inlineGraphic.canvasRenderer.SetVertices(uiVertices, uiVertices.Length);
+                    if (m_TextMeshPro.textInfo.characterInfo[charIndex].elementType == TMP_TextElementType.Character)
+                    {
+                        Mesh mesh = m_TextMeshPro.textInfo.meshInfo[0].mesh;
+                        mesh.colors32 = vertexColors;
+
+                        m_TextMeshPro.canvasRenderer.SetMesh(mesh);
+                    }
+                    else if (m_TextMeshPro.textInfo.characterInfo[charIndex].elementType == TMP_TextElementType.Sprite)
+                    {
+                        // TODO Fix for Sprites
+                        //m_TextMeshPro.inlineGraphicManager.inlineGraphic.canvasRenderer.SetVertices(uiVertices, uiVertices.Length);
+                    }
 
                 }
                 #endregion
@@ -98,23 +107,26 @@ namespace TMPro.Examples
                 {
                     TMP_WordInfo wInfo = m_TextMeshPro.textInfo.wordInfo[m_selectedWord];
 
-                    // Get a reference to the uiVertices array.
-                    UIVertex[] uiVertices = m_TextMeshPro.textInfo.meshInfo.uiVertices;
+                    // Get a reference to the vertex color
+                    Color32[] vertexColors = m_TextMeshPro.textInfo.meshInfo[0].colors32;
 
                     // Iterate through each of the characters of the word.
                     for (int i = 0; i < wInfo.characterCount; i++)
                     {
                         int vertexIndex = m_TextMeshPro.textInfo.characterInfo[wInfo.firstCharacterIndex + i].vertexIndex;
 
-                        Color32 c = uiVertices[vertexIndex + 0].color.Tint(1.33333f);
+                        Color32 c = vertexColors[vertexIndex + 0].Tint(1.33333f);
 
-                        uiVertices[vertexIndex + 0].color = c;
-                        uiVertices[vertexIndex + 1].color = c;
-                        uiVertices[vertexIndex + 2].color = c;
-                        uiVertices[vertexIndex + 3].color = c;
+                        vertexColors[vertexIndex + 0] = c;
+                        vertexColors[vertexIndex + 1] = c;
+                        vertexColors[vertexIndex + 2] = c;
+                        vertexColors[vertexIndex + 3] = c;
                     }
 
-                    m_TextMeshPro.canvasRenderer.SetVertices(uiVertices, uiVertices.Length);
+                    Mesh mesh = m_TextMeshPro.textInfo.meshInfo[0].mesh;
+                    mesh.colors32 = vertexColors;
+
+                    m_TextMeshPro.canvasRenderer.SetMesh(mesh);
 
                     m_selectedWord = -1;
                 }
@@ -127,23 +139,26 @@ namespace TMPro.Examples
 
                     TMP_WordInfo wInfo = m_TextMeshPro.textInfo.wordInfo[wordIndex];
 
-                    // Get a reference to the uiVertices array.
-                    UIVertex[] uiVertices = m_TextMeshPro.textInfo.meshInfo.uiVertices;
+                    // Get a reference to the vertex color
+                    Color32[] vertexColors = m_TextMeshPro.textInfo.meshInfo[0].colors32;
 
                     // Iterate through each of the characters of the word.
                     for (int i = 0; i < wInfo.characterCount; i++)
                     {
                         int vertexIndex = m_TextMeshPro.textInfo.characterInfo[wInfo.firstCharacterIndex + i].vertexIndex;
 
-                        Color32 c = uiVertices[vertexIndex + 0].color.Tint(0.75f);
+                        Color32 c = vertexColors[vertexIndex + 0].Tint(0.75f);
 
-                        uiVertices[vertexIndex + 0].color = c;
-                        uiVertices[vertexIndex + 1].color = c;
-                        uiVertices[vertexIndex + 2].color = c;
-                        uiVertices[vertexIndex + 3].color = c;
+                        vertexColors[vertexIndex + 0] = c;
+                        vertexColors[vertexIndex + 1] = c;
+                        vertexColors[vertexIndex + 2] = c;
+                        vertexColors[vertexIndex + 3] = c;
                     }
 
-                    m_TextMeshPro.canvasRenderer.SetVertices(uiVertices, uiVertices.Length);
+                    Mesh mesh = m_TextMeshPro.textInfo.meshInfo[0].mesh;
+                    mesh.colors32 = vertexColors;
+
+                    m_TextMeshPro.canvasRenderer.SetMesh(mesh);
                 }
                 #endregion
 
@@ -165,21 +180,21 @@ namespace TMPro.Examples
                     m_selectedLink = linkIndex;
 
                     TMP_LinkInfo linkInfo = m_TextMeshPro.textInfo.linkInfo[linkIndex];
-                    int linkHashCode = linkInfo.hashCode;
+                    //int linkHashCode = linkInfo.hashCode;
 
-                    //Debug.Log(TMP_TextUtilities.GetSimpleHashCode("id_02")); // Example of how to retrieve Hash Code for a given string.
+                    //Debug.Log("Link ID: \"" + linkInfo.GetLinkID() + "\"   Link Text: \"" + linkInfo.GetLinkText() + "\""); // Example of how to retrieve the Link ID and Link Text.
 
                     Vector3 worldPointInRectangle = Vector3.zero;
                     RectTransformUtility.ScreenPointToWorldPointInRectangle(m_TextMeshPro.rectTransform, Input.mousePosition, m_Camera, out worldPointInRectangle);
 
-                    switch (linkHashCode)
+                    switch (linkInfo.GetLinkID())
                     {
-                        case 100041637: // id_01
+                        case "id_01": // 100041637: // id_01
                             m_TextPopup_RectTransform.position = worldPointInRectangle;
                             m_TextPopup_RectTransform.gameObject.SetActive(true);
                             m_TextPopup_TMPComponent.text = k_LinkText + " ID 01";
                             break;
-                        case 100041638: // id_02
+                        case "id_02": // 100041638: // id_02
                             m_TextPopup_RectTransform.position = worldPointInRectangle;
                             m_TextPopup_RectTransform.gameObject.SetActive(true);
                             m_TextPopup_TMPComponent.text = k_LinkText + " ID 02";

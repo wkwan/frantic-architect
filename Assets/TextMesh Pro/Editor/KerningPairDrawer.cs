@@ -71,7 +71,10 @@ namespace TMPro.EditorUtilities
             // Kerning xOffset
             GUI.enabled = true;
             ascii_FieldPos = new Rect(position.x + (width * 2), position.y, width, position.height);
-            EditorGUIUtility.LookLikeControls(45, 50);
+
+            EditorGUIUtility.labelWidth = 40f;
+            EditorGUIUtility.fieldWidth = 45f;
+
             EditorGUI.PropertyField(ascii_FieldPos, prop_xOffset, new GUIContent("Offset"));
 
             GUILayout.EndHorizontal();

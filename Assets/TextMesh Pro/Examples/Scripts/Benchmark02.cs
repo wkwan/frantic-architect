@@ -19,11 +19,11 @@ namespace TMPro.Examples
 
             for (int i = 0; i < NumberOfNPC; i++)
             {
-                  
-               
+
+
                 if (SpawnType == 0)
-                {                
-                    // TextMesh Pro Implementation     
+                {
+                    // TextMesh Pro Implementation
                     GameObject go = new GameObject();
                     go.transform.position = new Vector3(Random.Range(-95f, 95f), 0.25f, Random.Range(-95f, 95f));
 

@@ -23,13 +23,13 @@ namespace TMPro
     {
 
         // Sprite Asset used by this component
-        public SpriteAsset spriteAsset
+        public TMP_SpriteAsset spriteAsset
         {
             get { return m_spriteAsset; }
             set { LoadSpriteAsset(value); }
         }
         [SerializeField]
-        private SpriteAsset m_spriteAsset;
+        private TMP_SpriteAsset m_spriteAsset;
        
  
         // Reference to the child InlineGraphic Component
@@ -60,8 +60,8 @@ namespace TMPro
 
         private RectTransform m_inlineGraphicRectTransform;
 
-        private TextMeshPro m_TextMeshPro;
-        private TextMeshProUGUI m_TextMeshProUI;
+        private TMP_Text m_textComponent;
+        private bool m_isInitialized = false;
 
 
         void Awake()
@@ -77,11 +77,8 @@ namespace TMPro
 
         void OnEnable()
         {
-            if (m_TextMeshPro == null) m_TextMeshPro = gameObject.GetComponent<TextMeshPro>();
-            if (m_TextMeshProUI == null) m_TextMeshProUI = gameObject.GetComponent<TextMeshProUGUI>();
-                      
-            m_uiVertex = new UIVertex[4];
-            
+            if (m_textComponent == null) m_textComponent = gameObject.GetComponent<TMP_Text>();
+
 #if UNITY_EDITOR
             TMPro_EventManager.SPRITE_ASSET_PROPERTY_EVENT.Add(ON_SPRITE_ASSET_PROPERTY_CHANGED);
 #endif
@@ -115,23 +112,29 @@ namespace TMPro
         // Event received when font asset properties are changed in Font Inspector
         void ON_SPRITE_ASSET_PROPERTY_CHANGED(bool isChanged, UnityEngine.Object obj)
         {            
-            if (m_spriteAsset != null && m_spriteAsset.spriteSheet != null && (obj as SpriteAsset == m_spriteAsset || obj as Texture2D == m_spriteAsset.spriteSheet))
+            if (m_spriteAsset != null && m_spriteAsset.spriteSheet != null && (obj as TMP_SpriteAsset == m_spriteAsset || obj as Texture2D == m_spriteAsset.spriteSheet))
             {
-                if (m_TextMeshPro != null) m_TextMeshPro.hasChanged = true;
+                if (m_textComponent != null)
+                {
+                    m_textComponent.havePropertiesChanged = true;
+                    m_textComponent.SetVerticesDirty();
+                }
 
-                if (m_TextMeshProUI != null) m_TextMeshProUI.hasChanged = true;
             }
         }
 
 
         void OnValidate()
         {
+            m_isInitialized = true;
             spriteAsset = m_spriteAsset;
         }
 #endif
 
 
-        private void LoadSpriteAsset(SpriteAsset spriteAsset)
+
+
+        private void LoadSpriteAsset(TMP_SpriteAsset spriteAsset)
         {
 
             if (spriteAsset == null)
@@ -141,7 +144,7 @@ namespace TMPro
                 if (settings != null && settings.spriteAsset != null)
                     spriteAsset = settings.spriteAsset;
                 else
-                    spriteAsset = Resources.Load("Sprite Assets/Default Sprite Asset") as SpriteAsset;
+                    spriteAsset = Resources.Load("Sprite Assets/Default Sprite Asset") as TMP_SpriteAsset;
 
 
             }
@@ -149,8 +152,11 @@ namespace TMPro
             m_spriteAsset = spriteAsset;
             m_inlineGraphic.texture = m_spriteAsset.spriteSheet;
 
-            if (m_TextMeshPro != null) m_TextMeshPro.hasChanged = true;
-            if (m_TextMeshProUI != null) m_TextMeshProUI.hasChanged = true;
+            if (m_textComponent != null && m_isInitialized)
+            {
+                m_textComponent.havePropertiesChanged = true;
+                m_textComponent.SetVerticesDirty();
+            }
 
         }
 
@@ -179,8 +185,7 @@ namespace TMPro
             m_inlineGraphicRectTransform.anchorMin = Vector2.zero;
             m_inlineGraphicRectTransform.anchorMax = Vector2.one;
 
-            m_TextMeshPro = gameObject.GetComponent<TextMeshPro>();
-            m_TextMeshProUI = gameObject.GetComponent<TextMeshProUGUI>();
+            m_textComponent = GetComponent<TMP_Text>();
         }
 
 
@@ -235,7 +240,7 @@ namespace TMPro
 
 
         // Return the Sprite from the sprite list if it exists.
-        public SpriteInfo GetSprite(int index)
+        public TMP_Sprite GetSprite(int index)
         {
             if (m_spriteAsset == null)
             {     
@@ -255,7 +260,7 @@ namespace TMPro
         }
 
 
-        public int GetSpriteIndex(int hashCode)
+        public int GetSpriteIndexByHashCode(int hashCode)
         {
             if (m_spriteAsset == null || m_spriteAsset.spriteInfoList == null)
             {
@@ -267,6 +272,18 @@ namespace TMPro
             return index;
         }
 
+
+        public int GetSpriteIndexByIndex(int index)
+        {
+            if (m_spriteAsset == null || m_spriteAsset.spriteInfoList == null)
+            {
+                Debug.LogWarning("No Sprite Asset is assigned.", this);
+                return -1;
+            }
+
+            int spriteIndex = m_spriteAsset.spriteInfoList.FindIndex(item => item.id == index);
+            return spriteIndex;
+        }
 
         public void SetUIVertex (UIVertex[] uiVertex)
         {

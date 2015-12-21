@@ -1,4 +1,4 @@
-// Copyright (C) 2014 Stephan Schaem & Stephan Bouchard - All Rights Reserved
+// Copyright (C) 2014 - 2015 Stephan Schaem - All Rights Reserved
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
@@ -71,8 +71,9 @@ Properties {
 
 	_VertexOffsetX		("Vertex OffsetX", float) = 0
 	_VertexOffsetY		("Vertex OffsetY", float) = 0
-	_MaskID				("Mask ID", float) = 0
-	_ClipRect			("Mask Coords", vector) = (0,0,0,0)
+	
+	//_MaskID				("Mask ID", float) = 0
+	_MaskCoord			("Mask Coordinates", vector) = (0, 0, 100000, 100000)
 	_MaskSoftnessX		("Mask SoftnessX", float) = 0
 	_MaskSoftnessY		("Mask SoftnessY", float) = 0
 
@@ -109,7 +110,7 @@ SubShader {
 	Fog { Mode Off }
 	Ztest [_ZTestMode]
 	Blend One OneMinusSrcAlpha
-	//ColorMask [_ColorMask]	
+	//ColorMask [_ColorMask]
 
 	Pass {
 		CGPROGRAM
@@ -117,6 +118,7 @@ SubShader {
 		#pragma vertex VertShader
 		#pragma fragment PixShader
 		#pragma fragmentoption ARB_precision_hint_fastest
+		#pragma shader_feature __ OUTLINE_ON
 		#pragma shader_feature __ BEVEL_ON
 		#pragma shader_feature __ UNDERLAY_ON UNDERLAY_INNER
 		#pragma shader_feature __ GLOW_ON
@@ -124,8 +126,12 @@ SubShader {
 		#pragma glsl
 
 		#include "UnityCG.cginc"
+		#include "UnityUI.cginc"
 		#include "TMPro_Properties.cginc"
 		#include "TMPro.cginc"
+
+		bool	_UseClipRect;
+		float4	_ClipRect;
 
 		struct vertex_t {
 			float4	vertex			: POSITION;
@@ -192,7 +198,7 @@ SubShader {
 			underlayColor.rgb *= underlayColor.a;
 
 			float bScale = scale;
-			bScale /= 1+((_UnderlaySoftness*_ScaleRatioC)*bScale);
+			bScale /= 1 + ((_UnderlaySoftness*_ScaleRatioC)*bScale);
 			float bBias = (.5-weight)*bScale - .5 - ((_UnderlayDilate*_ScaleRatioC)*.5*bScale);
 
 			float x = -(_UnderlayOffsetX * _ScaleRatioC) * _GradientScale / _TextureWidth;
@@ -202,23 +208,26 @@ SubShader {
 
 			pixel_t output = {
 				vPosition,
-				faceColor, outlineColor, input.color.a,
+				faceColor,
+				outlineColor,
+				input.color.a,
 				float4(input.texcoord0, UnpackUV(input.texcoord1.x)),
 				float4(alphaClip, scale, bias, weight),
-				float4(vert.xy - _ClipRect.xy, .5/pixelSize.xy),
+				float4(vert.xy, 0.5 / pixelSize.xy),
 				mul((float3x3)_EnvMatrix, _WorldSpaceCameraPos.xyz - mul(_Object2World, vert).xyz),
 			#if (UNDERLAY_ON || UNDERLAY_INNER)
 				float4(input.texcoord0 + bOffset, bScale, bBias),
-        underlayColor,
+				underlayColor,
 			#endif
 			};
 
 			return output;
 		}
 
-		fixed4 PixShader(pixel_t input) : COLOR
+		fixed4 PixShader(pixel_t input) : SV_Target
 		{
 			float c = tex2D(_MainTex, input.texcoords.xy).a;
+		
 		#ifndef UNDERLAY_ON
 			clip(c - input.param.x);
 		#endif
@@ -226,7 +235,6 @@ SubShader {
 			float	scale	= input.param.y;
 			float	bias	= input.param.z;
 			float	weight	= input.param.w;
-
 			float sd = (bias - c) * scale;
 
 			float outline = (_OutlineWidth*_ScaleRatioA) * scale;
@@ -276,16 +284,34 @@ SubShader {
 			//faceColor.a *= glowColor.a; // Required for Alpha when using Render Textures
 		#endif
 
+
+		// Support for 2D RectMask
+		if (_UseClipRect)
+			faceColor *= UnityGet2DClipping(input.mask.xy, _ClipRect);
+
+
+		/*if (_UseClipRect)
+		{
+			half2 clipSize = (_ClipRect.zw - _ClipRect.xy) * 0.5;
+			half2 clipCenter = _ClipRect.xy + clipSize;
+
+			half2 s = half2(_MaskSoftnessX, _MaskSoftnessY) * input.mask.zw;
+			half2 m = 1 - saturate(((abs(input.mask.xy - clipCenter) - clipSize) * input.mask.zw + s) / (1 + s));
+			m *= m;
+			faceColor *= m.x * m.y;
+		}*/
+
+
 		#if MASK_HARD
-			float2 m = 1-saturate((abs(input.mask.xy) - _ClipRect.zw)*input.mask.zw);
-			faceColor *= m.x*m.y;
+			half2 m = 1 - saturate((abs(input.mask.xy) - _MaskCoord.zw) * input.mask.zw);
+			faceColor *= m.x * m.y;
 		#endif
 
 		#if MASK_SOFT
-			float2 s = half2(_MaskSoftnessX, _MaskSoftnessY)*input.mask.zw;
-			float2 m = 1-saturate(((abs(input.mask.xy) - _ClipRect.zw)*input.mask.zw+s) / (1+s));
+			half2 s = half2(_MaskSoftnessX, _MaskSoftnessY) * input.mask.zw;
+			half2 m = 1 - saturate(((abs(input.mask.xy) - _MaskCoord.zw) * input.mask.zw + s) / (1 + s));
 			m *= m;
-			faceColor *= m.x*m.y;
+			faceColor *= m.x * m.y;
 		#endif
 
 			return faceColor;

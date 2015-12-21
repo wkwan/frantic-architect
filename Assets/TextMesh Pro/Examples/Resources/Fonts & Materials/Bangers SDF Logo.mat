@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 5
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -10,7 +10,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 8e6b9842dbb1a5a4887378afab854e63, type: 3}
   m_ShaderKeywords: GLOW_ON
   m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -56,6 +57,14 @@ Material:
         second: .200000003
       data:
         first:
+          name: _OutlineWidth
+        second: .400000006
+      data:
+        first:
+          name: _OutlineSoftness
+        second: 0
+      data:
+        first:
           name: _UnderlayOffsetX
         second: 0
       data:
@@ -80,12 +89,28 @@ Material:
         second: .5
       data:
         first:
-          name: _OutlineWidth
-        second: .296999991
+          name: _ShaderFlags
+        second: 0
       data:
         first:
-          name: _OutlineSoftness
-        second: 0
+          name: _ScaleRatioA
+        second: .909090936
+      data:
+        first:
+          name: _ScaleRatioB
+        second: .727272749
+      data:
+        first:
+          name: _ScaleRatioC
+        second: .909090936
+      data:
+        first:
+          name: _TextureWidth
+        second: 1024
+      data:
+        first:
+          name: _TextureHeight
+        second: 1024
       data:
         first:
           name: _GradientScale
@@ -101,26 +126,6 @@ Material:
       data:
         first:
           name: _PerspectiveFilter
-        second: 1
-      data:
-        first:
-          name: _TextureWidth
-        second: 1024
-      data:
-        first:
-          name: _TextureHeight
-        second: 1024
-      data:
-        first:
-          name: _MaskID
-        second: 0
-      data:
-        first:
-          name: _MaskSoftnessX
-        second: 0
-      data:
-        first:
-          name: _MaskSoftnessY
         second: 0
       data:
         first:
@@ -132,20 +137,20 @@ Material:
         second: 0
       data:
         first:
-          name: _ShaderFlags
+          name: _MaskSoftnessX
         second: 0
       data:
         first:
-          name: _ScaleRatioA
-        second: .909090936
+          name: _MaskSoftnessY
+        second: 0
       data:
         first:
-          name: _ScaleRatioB
-        second: .727272749
+          name: _MaskID
+        second: 0
       data:
         first:
-          name: _ScaleRatioC
-        second: .909090936
+          name: _FaceShininess
+        second: 1
       data:
         first:
           name: _Bevel
@@ -166,6 +171,10 @@ Material:
         first:
           name: _GlowOuter
         second: .335999995
+      data:
+        first:
+          name: _OutlineShininess
+        second: 1
       data:
         first:
           name: _FaceUVSpeedX
@@ -200,18 +209,6 @@ Material:
         second: .61500001
       data:
         first:
-          name: _BumpOutline
-        second: 0
-      data:
-        first:
-          name: _BumpFace
-        second: 0
-      data:
-        first:
-          name: _GlowInner
-        second: .0759999976
-      data:
-        first:
           name: _SpecularPower
         second: 2
       data:
@@ -228,12 +225,16 @@ Material:
         second: .5
       data:
         first:
-          name: _FaceShininess
-        second: 1
+          name: _BumpOutline
+        second: 0
       data:
         first:
-          name: _OutlineShininess
-        second: 1
+          name: _BumpFace
+        second: 0
+      data:
+        first:
+          name: _GlowInner
+        second: .0759999976
     m_Colors:
       data:
         first:
@@ -245,12 +246,12 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _UnderlayColor
-        second: {r: 0, g: 0, b: 0, a: .5}
-      data:
-        first:
           name: _OutlineColor
         second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _UnderlayColor
+        second: {r: 0, g: 0, b: 0, a: .5}
       data:
         first:
           name: _MaskCoord

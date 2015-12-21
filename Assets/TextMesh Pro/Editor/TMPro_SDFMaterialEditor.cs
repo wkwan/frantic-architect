@@ -121,12 +121,14 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
     private MaterialProperty m_scaleY;
 
     private MaterialProperty m_PerspectiveFilter;
-    
+
+    //private MaterialProperty m_useClipRect;
     private MaterialProperty m_vertexOffsetX;
     private MaterialProperty m_vertexOffsetY;
-    private MaterialProperty m_maskID;
+    //private MaterialProperty m_maskID;
     private MaterialProperty m_maskTex;
     private MaterialProperty m_maskCoord;
+    private MaterialProperty m_clipRect;
     private MaterialProperty m_maskSoftnessX;
     private MaterialProperty m_maskSoftnessY;
 
@@ -134,6 +136,8 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
     private MaterialProperty m_stencilID;
     private MaterialProperty m_stencilOp;
     private MaterialProperty m_stencilComp;
+    private MaterialProperty m_stencilReadMask;
+    private MaterialProperty m_stencilWriteMask;
      
     //private MaterialProperty m_weightNormal;
     //private MaterialProperty m_weightBold;
@@ -161,6 +165,7 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
 
     //private Vector3 m_matrixRotation;
 
+    private bool isOutlineEnabled;
     private bool isRatiosEnabled;
     private bool isBevelEnabled;
     private bool isGlowEnabled;
@@ -182,6 +187,9 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
 
         // Get the UI Skin and Styles for the various Editors
         TMP_UIStyleManager.GetUIStyles();
+
+        // Get Shader Propertie IDs
+        ShaderUtilities.GetShaderPropertyIDs();
 
         // Initialize the Event Listener for Undo Events.
         Undo.undoRedoPerformed += OnUndoRedo;
@@ -268,6 +276,7 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
 
         // Retrieve Shader Multi_Compile Keywords
         m_Keywords = targetMaterial.shaderKeywords;
+        isOutlineEnabled = m_Keywords.Contains("OUTLINE_ON");
         isBevelEnabled = m_Keywords.Contains("BEVEL_ON");
         isGlowEnabled = m_Keywords.Contains("GLOW_ON");
         //isUnderlayEnabled = m_Keywords.Contains("UNDERLAY_ON") | m_Keywords.Contains("UNDERLAY_INNER");
@@ -304,7 +313,8 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
         m_inspectorStartRegion = GUILayoutUtility.GetRect(0f, 0f, GUILayout.ExpandWidth(true));
 
 
-        EditorGUIUtility.LookLikeControls(130, 50);
+        EditorGUIUtility.labelWidth = 130f;
+        EditorGUIUtility.fieldWidth = 50f;
 
         // FACE PANEL
         EditorGUI.indentLevel = 0;
@@ -334,29 +344,40 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
 
 
         // OUTLINE PANEL
-        EditorGUI.indentLevel = 0;
-        if (GUILayout.Button("<b>Outline</b> - <i>Settings</i> -", TMP_UIStyleManager.Group_Label))
-            m_foldout.outline = !m_foldout.outline;
-
-        if (m_foldout.outline)
+        if (targetMaterial.HasProperty("_OutlineColor"))
         {
-            EditorGUI.BeginChangeCheck();
-
-            EditorGUI.indentLevel = 1;
-            ColorProperty(m_outlineColor, "Color");
-
-            if (targetMaterial.HasProperty("_OutlineTex"))
-            { 
-                DrawTextureProperty(m_outlineTex, "Texture");
-                DrawUVProperty(new MaterialProperty[] { m_outlineUVSpeedX, m_outlineUVSpeedY }, "UV Speed");
+            if (targetMaterial.HasProperty("_Bevel"))
+            {
+                if (GUILayout.Button("<b>Outline</b> - <i>Settings</i> -", TMP_UIStyleManager.Group_Label))
+                    m_foldout.outline = !m_foldout.outline;
             }
-            DrawRangeProperty(m_outlineThickness, "Thickness");
+            else
+                isOutlineEnabled = DrawTogglePanel(FoldoutType.outline, "<b>Outline</b> - <i>Settings</i> -", isOutlineEnabled, "OUTLINE_ON");
 
-            if (targetMaterial.HasProperty("_OutlineShininess")) DrawRangeProperty(m_outlineShininess, "Gloss");
 
-            if (EditorGUI.EndChangeCheck()) havePropertiesChanged = true;
+            EditorGUI.indentLevel = 0;
+            //if (GUILayout.Button("<b>Outline</b> - <i>Settings</i> -", TMP_UIStyleManager.Group_Label))
+            //    m_foldout.outline = !m_foldout.outline;
+
+            if (m_foldout.outline)
+            {
+                EditorGUI.BeginChangeCheck();
+
+                EditorGUI.indentLevel = 1;
+                ColorProperty(m_outlineColor, "Color");
+
+                if (targetMaterial.HasProperty("_OutlineTex"))
+                {
+                    DrawTextureProperty(m_outlineTex, "Texture");
+                    DrawUVProperty(new MaterialProperty[] { m_outlineUVSpeedX, m_outlineUVSpeedY }, "UV Speed");
+                }
+                DrawRangeProperty(m_outlineThickness, "Thickness");
+
+                if (targetMaterial.HasProperty("_OutlineShininess")) DrawRangeProperty(m_outlineShininess, "Gloss");
+
+                if (EditorGUI.EndChangeCheck()) havePropertiesChanged = true;
+            }
         }
-
 
         // UNDERLAY PANEL
         if (targetMaterial.HasProperty("_UnderlayColor"))
@@ -542,29 +563,44 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
                 if (EditorGUI.EndChangeCheck()) havePropertiesChanged = true;
 
                 // Mask
-                if (targetMaterial.HasProperty("_ClipRect"))
+                if (targetMaterial.HasProperty("_MaskCoord"))
                 {
                     GUILayout.Space(15);
-                    m_mask = (MaskingTypes)EditorGUILayout.EnumPopup("Mask", m_mask);
-                    if (GUI.changed)
-                    {
-                        havePropertiesChanged = true;
-                        //SetMaskID(m_mask);
-                        SetMaskKeywords(m_mask); 
-                    }
 
-                    
-                    if (m_mask != MaskingTypes.MaskOff)
-                    {
-                        EditorGUI.BeginChangeCheck();
+                    // HANDLE 2D Rect Mask
+                    //if (m_useClipRect.floatValue != 0)
+                    //{
+                    //    EditorGUI.BeginChangeCheck();
 
-                        Draw2DBoundsProperty(m_maskCoord, "Mask Bounds");
-                        DrawFloatProperty(m_maskSoftnessX, "Softness X");
-                        DrawFloatProperty(m_maskSoftnessY, "Softness Y");
+                    //    DrawFloatProperty(m_maskSoftnessX, "Softness X");
+                    //    DrawFloatProperty(m_maskSoftnessY, "Softness Y");
 
-                        //DrawTextureProperty(m_maskTex, "Mask Texture");
-                        if (EditorGUI.EndChangeCheck()) havePropertiesChanged = true;
-                    }
+                    //    if (EditorGUI.EndChangeCheck()) havePropertiesChanged = true;
+                    //}
+                    //else
+                    //{
+                        m_mask = (MaskingTypes)EditorGUILayout.EnumPopup("Mask", m_mask);
+                        if (GUI.changed)
+                        {
+                            havePropertiesChanged = true;
+                            //SetMaskID(m_mask);
+
+                            // TODO Add check for _UseClipRect
+                            SetMaskKeywords(m_mask);
+                        }
+
+                        if (m_mask != MaskingTypes.MaskOff)
+                        {
+                            EditorGUI.BeginChangeCheck();
+
+                            Draw2DBoundsProperty(m_maskCoord, "Mask Bounds");
+                            DrawFloatProperty(m_maskSoftnessX, "Softness X");
+                            DrawFloatProperty(m_maskSoftnessY, "Softness Y");
+
+                            //DrawTextureProperty(m_maskTex, "Mask Texture");
+                            if (EditorGUI.EndChangeCheck()) havePropertiesChanged = true;
+                        }
+                    //}
                     
                     GUILayout.Space(15);
                 }
@@ -576,7 +612,9 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
                 {
                     FloatProperty(m_stencilID, "Stencil ID");
                     FloatProperty(m_stencilComp, "Stencil Comp");
-                    FloatProperty(m_stencilOp, "Stencil Op");
+                    //FloatProperty(m_stencilOp, "Stencil Op");
+                    //FloatProperty(m_stencilReadMask, "Read Mask");
+                    //FloatProperty(m_stencilWriteMask, "Write Mask");
                 }
                 
                 GUILayout.Space(20);
@@ -665,20 +703,25 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
                     GameObject go = Selection.activeGameObject;
                     if (go != null && !go.activeInHierarchy)
                     {
-                        
-                        if (go.GetComponent<TextMeshPro>() != null)
+                        TMP_Text textComponent = go.GetComponent<TMP_Text>();
+                        if (textComponent != null)
                         {
-                            Undo.RecordObject(go.GetComponent<TextMeshPro>(), "Material Assignment");
-                            go.GetComponent<TextMeshPro>().fontSharedMaterial = newMaterial;
+                            Undo.RecordObject(textComponent, "Material Assignment");
+                            textComponent.fontSharedMaterial = newMaterial;
                         }
 
-#if UNITY_4_6 || UNITY_5
-                        if (go.GetComponent<TextMeshProUGUI>() != null)
-                        {
-                            Undo.RecordObject(go.GetComponent<TextMeshProUGUI>(), "Material Assignment");
-                            go.GetComponent<TextMeshProUGUI>().fontSharedMaterial = newMaterial;
-                        }
-#endif
+                        //TMP_Text textComponent = go.GetComponent<TMP_Text>();
+                        //if ((TextMeshPro) textComponent != null)
+                        //{
+                        //    Undo.RecordObject(textComponent, "Material Assignment");
+                        //    textComponent.fontBaseMaterial = newMaterial;
+                        //}
+                        //else if ((TextMeshProUGUI) textComponent != null)
+                        //{
+                        //    Undo.RecordObject(textComponent, "Material Assignment");
+                        //    Undo.RecordObject((textComponent as TextMeshProUGUI).canvasRenderer, "Material Assignment");
+                        //    textComponent.fontBaseMaterial = newMaterial;
+                        //}
                     }
 
                     TMPro_EventManager.ON_DRAG_AND_DROP_MATERIAL_CHANGED(go, currentMaterial, newMaterial);
@@ -758,6 +801,9 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
         {
             switch (type)
             {
+                case FoldoutType.outline:
+                    m_foldout.outline = !m_foldout.outline;
+                    break;
                 case FoldoutType.underlay:
                     m_foldout.underlay = !m_foldout.underlay;
                     break;
@@ -1259,9 +1305,11 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
 
         m_vertexOffsetX = GetMaterialProperty(target_Materials, "_VertexOffsetX");
         m_vertexOffsetY = GetMaterialProperty(target_Materials, "_VertexOffsetY");
-        m_maskID = GetMaterialProperty(target_Materials, "_MaskID");
+        //m_useClipRect = GetMaterialProperty(target_Materials, "_UseClipRect");
+        //m_maskID = GetMaterialProperty(target_Materials, "_MaskID");
         m_maskTex = GetMaterialProperty(target_Materials, "_MaskTex");
-        m_maskCoord = GetMaterialProperty(target_Materials, "_ClipRect");
+        m_maskCoord = GetMaterialProperty(target_Materials, "_MaskCoord");
+        m_clipRect = GetMaterialProperty(target_Materials, "_ClipRect");
         m_maskSoftnessX = GetMaterialProperty(target_Materials, "_MaskSoftnessX");
         m_maskSoftnessY = GetMaterialProperty(target_Materials, "_MaskSoftnessY");
 
@@ -1269,6 +1317,8 @@ public class TMPro_SDFMaterialEditor : MaterialEditor
         m_stencilID = GetMaterialProperty(target_Materials, "_Stencil");
         m_stencilComp = GetMaterialProperty(target_Materials, "_StencilComp");
         m_stencilOp = GetMaterialProperty(target_Materials, "_StencilOp");
+        m_stencilReadMask = GetMaterialProperty(target_Materials, "_StencilReadMask");
+        m_stencilWriteMask = GetMaterialProperty(target_Materials, "_StencilWriteMask");
 
         
         //m_weightNormal = GetMaterialProperty(target_Materials, "_WeightNormal");

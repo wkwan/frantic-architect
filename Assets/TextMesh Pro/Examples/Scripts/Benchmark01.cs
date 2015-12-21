@@ -10,7 +10,7 @@ namespace TMPro.Examples
 
         public int BenchmarkType = 0;
 
-        public TextMeshProFont TMProFont;
+        public TMP_FontAsset TMProFont;
         public Font TextMeshFont;
 
         private TextMeshPro m_textMeshPro;
@@ -55,7 +55,7 @@ namespace TMPro.Examples
                 //m_textMeshPro.fontSharedMaterial.SetFloat("_OutlineWidth", 0.2f);
                 //m_textMeshPro.fontSharedMaterial.EnableKeyword("UNDERLAY_ON");
                 //m_textMeshPro.lineJustification = LineJustificationTypes.Center;
-                //m_textMeshPro.enableWordWrapping = true;    
+                m_textMeshPro.enableWordWrapping = false;    
                 //m_textMeshPro.lineLength = 60;          
                 //m_textMeshPro.characterSpacing = 0.2f;
                 //m_textMeshPro.fontColor = new Color32(255, 255, 255, 255);

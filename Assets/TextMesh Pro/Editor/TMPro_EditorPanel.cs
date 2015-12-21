@@ -113,7 +113,7 @@ namespace TMPro.EditorUtilities
         private bool havePropertiesChanged = false;
 
 
-        private TextMeshPro m_textMeshProScript;
+        private TextMeshPro m_textComponent;
         //private Transform m_transform;
 
         private Renderer m_renderer;
@@ -178,9 +178,9 @@ namespace TMPro.EditorUtilities
             isOrthographic_prop = serializedObject.FindProperty("m_isOrthographic");
             //isOverlay_prop = serializedObject.FindProperty("m_isOverlay");
 
-            havePropertiesChanged_prop = serializedObject.FindProperty("havePropertiesChanged");
+            havePropertiesChanged_prop = serializedObject.FindProperty("m_havePropertiesChanged");
             inputSource_prop = serializedObject.FindProperty("m_inputSource");
-            isInputPasingRequired_prop = serializedObject.FindProperty("isInputParsingRequired");
+            isInputPasingRequired_prop = serializedObject.FindProperty("m_isInputParsingRequired");
             //isAffectingWordWrapping_prop = serializedObject.FindProperty("isAffectingWordWrapping");
             enableExtraPadding_prop = serializedObject.FindProperty("m_enableExtraPadding");
             isRichText_prop = serializedObject.FindProperty("m_isRichText");
@@ -196,22 +196,15 @@ namespace TMPro.EditorUtilities
             //m_sortingLayerID = serializedObject.FindProperty("m_sortingLayerID");
             //m_sortingOrder = serializedObject.FindProperty("m_sortingOrder");
 
-            hasFontAssetChanged_prop = serializedObject.FindProperty("hasFontAssetChanged");
+            hasFontAssetChanged_prop = serializedObject.FindProperty("m_hasFontAssetChanged");
 
             //renderer_prop = serializedObject.FindProperty("m_renderer");
 
             // Get the UI Skin and Styles for the various Editors
             TMP_UIStyleManager.GetUIStyles();
             
-            m_textMeshProScript = target as TextMeshPro;
-            //m_transform = Selection.activeGameObject.transform;
-            m_renderer = m_textMeshProScript.GetComponent<Renderer>();
-            //m_sortingLayerID = m_renderer.sortingLayerID;
-            //m_sortingOrder = m_renderer.sortingOrder;
-            //if (m_renderer.sharedMaterial != null)
-            //    m_currentMaterial = m_renderer.sharedMaterial;
-
-            //m_updateManager = Camera.main.gameObject.GetComponent<TMPro_UpdateManager>();
+            m_textComponent = target as TextMeshPro;
+            m_renderer = m_textComponent.renderer;
         }
 
 
@@ -597,7 +590,7 @@ namespace TMPro.EditorUtilities
                 var sortingLayerNames = SortingLayerHelper.sortingLayerNames;
 
                 // Look up the layer name using the current layer ID
-                string oldName = SortingLayerHelper.GetSortingLayerNameFromID(m_textMeshProScript.sortingLayerID);
+                string oldName = SortingLayerHelper.GetSortingLayerNameFromID(m_textComponent.sortingLayerID);
 
                 // Use the name to look up our array index into the names list
                 int oldLayerIndex = System.Array.IndexOf(sortingLayerNames, oldName);
@@ -610,18 +603,18 @@ namespace TMPro.EditorUtilities
                 if (newLayerIndex != oldLayerIndex)
                 {
                     //Undo.RecordObject(renderer, "Edit Sorting Layer");
-                    m_textMeshProScript.sortingLayerID = SortingLayerHelper.GetSortingLayerIDForIndex(newLayerIndex);
+                    m_textComponent.sortingLayerID = SortingLayerHelper.GetSortingLayerIDForIndex(newLayerIndex);
                     //EditorUtility.SetDirty(renderer);
                 }
 
                 // Expose the manual sorting order
                 EditorGUIUtility.labelWidth = 40f;
                 EditorGUIUtility.fieldWidth = 80f;
-                int newSortingLayerOrder = EditorGUILayout.IntField("Order", m_textMeshProScript.sortingOrder);
-                if (newSortingLayerOrder != m_textMeshProScript.sortingOrder)
+                int newSortingLayerOrder = EditorGUILayout.IntField("Order", m_textComponent.sortingOrder);
+                if (newSortingLayerOrder != m_textComponent.sortingOrder)
                 {
                     //Undo.RecordObject(renderer, "Edit Sorting Order");
-                    m_textMeshProScript.sortingOrder = newSortingLayerOrder;
+                    m_textComponent.sortingOrder = newSortingLayerOrder;
                 }                            
                 EditorGUILayout.EndHorizontal();
                 EditorGUIUtility.labelWidth = old_LabelWidth;

@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_text: Hello World!
-  m_fontAsset: {fileID: 11400000, guid: 1644604adebebed459b59bc06bc892d4, type: 2}
+  m_fontAsset: {fileID: 0}
   m_fontStyle: 0
   m_isOverlay: 0
   m_fontColor32:
@@ -99,8 +99,8 @@ MonoBehaviour:
   m_fontSizeBase: 36
   m_charSpacingMax: 0
   m_lineSpacingMax: 0
+  m_charWidthMaxAdj: 0
   m_characterSpacing: 0
-  m_textRectangle: {x: 0, y: 0, z: 0, w: 0}
   m_lineSpacing: 0
   m_paragraphSpacing: 0
   m_lineLength: 0
@@ -118,34 +118,18 @@ MonoBehaviour:
   m_uvOffset: {x: 0, y: 0}
   m_uvLineOffset: .300000012
   isInputParsingRequired: 1
-  havePropertiesChanged: 1
+  m_havePropertiesChanged: 1
   hasFontAssetChanged: 0
   m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isRightToLeft: 0
   m_inputSource: 0
   m_renderer: {fileID: 2300000}
   m_ignoreCulling: 1
   m_isOrthographic: 0
   m_isCullingEnabled: 0
   m_pageToDisplay: 0
-  m_fontAssetArray:
-  - {fileID: 11400000, guid: 1644604adebebed459b59bc06bc892d4, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_maskType: 0
-  m_isNewTextObject: 0
   m_enableAutoSizing: 0
 --- !u!114 &11400002
 MonoBehaviour:

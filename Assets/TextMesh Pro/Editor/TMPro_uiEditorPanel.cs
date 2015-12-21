@@ -96,11 +96,13 @@ namespace TMPro.EditorUtilities
 
         //private SerializedProperty isMaskUpdateRequired_prop;
         //private SerializedProperty mask_prop;
-        private SerializedProperty maskOffset_prop;
+        //private SerializedProperty maskOffset_prop;
         //private SerializedProperty maskOffsetMode_prop;
         //private SerializedProperty maskSoftness_prop;
 
         //private SerializedProperty vertexOffset_prop;
+
+        private SerializedProperty raycastTarget_prop;
 
 
         //private SerializedProperty sortingLayerID_prop;
@@ -109,9 +111,9 @@ namespace TMPro.EditorUtilities
         private bool havePropertiesChanged = false;
 
 
-        private TextMeshProUGUI m_textMeshProScript;
+        private TextMeshProUGUI m_textComponent;
         private RectTransform m_rectTransform;
-        private CanvasRenderer m_uiRenderer;
+        private CanvasRenderer m_canvasRenderer;
         private Editor m_materialEditor;
         private Material m_targetMaterial;
 
@@ -182,20 +184,21 @@ namespace TMPro.EditorUtilities
  
             //isOrthographic_prop = serializedObject.FindProperty("m_isOrthographic");
 
-            havePropertiesChanged_prop = serializedObject.FindProperty("havePropertiesChanged");
+            havePropertiesChanged_prop = serializedObject.FindProperty("m_havePropertiesChanged");
             inputSource_prop = serializedObject.FindProperty("m_inputSource");
-            isInputPasingRequired_prop = serializedObject.FindProperty("isInputParsingRequired");
+            isInputPasingRequired_prop = serializedObject.FindProperty("m_isInputParsingRequired");
             //isCalculateSizeRequired_prop = serializedObject.FindProperty("m_isCalculateSizeRequired");
             enableExtraPadding_prop = serializedObject.FindProperty("m_enableExtraPadding");
             isRichText_prop = serializedObject.FindProperty("m_isRichText");
             checkPaddingRequired_prop = serializedObject.FindProperty("checkPaddingRequired");
+            raycastTarget_prop = serializedObject.FindProperty("m_RaycastTarget");
 
 
             margin_prop = serializedObject.FindProperty("m_margin");
             
             //isMaskUpdateRequired_prop = serializedObject.FindProperty("isMaskUpdateRequired");
             //mask_prop = serializedObject.FindProperty("m_mask");
-            maskOffset_prop= serializedObject.FindProperty("m_maskOffset");
+            //maskOffset_prop= serializedObject.FindProperty("m_maskOffset");
             //maskOffsetMode_prop = serializedObject.FindProperty("m_maskOffsetMode");
             //maskSoftness_prop = serializedObject.FindProperty("m_maskSoftness");
             //vertexOffset_prop = serializedObject.FindProperty("m_vertexOffset");
@@ -203,36 +206,25 @@ namespace TMPro.EditorUtilities
             //sortingLayerID_prop = serializedObject.FindProperty("m_sortingLayerID");
             //sortingOrder_prop = serializedObject.FindProperty("m_sortingOrder");
 
-            hasFontAssetChanged_prop = serializedObject.FindProperty("hasFontAssetChanged");
+            hasFontAssetChanged_prop = serializedObject.FindProperty("m_hasFontAssetChanged");
 
             // Get the UI Skin and Styles for the various Editors
             TMP_UIStyleManager.GetUIStyles();
 
-           
-            m_textMeshProScript = (TextMeshProUGUI)target;
-            m_rectTransform = Selection.activeGameObject.GetComponent<RectTransform>();
-            m_uiRenderer = Selection.activeGameObject.GetComponent<CanvasRenderer>();
+            m_textComponent = target as TextMeshProUGUI;
+            m_rectTransform = m_textComponent.rectTransform;
+            m_canvasRenderer = m_textComponent.canvasRenderer;
 
-            // Add a Material Component if one does not exists
-            /*
-            m_materialComponent = Selection.activeGameObject.GetComponent<MaterialComponent> ();
-            if (m_materialComponent == null) 
-            {
-                m_materialComponent = Selection.activeGameObject.AddComponent<MaterialComponent> ();
-            }
-            */
 
             // Create new Material Editor if one does not exists
-            if (m_uiRenderer != null && m_uiRenderer.GetMaterial() != null)
+            if (m_canvasRenderer != null && m_canvasRenderer.GetMaterial() != null)
             {
-                m_materialEditor = Editor.CreateEditor(m_uiRenderer.GetMaterial());
-                m_targetMaterial = m_uiRenderer.GetMaterial();
+                m_materialEditor = Editor.CreateEditor(m_canvasRenderer.GetMaterial());
+                m_targetMaterial = m_canvasRenderer.GetMaterial();
 
                 //UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(m_targetMaterial, true);
                 //Debug.Log("Currently Assigned Material is " + m_targetMaterial + ".  Font Material is " + m_textMeshProScript.fontSharedMaterial);
             }
-            
-            //m_updateManager = Camera.main.gameObject.GetComponent<TMPro_UpdateManager>();
         }
 
 
@@ -574,7 +566,7 @@ namespace TMPro.EditorUtilities
 
                 EditorGUI.BeginChangeCheck();
                 DrawMaginProperty(margin_prop, "Margins");
-                DrawMaginProperty(maskOffset_prop, "Mask Offset");
+                //DrawMaginProperty(maskOffset_prop, "Mask Offset");
 
                 //EditorGUILayout.BeginHorizontal();
                 //EditorGUILayout.PropertyField(sortingLayerID_prop);
@@ -582,8 +574,12 @@ namespace TMPro.EditorUtilities
 
                 //EditorGUILayout.EndHorizontal();
 
-                //EditorGUILayout.PropertyField(isOrthographic_prop, new GUIContent("Orthographic Mode?"));
+
+                EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(isRichText_prop, new GUIContent("Enable Rich Text?"));
+                EditorGUILayout.PropertyField(raycastTarget_prop, new GUIContent("Raycast Target?"));
+                EditorGUILayout.EndHorizontal();
+
                 //EditorGUILayout.PropertyField(textRectangle_prop, true);
 
                 if (EditorGUI.EndChangeCheck())
@@ -610,9 +606,9 @@ namespace TMPro.EditorUtilities
 
        
             // If a Custom Material Editor exists, we use it.
-            if (m_uiRenderer != null && m_uiRenderer.GetMaterial() != null)
+            if (m_canvasRenderer != null && m_canvasRenderer.GetMaterial() != null)
             {
-                Material mat = m_uiRenderer.GetMaterial();
+                Material mat = m_canvasRenderer.GetMaterial();
 
                 //Debug.Log(mat + "  " + m_targetMaterial);
                 
@@ -668,21 +664,21 @@ namespace TMPro.EditorUtilities
                     DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
 
                     if (evt.type == EventType.DragPerform)
-                    {                      
+                    {
                         DragAndDrop.AcceptDrag();
-                  
+
                         // Do something
                         Material mat = DragAndDrop.objectReferences[0] as Material;
                         //Debug.Log("Drag-n-Drop Material is " + mat + ". Target Material is " + m_targetMaterial + ".  Canvas Material is " + m_uiRenderer.GetMaterial()  );
                         
                         // Check to make sure we have a valid material and that the font atlases match.
-                        if (!mat || mat == m_uiRenderer.GetMaterial() || mat.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID() != m_textMeshProScript.font.atlas.GetInstanceID())
+                        if (!mat || mat == m_canvasRenderer.GetMaterial() || mat.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID() != m_textComponent.font.atlas.GetInstanceID())
                         {
-                            if (mat && mat.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID() != m_textMeshProScript.font.atlas.GetInstanceID())
-                                Debug.LogWarning("Drag-n-Drop Material [" + mat.name + "]'s Atlas does not match the assigned Font Asset [" + m_textMeshProScript.font.name + "]'s Atlas.", this);
+                            if (mat && mat.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID() != m_textComponent.font.atlas.GetInstanceID())
+                                Debug.LogWarning("Drag-n-Drop Material [" + mat.name + "]'s Atlas does not match the assigned Font Asset [" + m_textComponent.font.name + "]'s Atlas.", this);
                             break;
                         }
-                        
+
                         fontSharedMaterial_prop.objectReferenceValue = mat;
                         //fontBaseMaterial_prop.objectReferenceValue = mat;
                         isNewBaseMaterial_prop.boolValue = true;
@@ -691,7 +687,7 @@ namespace TMPro.EditorUtilities
 
                         //havePropertiesChanged = true;
                     }
-            
+
                     evt.Use();
                 break;
             }
@@ -760,7 +756,7 @@ namespace TMPro.EditorUtilities
 
             // Margin Frame & Handles
             m_rectTransform.GetWorldCorners(m_rectCorners);
-            Vector4 marginOffset = m_textMeshProScript.margin;
+            Vector4 marginOffset = m_textComponent.margin;
             Vector3 lossyScale = m_rectTransform.lossyScale;
             
             handlePoints[0] = m_rectCorners[0] + m_rectTransform.TransformDirection(new Vector3(marginOffset.x * lossyScale.x, marginOffset.w * lossyScale.y, 0));
@@ -821,8 +817,8 @@ namespace TMPro.EditorUtilities
 
             if (hasChanged)
             {
-                Undo.RecordObjects(new Object[] {m_rectTransform, m_textMeshProScript }, "Margin Changes");
-                m_textMeshProScript.margin = marginOffset;
+                Undo.RecordObjects(new Object[] {m_rectTransform, m_textComponent }, "Margin Changes");
+                m_textComponent.margin = marginOffset;
                 EditorUtility.SetDirty(target);
             }
         }

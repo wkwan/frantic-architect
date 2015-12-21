@@ -10,7 +10,7 @@ using System.Collections;
 namespace TMPro.EditorUtilities
 {
 
-    [CustomPropertyDrawer(typeof(SpriteInfo))]
+    [CustomPropertyDrawer(typeof(TMP_Sprite))]
     public class SpriteInfoDrawer : PropertyDrawer
     {
 
@@ -31,7 +31,7 @@ namespace TMPro.EditorUtilities
             //SerializedProperty prop_sprite = property.FindPropertyRelative("sprite");
 
             // Get a reference to the sprite texture
-            Texture tex = (property.serializedObject.targetObject as SpriteAsset).spriteSheet;
+            Texture tex = (property.serializedObject.targetObject as TMP_SpriteAsset).spriteSheet;
 
             Vector2 spriteSize = new Vector2(65, 65);
             if (prop_width.floatValue >= prop_height.floatValue)
@@ -54,8 +54,8 @@ namespace TMPro.EditorUtilities
             rect.x += 70;
             rect.y -= 15;
 
-           
-            EditorGUIUtility.LookLikeControls(40, 45);
+            EditorGUIUtility.labelWidth = 40f;
+            EditorGUIUtility.fieldWidth = 45f;
 
             EditorGUI.BeginChangeCheck();
             EditorGUI.LabelField(new Rect(rect.x + 5f, rect.y, 50f, 18), new GUIContent("ID: " + prop_id.intValue));

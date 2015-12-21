@@ -208,11 +208,11 @@ MonoBehaviour:
   m_lineLength: 0
   m_anchor: 0
   m_textAlignment: 1
-  m_enableKerning: 0
+  m_enableKerning: 1
   m_overrideHtmlColors: 0
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
-  m_enableWordWrapping: 0
+  m_enableWordWrapping: 1
   m_overflowMode: 0
   m_wordWrappingRatios: .400000006
   m_horizontalMapping: 0
@@ -220,7 +220,7 @@ MonoBehaviour:
   m_uvOffset: {x: 0, y: 0}
   m_uvLineOffset: .300000012
   isInputParsingRequired: 0
-  havePropertiesChanged: 0
+  m_havePropertiesChanged: 0
   hasFontAssetChanged: 0
   m_isRichText: 1
   m_parseCtrlCharacters: 1
@@ -247,8 +247,8 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 206889187}
   m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
   m_Materials:
   - {fileID: 2100000, guid: f6249b6551e9c114381956d38b76316f, type: 2}
   m_SubsetIndices: 
@@ -363,7 +363,7 @@ MonoBehaviour:
   m_overrideHtmlColors: 0
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_enableWordWrapping: 0
+  m_enableWordWrapping: 1
   m_overflowMode: 0
   m_wordWrappingRatios: .400000006
   m_horizontalMapping: 0
@@ -371,7 +371,7 @@ MonoBehaviour:
   m_uvOffset: {x: 0, y: 0}
   m_uvLineOffset: .300000012
   isInputParsingRequired: 0
-  havePropertiesChanged: 0
+  m_havePropertiesChanged: 0
   hasFontAssetChanged: 0
   m_isRichText: 1
   m_parseCtrlCharacters: 1

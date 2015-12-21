@@ -4,6 +4,7 @@
 
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 
@@ -13,13 +14,14 @@ namespace TMPro
 
 
     [ExecuteInEditMode]
+    [RequireComponent(typeof(RectTransform))]
     [AddComponentMenu("Layout/Text Container")]
-    public class TextContainer : MonoBehaviour
+    public class TextContainer : UIBehaviour
     {
 
         #pragma warning disable 0618 // Disabled warning related to deprecated properties. This is for backwards compatibility.
 
-        public bool hasChanged       
+        public bool hasChanged
         {
             get { return m_hasChanged; }
             set { m_hasChanged = value; }
@@ -99,7 +101,7 @@ namespace TMPro
             get { return m_isAutoFitting; }
             set { m_isAutoFitting = value; }
         }
-        private bool m_isAutoFitting = true;
+        private bool m_isAutoFitting = false;
 
 
         // Corners of the Text Container
@@ -117,11 +119,11 @@ namespace TMPro
         private Vector3[] m_worldCorners = new Vector3[4];
 
 
-        public Vector3 normal
-        {
-            get { return m_normal; }
-        }
-        private Vector3 m_normal;
+        //public Vector3 normal
+        //{
+        //    get { return m_normal; }
+        //}
+        //private Vector3 m_normal;
 
 
         // The margin offset from the Rectangle Bounds
@@ -133,15 +135,54 @@ namespace TMPro
         [SerializeField]
         private Vector4 m_margins;
 
-      
-        private Transform m_transform;
-        private TextMeshPro m_textMeshPro;
-   
-        void Awake()
+        /// <summary>
+        /// 
+        /// </summary>
+        public RectTransform rectTransform
         {
-            m_transform = GetComponent(typeof(Transform)) as Transform; 
-            m_textMeshPro = GetComponent(typeof(TextMeshPro)) as TextMeshPro;
+            get
+            {
+                if (m_rectTransform == null)
+                    m_rectTransform = GetComponent<RectTransform>();
+                return m_rectTransform;
+            }
+        }
+        private RectTransform m_rectTransform;
+
+        //private Transform m_transform;
+        //private bool m_isAddingRectTransform;
+        private static Vector2 k_defaultSize = new Vector2(100, 100);
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TextMeshPro textMeshPro
+        {
+            get
+            {
+                if (m_textMeshPro == null) m_textMeshPro = GetComponent<TextMeshPro>();
+                return m_textMeshPro;
+            }
+        }
+        private TextMeshPro m_textMeshPro;
+
+
+        protected override void Awake()
+        {
             //Debug.Log("TextContainer Awake() called.");
+
+            m_rectTransform = this.rectTransform;
+            if (m_rectTransform == null)
+            {
+                //m_isAddingRectTransform = true;
+                m_rectTransform = gameObject.AddComponent<RectTransform>();
+                //m_isAddingRectTransform = false;
+            }
+
+
+            m_textMeshPro = GetComponent(typeof(TextMeshPro)) as TextMeshPro;
+            
            
             if (m_rect.width == 0 || m_rect.height == 0)
             {
@@ -155,13 +196,14 @@ namespace TMPro
                     m_pivot = GetPivot(m_anchorPosition);
                     m_rect.width = m_textMeshPro.lineLength;
                 }
-                else
+                else // if (m_rectTransform.sizeDelta == new Vector2(100, 100))
                 {
                     m_isDefaultWidth = true;
                     m_isDefaultHeight = true;
                     m_pivot = GetPivot(m_anchorPosition);
-                    m_rect.width = 0;
-                    m_rect.height = 0;
+                    m_rect.width = 20;
+                    m_rect.height = 5;
+                    m_rectTransform.sizeDelta = this.size;
                 }
 
                 m_margins = new Vector4(0, 0, 0, 0);
@@ -170,37 +212,63 @@ namespace TMPro
         }
 
 
-        void OnEnable()
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void OnEnable()
         {
             //Debug.Log("Text Container OnEnable() called.");
-            if (m_transform == null)
-                m_transform = GetComponent(typeof(Transform)) as Transform;
 
             OnContainerChanged();
         }
 
-        void OnDisable()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void OnDisable()
         {
             //Debug.Log("OnDisable() called.");
         }
-        
-        
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         void OnContainerChanged()
         {
-            //Debug.Log("Text Container has changed.");
+            //Debug.Log("OnContainerChanged");
+
             UpdateCorners();
-            UpdateWorldCorners();
-            if (m_transform != null) m_transform.hasChanged = true;           
+            //UpdateWorldCorners();
+
+            if (this.m_rectTransform != null)
+            {
+                m_rectTransform.sizeDelta = this.size;
+                m_rectTransform.hasChanged = true;
+            }
+
+            if (this.textMeshPro != null)
+            {
+                m_textMeshPro.SetVerticesDirty();
+                m_textMeshPro.margin = m_margins;
+            }
         }
 
-        
-        void OnValidate()
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void OnValidate()
         {
             //Debug.Log("OnValidate() called.");
             m_hasChanged = true;
-            OnContainerChanged();       
+            OnContainerChanged();
         }
-        
+#endif
+
+
         /*
         void LateUpdate()
         {
@@ -209,13 +277,31 @@ namespace TMPro
                 UpdateWorldCorners();
         }
         */
-         
+
+
+
+        /// <summary>
+        /// Callback from Unity to handle RectTransform changes.
+        /// </summary>
+        protected override void OnRectTransformDimensionsChange()
+        {
+            //Debug.Log("OnRectTransformDimensionsChange()");
+            if (this.rectTransform.sizeDelta != k_defaultSize)
+                this.size = m_rectTransform.sizeDelta;
+
+            pivot = m_rectTransform.pivot;
+
+            m_hasChanged = true;
+            OnContainerChanged();
+        }
+
 
         private void SetRect(Vector2 size)
         {
             m_rect = new Rect(m_rect.x, m_rect.y, size.x, size.y);
-            //UpdateCorners();          
+            //UpdateCorners();
         }
+
 
         private void UpdateCorners()
         {           
@@ -224,40 +310,43 @@ namespace TMPro
             m_corners[2] = new Vector3((1 - m_pivot.x) * m_rect.width, (1 - m_pivot.y) * m_rect.height);
             m_corners[3] = new Vector3((1 - m_pivot.x) * m_rect.width, (- m_pivot.y) * m_rect.height);
             //Debug.Log("Pivot " + m_pivot + "  Corners 0: " + m_corners[0] + "  1: " + m_corners[1] + "  2: " + m_corners[2] + "  3: " + m_corners[3]);
+
+            if (m_rectTransform != null)
+                m_rectTransform.pivot = m_pivot;
         }
 
 
-        private void UpdateWorldCorners()
-        {
-            if (m_transform == null)
-                return;
+        //private void UpdateWorldCorners()
+        //{
+        //    if (m_transform == null) 
+        //        return;
 
-            Vector3 position = m_transform.position;
-            m_worldCorners[0] = position + m_transform.TransformDirection(m_corners[0]);
-            m_worldCorners[1] = position + m_transform.TransformDirection(m_corners[1]);
-            m_worldCorners[2] = position + m_transform.TransformDirection(m_corners[2]);
-            m_worldCorners[3] = position + m_transform.TransformDirection(m_corners[3]);
+        //    Vector3 position = m_transform.position;
+        //    m_worldCorners[0] = position + m_transform.TransformDirection(m_corners[0]);
+        //    m_worldCorners[1] = position + m_transform.TransformDirection(m_corners[1]);
+        //    m_worldCorners[2] = position + m_transform.TransformDirection(m_corners[2]);
+        //    m_worldCorners[3] = position + m_transform.TransformDirection(m_corners[3]);
 
-            m_normal = Vector3.Cross(worldCorners[1] - worldCorners[0], worldCorners[3] - worldCorners[0]);
+        //    m_normal = Vector3.Cross(worldCorners[1] - worldCorners[0], worldCorners[3] - worldCorners[0]);
 
             
-            //Debug.DrawLine(m_worldCorners[0], m_worldCorners[1], Color.green, 0.1f);
-            //Debug.DrawLine(m_worldCorners[1], m_worldCorners[2], Color.green, 0.1f);
-            //Debug.DrawLine(m_worldCorners[2], m_worldCorners[3], Color.green, 0.1f);
-            //Debug.DrawLine(m_worldCorners[3], m_worldCorners[0], Color.green, 0.1f);
+        //    //Debug.DrawLine(m_worldCorners[0], m_worldCorners[1], Color.green, 0.1f);
+        //    //Debug.DrawLine(m_worldCorners[1], m_worldCorners[2], Color.green, 0.1f);
+        //    //Debug.DrawLine(m_worldCorners[2], m_worldCorners[3], Color.green, 0.1f);
+        //    //Debug.DrawLine(m_worldCorners[3], m_worldCorners[0], Color.green, 0.1f);
             
-            //Debug.DrawLine(m_worldCorners[0], m_worldCorners[0] + normal, Color.red, 0.1f); 
-            //Debug.Log("Pivot " + m_pivot + "  Corners 0: " + m_worldCorners[0] + "  1: " + m_worldCorners[1] + "  2: " + m_worldCorners[2] + "  3: " + m_worldCorners[3]);
+        //    //Debug.DrawLine(m_worldCorners[0], m_worldCorners[0] + normal, Color.red, 0.1f); 
+        //    //Debug.Log("Pivot " + m_pivot + "  Corners 0: " + m_worldCorners[0] + "  1: " + m_worldCorners[1] + "  2: " + m_worldCorners[2] + "  3: " + m_worldCorners[3]);
             
-        }
+        //}
 
 
-        public Vector3[] GetWorldCorners()
-        {
-            UpdateWorldCorners();
+        //public Vector3[] GetWorldCorners()
+        //{
+        //    UpdateWorldCorners();
 
-            return m_worldCorners;
-        }
+        //    return m_worldCorners;
+        //}
 
 
         Vector2 GetPivot(TextContainerAnchors anchor)

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 Stephan Schaem & Stephan Bouchard - All Rights Reserved
+// Copyright (C) 2014 - 2015 Stephan Schaem - All Rights Reserved
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
@@ -11,18 +11,34 @@ Properties {
 
 	_VertexOffsetX	("Vertex OffsetX", float) = 0
 	_VertexOffsetY	("Vertex OffsetY", float) = 0
-	_ClipRect		("Mask Coords", vector) = (0,0,100000,100000)
 	_MaskSoftnessX	("Mask SoftnessX", float) = 0
 	_MaskSoftnessY	("Mask SoftnessY", float) = 0
+
+	_StencilComp("Stencil Comparison", Float) = 8
+	_Stencil("Stencil ID", Float) = 0
+	_StencilOp("Stencil Operation", Float) = 0
+	_StencilWriteMask("Stencil Write Mask", Float) = 255
+	_StencilReadMask("Stencil Read Mask", Float) = 255
 }
 
-SubShader {
+SubShader{
 
-	Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
+	Tags { "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+	
+	Stencil
+	{
+		Ref[_Stencil]
+		Comp[_StencilComp]
+		Pass[_StencilOp]
+		ReadMask[_StencilReadMask]
+		WriteMask[_StencilWriteMask]
+	}
+	
+	
 	Lighting Off
-	Cull [_CullMode]
-	Ztest [_ZTestMode]
-	ZWrite Off 
+	Cull[_CullMode]
+	Ztest[_ZTestMode]
+	ZWrite Off
 	Fog { Mode Off }
 	Blend SrcAlpha OneMinusSrcAlpha
 
@@ -31,9 +47,12 @@ SubShader {
 		#pragma vertex vert
 		#pragma fragment frag
 		#pragma fragmentoption ARB_precision_hint_fastest
-		#pragma shader_feature __ MASK_HARD MASK_SOFT
+		//#pragma shader_feature __ MASK_HARD MASK_SOFT
 
 		#include "UnityCG.cginc"
+		#include "UnityUI.cginc"
+
+		bool _UseClipRect;
 
 		struct appdata_t {
 			float4 vertex		: POSITION;
@@ -47,9 +66,7 @@ SubShader {
 			fixed4	color		: COLOR;
 			float2	texcoord0	: TEXCOORD0;
 			float2	texcoord1	: TEXCOORD1;
-		#if MASK_HARD | MASK_SOFT
 			float4	mask		: TEXCOORD2;
-		#endif
 		};
 
 		uniform	sampler2D 	_MainTex;
@@ -79,12 +96,9 @@ SubShader {
 			o.color = faceColor;
 			o.texcoord0 = i.texcoord0;
 			o.texcoord1 = UnpackUV(i.texcoord1);
-		#if MASK_HARD | MASK_SOFT
 			float2 pixelSize = vPosition.w;
-			pixelSize /= float2(_ScreenParams.x * UNITY_MATRIX_P[0][0], _ScreenParams.y * UNITY_MATRIX_P[1][1]);
-		    //pixelSize /= float2(_ScaleX, _ScaleY) * mul((float2x2)UNITY_MATRIX_P, _ScreenParams.xy);
-			o.mask = float4(vert.xy - _ClipRect.xy, .5/pixelSize.xy);
-		#endif
+			pixelSize /= abs(float2(_ScreenParams.x * UNITY_MATRIX_P[0][0], _ScreenParams.y * UNITY_MATRIX_P[1][1]));
+			o.mask = float4(vert.xy, 0.5 / pixelSize.xy);
 			return o;
 		}
 
@@ -93,17 +107,29 @@ SubShader {
 			fixed4 c = tex2D(_FaceTex, i.texcoord1) * i.color;
 			c.a *= tex2D(_MainTex, i.texcoord0).a;
 
-		#if MASK_HARD
-			float2 m = 1-saturate((abs(i.mask.xy) - _ClipRect.zw)*i.mask.zw);
-			c.a *= m.x*m.y;
-		#endif
+			//float2 clipSize = (_ClipRect.zw - _ClipRect.xy) * 0.5;
+			//float2 clipCenter = _ClipRect.xy + clipSize;
 
-		#if MASK_SOFT
-			float2 s = half2(_MaskSoftnessX, _MaskSoftnessY)*i.mask.zw;
-			float2 m = 1-saturate(((abs(i.mask.xy) - _ClipRect.zw) * i.mask.zw + s) / (1 + s));
-			m *= m;
-			c.a *= m.x*m.y;
-		#endif
+			if (_UseClipRect)
+			{
+				c *= UnityGet2DClipping(i.mask.xy, _ClipRect);
+				//float2 s = float2(_MaskSoftnessX, _MaskSoftnessY) * i.mask.zw;
+				//float2 m = 1 - saturate(((abs(i.mask.xy - clipCenter) - clipSize) * i.mask.zw + s) / (1 + s));
+				//m *= m;
+				//c *= m.x * m.y;
+			}
+
+		//#if MASK_HARD
+		//	float2 m = 1 - saturate((abs(i.mask.xy - clipCenter) - clipSize) * i.mask.zw);
+		//	c.a *= m.x*m.y;
+		//#endif
+
+		//#if MASK_SOFT
+		//	float2 s = half2(_MaskSoftnessX, _MaskSoftnessY) * i.mask.zw;
+		//	float2 m = 1 - saturate(((abs(i.mask.xy - clipCenter) - clipSize) * i.mask.zw + s) / (1 + s));
+		//	m *= m;
+		//	c.a *= m.x*m.y;
+		//#endif
 
 			return c;
 		}

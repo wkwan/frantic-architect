@@ -32,13 +32,13 @@ namespace TMPro.EditorUtilities
             string filePath = filePathWithName.Replace(fileNameWithExtension, "");
              
             // Check if Sprite Asset already exists
-            SpriteAsset spriteAsset = AssetDatabase.LoadAssetAtPath(filePath + fileNameWithoutExtension + ".asset", typeof(SpriteAsset)) as SpriteAsset;
+            TMP_SpriteAsset spriteAsset = AssetDatabase.LoadAssetAtPath(filePath + fileNameWithoutExtension + ".asset", typeof(TMP_SpriteAsset)) as TMP_SpriteAsset;
             bool isNewAsset = spriteAsset == null ? true : false;
 
             if (isNewAsset)
             {
                 // Create new Sprite Asset using this texture
-                spriteAsset = ScriptableObject.CreateInstance<SpriteAsset>();
+                spriteAsset = ScriptableObject.CreateInstance<TMP_SpriteAsset>();
                 AssetDatabase.CreateAsset(spriteAsset, filePath + fileNameWithoutExtension + ".asset");
 
                 // Assign new Sprite Sheet texture to the Sprite Asset.
@@ -76,7 +76,7 @@ namespace TMPro.EditorUtilities
         }
 
 
-        private static List<SpriteInfo> GetSpriteInfo(Texture source)
+        private static List<TMP_Sprite> GetSpriteInfo(Texture source)
         {
             //Debug.Log("Creating new Sprite Asset.");
             
@@ -85,11 +85,11 @@ namespace TMPro.EditorUtilities
             // Get all the Sprites sorted by Index
             Sprite[] sprites = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(filePath).Select(x => x as Sprite).Where(x => x != null).OrderByDescending(x => x.rect.y).ThenBy(x => x.rect.x).ToArray();
             
-            List<SpriteInfo> spriteInfoList = new List<SpriteInfo>();
+            List<TMP_Sprite> spriteInfoList = new List<TMP_Sprite>();
 
             for (int i = 0; i < sprites.Length; i++)   
             {
-                SpriteInfo spriteInfo = new SpriteInfo();
+                TMP_Sprite spriteInfo = new TMP_Sprite();
                 Sprite sprite = sprites[i];
 
                 //spriteInfo.fileID = UnityEditor.Unsupported.GetLocalIdentifierInFile(sprite.GetInstanceID());
@@ -104,7 +104,7 @@ namespace TMPro.EditorUtilities
                 spriteInfo.height = spriteRect.height;
 
                 // Compute Sprite pivot position
-                Vector2 pivot = new Vector2(0 - (sprite.bounds.min.x) / (sprite.bounds.extents.x * 2), 0 - (sprite.bounds.min.y) / (sprite.bounds.extents.y * 2));               
+                Vector2 pivot = new Vector2(0 - (sprite.bounds.min.x) / (sprite.bounds.extents.x * 2), 0 - (sprite.bounds.min.y) / (sprite.bounds.extents.y * 2));
                 spriteInfo.pivot = new Vector2(0 - pivot.x * spriteRect.width, spriteRect.height - pivot.y * spriteRect.height);
 
                 //spriteInfo.sprite = sprite;
@@ -112,8 +112,8 @@ namespace TMPro.EditorUtilities
                 // Properties the can be modified
                 spriteInfo.xAdvance = spriteRect.width;
                 spriteInfo.scale = 1.0f;
-                spriteInfo.xOffset = 0;
-                spriteInfo.yOffset = 0;
+                spriteInfo.xOffset = spriteInfo.pivot.x;
+                spriteInfo.yOffset = spriteInfo.pivot.y;
 
                 spriteInfoList.Add(spriteInfo);
 
@@ -124,7 +124,7 @@ namespace TMPro.EditorUtilities
 
 
         // Update existing SpriteInfo
-        private static List<SpriteInfo> UpdateSpriteInfo(SpriteAsset spriteAsset)
+        private static List<TMP_Sprite> UpdateSpriteInfo(TMP_SpriteAsset spriteAsset)
         {
             //Debug.Log("Updating Sprite Asset.");
             
@@ -142,7 +142,7 @@ namespace TMPro.EditorUtilities
                 //Debug.Log("")
 
                 // Use existing SpriteInfo is it already exists
-                SpriteInfo spriteInfo = index == -1 ? new SpriteInfo() : spriteAsset.spriteInfoList[index];
+                TMP_Sprite spriteInfo = index == -1 ? new TMP_Sprite() : spriteAsset.spriteInfoList[index];
 
                 Rect spriteRect = sprite.rect;
                 spriteInfo.name = sprite.name;
@@ -183,8 +183,8 @@ namespace TMPro.EditorUtilities
                     spriteInfo.xAdvance = spriteRect.width;
                     spriteInfo.scale = 1.0f;
 
-                    spriteInfo.xOffset = 0;
-                    spriteInfo.yOffset = 0;
+                    spriteInfo.xOffset = spriteInfo.pivot.x;
+                    spriteInfo.yOffset = spriteInfo.pivot.y;
 
                     spriteAsset.spriteInfoList.Add(spriteInfo);
                 }

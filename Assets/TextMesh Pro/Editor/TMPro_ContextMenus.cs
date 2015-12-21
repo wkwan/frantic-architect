@@ -212,7 +212,7 @@ namespace TMPro.EditorUtilities
         [MenuItem("CONTEXT/TextMeshProFont/Extract Atlas", false, 2000)]
         static void ExtractAtlas(MenuCommand command)
         {
-            TextMeshProFont font = command.context as TextMeshProFont;
+            TMP_FontAsset font = command.context as TMP_FontAsset;
             Texture2D tex = Instantiate(font.material.mainTexture) as Texture2D;
 
             string fontPath = AssetDatabase.GetAssetPath(font);

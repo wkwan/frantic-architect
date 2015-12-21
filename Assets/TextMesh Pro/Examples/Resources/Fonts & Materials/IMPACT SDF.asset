@@ -10,7 +10,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: cafd18099dfc0114896e0a8b277b81b6, type: 3}
   m_ShaderKeywords: MASK_OFF
   m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -31,9 +31,16 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
+          name: _MaskTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
           name: _FaceTex
         second:
-          m_Texture: {fileID: 2800000, guid: 6fa2eeb108f11c74e9828a7e4f5c5a14, type: 3}
+          m_Texture: {fileID: 2800000, guid: 0bbb43aff4f7811419ffceb1b16cf3d6, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -54,6 +61,14 @@ Material:
       data:
         first:
           name: _FaceDilate
+        second: 0
+      data:
+        first:
+          name: _OutlineWidth
+        second: 0
+      data:
+        first:
+          name: _OutlineSoftness
         second: 0
       data:
         first:
@@ -81,12 +96,28 @@ Material:
         second: .5
       data:
         first:
-          name: _OutlineWidth
+          name: _ShaderFlags
         second: 0
       data:
         first:
-          name: _OutlineSoftness
-        second: 0
+          name: _ScaleRatioA
+        second: .833333313
+      data:
+        first:
+          name: _ScaleRatioB
+        second: .833333313
+      data:
+        first:
+          name: _ScaleRatioC
+        second: .833333313
+      data:
+        first:
+          name: _TextureWidth
+        second: 512
+      data:
+        first:
+          name: _TextureHeight
+        second: 512
       data:
         first:
           name: _GradientScale
@@ -102,15 +133,43 @@ Material:
       data:
         first:
           name: _PerspectiveFilter
-        second: .875
+        second: 0
       data:
         first:
-          name: _TextureWidth
-        second: 512
+          name: _VertexOffsetX
+        second: 0
       data:
         first:
-          name: _TextureHeight
-        second: 512
+          name: _VertexOffsetY
+        second: 0
+      data:
+        first:
+          name: _MaskSoftnessX
+        second: 1
+      data:
+        first:
+          name: _MaskSoftnessY
+        second: 1
+      data:
+        first:
+          name: _Stencil
+        second: 0
+      data:
+        first:
+          name: _StencilComp
+        second: 8
+      data:
+        first:
+          name: _StencilOp
+        second: 0
+      data:
+        first:
+          name: _StencilReadMask
+        second: 255
+      data:
+        first:
+          name: _StencilWriteMask
+        second: 255
       data:
         first:
           name: _Bevel
@@ -133,60 +192,12 @@ Material:
         second: .0500000007
       data:
         first:
+          name: _ColorMask
+        second: 15
+      data:
+        first:
           name: _MaskID
         second: 0
-      data:
-        first:
-          name: _MaskSoftnessX
-        second: 0
-      data:
-        first:
-          name: _MaskSoftnessY
-        second: 0
-      data:
-        first:
-          name: _VertexOffsetX
-        second: 0
-      data:
-        first:
-          name: _VertexOffsetY
-        second: 0
-      data:
-        first:
-          name: _Stencil
-        second: 0
-      data:
-        first:
-          name: _StencilComp
-        second: 8
-      data:
-        first:
-          name: _ShaderFlags
-        second: 0
-      data:
-        first:
-          name: _ScaleRatioA
-        second: .833333313
-      data:
-        first:
-          name: _ScaleRatioB
-        second: .833333313
-      data:
-        first:
-          name: _ScaleRatioC
-        second: .833333313
-      data:
-        first:
-          name: _StencilOp
-        second: 0
-      data:
-        first:
-          name: _StencilReadMask
-        second: 255
-      data:
-        first:
-          name: _StencilWriteMask
-        second: 255
       data:
         first:
           name: _FaceUVSpeedX
@@ -250,16 +261,28 @@ Material:
     m_Colors:
       data:
         first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _ClipRect
+        second: {r: 0, g: 0, b: 100000, a: 100000}
+      data:
+        first:
           name: _FaceColor
         second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _OutlineColor
+        second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
           name: _UnderlayColor
         second: {r: 0, g: 0, b: 0, a: .5}
       data:
         first:
-          name: _OutlineColor
-        second: {r: 0, g: 0, b: 0, a: 1}
+          name: _MaskCoord
+        second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
           name: _EnvMatrixRotation
@@ -268,10 +291,6 @@ Material:
         first:
           name: _GlowColor
         second: {r: 0, g: 1, b: 0, a: .5}
-      data:
-        first:
-          name: _MaskCoord
-        second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
           name: _SpecularColor
@@ -293,11 +312,12 @@ Texture2D:
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
+  serializedVersion: 2
   m_Width: 512
   m_Height: 512
   m_CompleteImageSize: 262144
   m_TextureFormat: 1
-  m_MipMap: 0
+  m_MipCount: 1
   m_IsReadable: 1
   m_ReadAllowed: 1
   m_AlphaIsTransparency: 0
@@ -327,7 +347,8 @@ MonoBehaviour:
   m_fontInfo:
     Name: Impact
     PointSize: 72
-    Padding: 0
+    Scale: 1
+    CharacterCount: 95
     LineHeight: 87.8125
     Baseline: 0
     Ascender: 72.625
@@ -338,14 +359,14 @@ MonoBehaviour:
     SubSize: .5
     Underline: -9
     UnderlineThickness: 3.5859375
-    TabWidth: 126.875
-    CharacterCount: 95
+    TabWidth: 180
+    Padding: 0
     AtlasWidth: 512
     AtlasHeight: 512
-  fontHashCode: -1654789573
+  fontHashCode: 195320499
   atlas: {fileID: 2800000}
   material: {fileID: 2100000}
-  materialHashCode: 668078476
+  materialHashCode: 1845583832
   m_glyphInfoList:
   - id: 160
     x: 6
@@ -1156,8 +1177,9 @@ MonoBehaviour:
     fontStlyeModifier: 0
     fontRenderMode: 0
     fontKerning: 0
-  propertiesChanged: 0
-  NormalStyle: 0
-  BoldStyle: .75
-  ItalicStyle: 20
-  TabSize: 10
+  normalStyle: 0
+  normalSpacingOffset: 0
+  boldStyle: .75
+  boldSpacing: 7
+  italicStyle: 35
+  tabSize: 10

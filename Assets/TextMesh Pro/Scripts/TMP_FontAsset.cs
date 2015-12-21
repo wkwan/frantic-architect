@@ -13,11 +13,14 @@ using System.Linq;
 namespace TMPro
 {
     [Serializable]
-    public class TextMeshProFont : ScriptableObject
+    public class TMP_FontAsset : TMP_Asset
     {
         public enum FontAssetTypes { None = 0, SDF = 1, Bitmap = 2 };
         public FontAssetTypes fontAssetType;
         
+        /// <summary>
+        /// The general information about the font.
+        /// </summary>
         public FaceInfo fontInfo
         { get { return m_fontInfo; } }
 
@@ -33,13 +36,14 @@ namespace TMPro
         public int materialHashCode;
 
         // Glyph Info
-        [SerializeField]
-        private List<GlyphInfo> m_glyphInfoList;
 
-        public Dictionary<int, GlyphInfo> characterDictionary
+        [SerializeField]
+        private List<TMP_Glyph> m_glyphInfoList;
+
+        public Dictionary<int, TMP_Glyph> characterDictionary
         { get { return m_characterDictionary; } }
 
-        private Dictionary<int, GlyphInfo> m_characterDictionary;
+        private Dictionary<int, TMP_Glyph> m_characterDictionary;
 
 
         // Kerning 
@@ -71,17 +75,19 @@ namespace TMPro
         public FontCreationSetting fontCreationSettings;
 
 
-        [SerializeField]
-        public bool propertiesChanged = false;
+        //[SerializeField]
+        //public bool propertiesChanged = false;
 
 
         private int[] m_characterSet; // Array containing all the characters in this font asset.
 
-        public float NormalStyle = 0;
-        public float BoldStyle = 0.75f;
+        public float normalStyle = 0;
+        public float normalSpacingOffset = 0;
+
+        public float boldStyle = 0.75f;
         public float boldSpacing = 7f;
-        public byte ItalicStyle = 35;
-        public byte TabSize = 10;
+        public byte italicStyle = 35;
+        public byte tabSize = 10;
 
         private byte m_oldTabSize;
 
@@ -110,9 +116,9 @@ namespace TMPro
 
         void OnValidate()
         {
-            if (m_oldTabSize != TabSize)
+            if (m_oldTabSize != tabSize)
             {
-                m_oldTabSize = TabSize;
+                m_oldTabSize = tabSize;
                 ReadFontDefinition();
             }
         }
@@ -124,9 +130,9 @@ namespace TMPro
         }
 
 
-        public void AddGlyphInfo(GlyphInfo[] glyphInfo)
+        public void AddGlyphInfo(TMP_Glyph[] glyphInfo)
         {
-            m_glyphInfoList = new List<GlyphInfo>();
+            m_glyphInfoList = new List<TMP_Glyph>();
             int characterCount = glyphInfo.Length;
 
             m_fontInfo.CharacterCount = characterCount;
@@ -134,7 +140,7 @@ namespace TMPro
 
             for (int i = 0; i < characterCount; i++)
             {
-                GlyphInfo g = new GlyphInfo();
+                TMP_Glyph g = new TMP_Glyph();
                 g.id = glyphInfo[i].id;
                 g.x = glyphInfo[i].x;
                 g.y = glyphInfo[i].y;
@@ -177,8 +183,8 @@ namespace TMPro
             //Debug.Log(name + "   " + fontAssetType);
 
             // Create new instance of GlyphInfo Dictionary for fast access to glyph info.
-            m_characterDictionary = new Dictionary<int, GlyphInfo>();
-            foreach (GlyphInfo glyph in m_glyphInfoList)
+            m_characterDictionary = new Dictionary<int, TMP_Glyph>();
+            foreach (TMP_Glyph glyph in m_glyphInfoList)
             {
                 if (!m_characterDictionary.ContainsKey(glyph.id))
                     m_characterDictionary.Add(glyph.id, glyph);
@@ -187,7 +193,7 @@ namespace TMPro
 
             //Debug.Log("PRE: BaseLine:" + m_fontInfo.Baseline + "  Ascender:" + m_fontInfo.Ascender + "  Descender:" + m_fontInfo.Descender); // + "  Centerline:" + m_fontInfo.CenterLine);
 
-            GlyphInfo temp_charInfo = new GlyphInfo();
+            TMP_Glyph temp_charInfo = new TMP_Glyph();
 
             // Add Character (10) LineFeed, (13) Carriage Return & Space (32) to Dictionary if they don't exists.
             if (m_characterDictionary.ContainsKey(32))
@@ -199,7 +205,7 @@ namespace TMPro
             else
             {
                 //Debug.Log("Adding Character 32 (Space) to Dictionary for Font (" + m_fontInfo.Name + ").");
-                temp_charInfo = new GlyphInfo();
+                temp_charInfo = new TMP_Glyph();
                 temp_charInfo.id = 32;
                 temp_charInfo.x = 0; 
                 temp_charInfo.y = 0;
@@ -214,7 +220,7 @@ namespace TMPro
             // Add Non-Breaking Space (160)
             if (!m_characterDictionary.ContainsKey(160))
             {
-                temp_charInfo = GlyphInfo.Clone(m_characterDictionary[32]);
+                temp_charInfo = TMP_Glyph.Clone(m_characterDictionary[32]);
                 m_characterDictionary.Add(160, temp_charInfo);
             }
 
@@ -223,7 +229,7 @@ namespace TMPro
             {
                 //Debug.Log("Adding Character 10 (Linefeed) to Dictionary for Font (" + m_fontInfo.Name + ").");
 
-                temp_charInfo = new GlyphInfo();
+                temp_charInfo = new TMP_Glyph();
                 temp_charInfo.id = 10;
                 temp_charInfo.x = 0; // m_characterDictionary[32].x;
                 temp_charInfo.y = 0; // m_characterDictionary[32].y;
@@ -243,15 +249,15 @@ namespace TMPro
             {
                 //Debug.Log("Adding Character 9 (Tab) to Dictionary for Font (" + m_fontInfo.Name + ").");
 
-                temp_charInfo = new GlyphInfo();
+                temp_charInfo = new TMP_Glyph();
                 temp_charInfo.id = 9;
                 temp_charInfo.x = m_characterDictionary[32].x;
                 temp_charInfo.y = m_characterDictionary[32].y;
-                temp_charInfo.width = m_characterDictionary[32].width * TabSize + (m_characterDictionary[32].xAdvance - m_characterDictionary[32].width) * (TabSize - 1);
+                temp_charInfo.width = m_characterDictionary[32].width * tabSize + (m_characterDictionary[32].xAdvance - m_characterDictionary[32].width) * (tabSize - 1);
                 temp_charInfo.height = m_characterDictionary[32].height;
                 temp_charInfo.xOffset = m_characterDictionary[32].xOffset;
                 temp_charInfo.yOffset = m_characterDictionary[32].yOffset;
-                temp_charInfo.xAdvance = m_characterDictionary[32].xAdvance * TabSize;
+                temp_charInfo.xAdvance = m_characterDictionary[32].xAdvance * tabSize;
                 m_characterDictionary.Add(9, temp_charInfo);
             }
 
@@ -261,6 +267,9 @@ namespace TMPro
             // Tab Width is using the same xAdvance as space (32).
             m_fontInfo.TabWidth = m_characterDictionary[9].xAdvance;
 
+            // Adjust Font Scale for compatibility reasons
+            if (m_fontInfo.Scale == 0)
+                m_fontInfo.Scale = 1.0f;
 
             // Populate Dictionary with Kerning Information
             m_kerningDictionary = new Dictionary<int, KerningPair>();
@@ -299,6 +308,7 @@ namespace TMPro
 
         }
 
+
         // Get the characters from the line breaking files
         private Dictionary<int, char> GetCharacters(TextAsset file)
         {                      
@@ -319,6 +329,68 @@ namespace TMPro
             }          
             
             return dict;
+        }
+
+
+        /// <summary>
+        /// Function to check if a certain character exists in the font asset.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        public bool HasCharacter(int character)
+        {
+            if (m_characterDictionary == null)
+                return false;
+
+            if (m_characterDictionary.ContainsKey(character))
+                return true;
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// Function to check if a certain character exists in the font asset.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        public bool HasCharacter(char character)
+        {
+            if (m_characterDictionary == null)
+                return false;
+
+            if (m_characterDictionary.ContainsKey(character))
+                return true;
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// Function to check if certain characters exists in the font asset. Function returns a list of missing characters.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        public bool HasCharacters(string text, out List<char> missingCharacters)
+        {
+            if (m_characterDictionary == null)
+            {
+                missingCharacters = null;
+                return false;
+            }
+
+            missingCharacters = new List<char>();
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (!m_characterDictionary.ContainsKey(text[i]))
+                    missingCharacters.Add(text[i]);
+            }
+
+            if (missingCharacters.Count == 0)
+                return true;
+
+            return false;
         }
 
     }
