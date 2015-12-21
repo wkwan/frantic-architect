@@ -967,6 +967,7 @@ public class Game : MonoBehaviour
 				CancelInvoke("SwapHover");
 				cubeToPlace.transform.SetParent(tower.transform);
 				ParticleSystem smoke = Instantiate<ParticleSystem>(particlePfs[curMat]);
+				
 				smoke.transform.SetParent(cubeToPlace.transform);
 				smoke.transform.localPosition = Vector3.zero;
 				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
