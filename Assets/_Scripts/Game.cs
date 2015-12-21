@@ -9,12 +9,15 @@ using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.SocialPlatforms;
 #endif
+using UnityStandardAssets.ImageEffects;
 
 //todo: particles shouldn't render if inside cubes (maybe use material's renderqueue)
 //todo: maybe particle system should appear at welding point
 
 public class Game : MonoBehaviour 
 {
+	public BloomOptimized bloom;
+	
 	public TextMeshProUGUI totalCubesScore;
 	public TextMeshProUGUI bestTotalCubesScore;
 	const string BEST_TOTAL_CUBES_SCORE = "bestTotalCubesScore";
@@ -976,7 +979,16 @@ public class Game : MonoBehaviour
 	
 					topY = curPos.y;
 					curScore++;
-
+					bloom.enabled = true;
+					DOTween.To(() => bloom.intensity, (intensity) => bloom.intensity = intensity, 0.8f, 0.2f).OnComplete(() =>
+					{
+						DOTween.To(() => bloom.intensity, (intensity) => bloom.intensity = intensity, 0f, 0.1f).OnComplete(() =>
+						{
+							bloom.enabled = false;
+						});
+					});
+					
+					
 					//if (topY % LEVEL_HEIGHT == 0)
 					//{
 					//	if (!muted) levelUpSound.Play();
