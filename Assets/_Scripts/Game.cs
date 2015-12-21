@@ -958,7 +958,7 @@ public class Game : MonoBehaviour
 	
 	void Update () 
 	{
-		fps.text = (1f/Time.deltaTime).ToString();
+		//fps.text = (1f/Time.deltaTime).ToString();
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
