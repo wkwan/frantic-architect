@@ -968,6 +968,15 @@ public class Game : MonoBehaviour
 				cubeToPlace.transform.SetParent(tower.transform);
 				ParticleSystem smoke = Instantiate<ParticleSystem>(particlePfs[curMat]);
 				
+				if (curMat == 0 || curMat == 1 || curMat == 2 || curMat == 3 || curMat == 6 || curMat == 8 || curMat == 9 || curMat == 11 || curMat == 12 || curMat == 13 || curMat == 14 || curMat == 17 || curMat == 18 || curMat == 19)
+				{
+					ParticleSystem.ShapeModule shape = smoke.shape;
+					shape.enabled = true;
+					shape.shapeType = ParticleSystemShapeType.MeshRenderer;
+					shape.meshRenderer = cubeToPlace.GetComponent<MeshRenderer>();
+				}
+
+				
 				smoke.transform.SetParent(cubeToPlace.transform);
 				smoke.transform.localPosition = Vector3.zero;
 				tower.Sleep(); //if we enable the boxcollider while the rigidbody is active, the tower sometimes jumps
