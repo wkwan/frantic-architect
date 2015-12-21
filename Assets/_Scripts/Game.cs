@@ -10,7 +10,6 @@ using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.SocialPlatforms;
 #endif
 
-//todo: make shadow fade out with tower
 //todo: particles shouldn't render if inside cubes (maybe use material's renderqueue)
 //todo: maybe particle system should appear at welding point
 
@@ -47,8 +46,8 @@ public class Game : MonoBehaviour
 	public Color albedoRedShiny;
 	public Color emissionRedShiny;
 	
-	Material redMat;
-	Material redShinyMat;
+	//Material redMat;
+	//Material redShinyMat;
 	
 	//public Material white;
 	
@@ -214,16 +213,16 @@ public class Game : MonoBehaviour
 
 	}
 	
-	void MakeMaterials()
-	{
-		redMat = Instantiate<Material>(cubeMatExample.material);
-		redMat.color = albedoRed;
+	//void MakeMaterials()
+	//{
+	//	redMat = Instantiate<Material>(cubeMatExample.material);
+	//	redMat.color = albedoRed;
 		
-		redShinyMat = Instantiate<Material>(cubeMatExample.material);
-		redShinyMat.color = albedoRedShiny;
-		redShinyMat.EnableKeyword("_EMISSION");
-		redShinyMat.SetColor("_Emission", emissionRedShiny);
-	}
+	//	redShinyMat = Instantiate<Material>(cubeMatExample.material);
+	//	redShinyMat.color = albedoRedShiny;
+	//	redShinyMat.EnableKeyword("_EMISSION");
+	//	redShinyMat.SetColor("_EmissionColor", emissionRedShiny);
+	//}
 	
 
 	// Use this for initialization
@@ -234,7 +233,7 @@ public class Game : MonoBehaviour
 		origCamZ = cam.transform.localPosition.z;
 		startCube.GetComponent<MeshRenderer>().material = materials[curMat];
 		cubeMatExample.material = materials[curMat];
-		MakeMaterials();
+		//MakeMaterials();
 		
 		changeCubeLeft.onClick.AddListener(() =>
 		{
@@ -245,7 +244,7 @@ public class Game : MonoBehaviour
 			}
 			cubeMatExample.material = materials[curMat];
 			PlayerPrefs.SetInt(CUR_MAT, curMat);
-			MakeMaterials();
+			//MakeMaterials();
 		});
 		
 		changeCubeRight.onClick.AddListener(() =>
@@ -257,7 +256,7 @@ public class Game : MonoBehaviour
 			}
 			cubeMatExample.material = materials[curMat];
 			PlayerPrefs.SetInt(CUR_MAT, curMat);
-			MakeMaterials();
+			//MakeMaterials();
 			
 		});
 		
@@ -829,96 +828,96 @@ public class Game : MonoBehaviour
 		cubeMesh.material = materials[curMat];
 	}
 	
-	IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, bool toShiny, float duration)
-	{
-		float startTime = Time.time;
+	//IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, bool toShiny, float duration)
+	//{
+	//	float startTime = Time.time;
 		
-		while (Time.time < startTime + duration - Time.deltaTime/2)
-		{
-			foreach (string cubeKey in cubeKeysToRemove)
-			{	
-				MeshRenderer cubeMesh = cubes[cubeKey].GetComponent<MeshRenderer>();
-				float lerpFraction = (Time.time - startTime)/duration;
-				if (toShiny)
-				{
-					cubeMesh.material.Lerp(redMat, redShinyMat, lerpFraction);
-				}
-				else
-				{
-					cubeMesh.material.Lerp(redShinyMat, redMat, lerpFraction); 
-				}
-			}
+	//	while (Time.time < startTime + duration - Time.deltaTime/2)
+	//	{
+	//		foreach (string cubeKey in cubeKeysToRemove)
+	//		{	
+	//			MeshRenderer cubeMesh = cubes[cubeKey].GetComponent<MeshRenderer>();
+	//			float lerpFraction = (Time.time - startTime)/duration;
+	//			if (toShiny)
+	//			{
+	//				cubeMesh.material.Lerp(redMat, redShinyMat, lerpFraction);
+	//			}
+	//			else
+	//			{
+	//				cubeMesh.material.Lerp(redShinyMat, redMat, lerpFraction); 
+	//			}
+	//		}
 			
-			yield return new WaitForEndOfFrame();
-		}
-	}
+	//		yield return new WaitForEndOfFrame();
+	//	}
+	//}
 	
-	IEnumerator FadeOutTower()
-	{
-		goingToNextStage = true;
-		tower.isKinematic = true;
+	//IEnumerator FadeOutTower()
+	//{
+	//	goingToNextStage = true;
+	//	tower.isKinematic = true;
 		
-		List<string> cubeKeysToRemove = new List<string>();
-		foreach (string cubeKey in cubes.Keys)
-		{
-			if (cubes[cubeKey].GetInstanceID() != startCube.GetInstanceID())
-			{
-				cubes[cubeKey].GetComponent<BoxCollider>().enabled = false;
-				cubeKeysToRemove.Add(cubeKey);
-			}
-		}
+	//	List<string> cubeKeysToRemove = new List<string>();
+	//	foreach (string cubeKey in cubes.Keys)
+	//	{
+	//		if (cubes[cubeKey].GetInstanceID() != startCube.GetInstanceID())
+	//		{
+	//			cubes[cubeKey].GetComponent<BoxCollider>().enabled = false;
+	//			cubeKeysToRemove.Add(cubeKey);
+	//		}
+	//	}
 		
-		float TOWER_RED_DURATION = 0.3f;
+	//	float TOWER_RED_DURATION = 0.3f;
 		
-		float startTime = Time.time;
+	//	float startTime = Time.time;
 		
-		while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
-		{
-			foreach (string cubeKey in cubeKeysToRemove)
-			{
-				MeshRenderer curRenderer = cubes[cubeKey].GetComponent<MeshRenderer>();
-				curRenderer.material.Lerp(curRenderer.material, redMat, (Time.time - startTime)/TOWER_RED_DURATION);
-			}
-			yield return new WaitForEndOfFrame();
-		}
-		
-		
-		float TOWER_FLASH_SHINY_DURATION = 0.22f;
-		float TOWER_FLASH_RED_DURATION = 0.14f;
-		
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
-		yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
-		
-		yield return new WaitForSeconds(0.22f);
-		
-		float TOWER_FADE_DURATION = 0.65f;
-		startTime = Time.time;
-		
-		while (Time.time < startTime + TOWER_FADE_DURATION - Time.deltaTime/2)
-		{
-			float newAlpha = Mathf.Lerp(1, 0, (Time.time - startTime) / TOWER_FADE_DURATION);
-			foreach (string cubeKey in cubeKeysToRemove)
-			{
-				cubes[cubeKey].GetComponent<MeshRenderer>().material.color = new Color(albedoRed.r, albedoRed.g, albedoRed.b, newAlpha);
-			}
-			yield return new WaitForEndOfFrame();
-		}
+	//	while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
+	//	{
+	//		foreach (string cubeKey in cubeKeysToRemove)
+	//		{
+	//			MeshRenderer curRenderer = cubes[cubeKey].GetComponent<MeshRenderer>();
+	//			curRenderer.material.Lerp(curRenderer.material, redMat, (Time.time - startTime)/TOWER_RED_DURATION);
+	//		}
+	//		yield return new WaitForEndOfFrame();
+	//	}
 		
 		
-		foreach (string cubeKey in cubeKeysToRemove)
-		{
-			cubes[cubeKey].gameObject.SetActive(false);
-			Destroy(cubes[cubeKey].gameObject);
-			cubes.Remove(cubeKey);
-		}
-		tower.isKinematic = false;
-		SetupNewHover();
-		goingToNextStage = false;
-	}
+	//	float TOWER_FLASH_SHINY_DURATION = 0.22f;
+	//	float TOWER_FLASH_RED_DURATION = 0.14f;
+		
+	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
+	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
+	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
+	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
+	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
+	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
+		
+	//	yield return new WaitForSeconds(0.22f);
+		
+	//	float TOWER_FADE_DURATION = 0.65f;
+	//	startTime = Time.time;
+		
+	//	while (Time.time < startTime + TOWER_FADE_DURATION - Time.deltaTime/2)
+	//	{
+	//		float newAlpha = Mathf.Lerp(1, 0, (Time.time - startTime) / TOWER_FADE_DURATION);
+	//		foreach (string cubeKey in cubeKeysToRemove)
+	//		{
+	//			cubes[cubeKey].GetComponent<MeshRenderer>().material.color = new Color(albedoRed.r, albedoRed.g, albedoRed.b, newAlpha);
+	//		}
+	//		yield return new WaitForEndOfFrame();
+	//	}
+		
+		
+	//	foreach (string cubeKey in cubeKeysToRemove)
+	//	{
+	//		cubes[cubeKey].gameObject.SetActive(false);
+	//		Destroy(cubes[cubeKey].gameObject);
+	//		cubes.Remove(cubeKey);
+	//	}
+	//	tower.isKinematic = false;
+	//	SetupNewHover();
+	//	goingToNextStage = false;
+	//}
 
 	void FadeCubeToPlaceAndSetupHover(Transform cubeToPlace)
 	{
