@@ -16,6 +16,8 @@ using UnityStandardAssets.ImageEffects;
 
 public class Game : MonoBehaviour 
 {
+	public TextMeshProUGUI fps;
+	
 	public BloomOptimized bloom;
 	
 	public TextMeshProUGUI totalCubesScore;
@@ -956,6 +958,7 @@ public class Game : MonoBehaviour
 	
 	void Update () 
 	{
+		fps.text = (1f/Time.deltaTime).ToString();
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
 		if (isPlaying)
 		{
