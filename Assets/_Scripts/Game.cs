@@ -63,13 +63,28 @@ public class Game : MonoBehaviour
 	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
 	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
 	
-	const string A_10_ID = "com.voidupdate.franticarchitect.intern";
-	const string A_20_ID = "com.voidupdate.franticarchitect.junior";
-	const string A_30_ID = "com.voidupdate.franticarchitect.senior";
-	const string A_40_ID = "com.voidupdate.franticarchitect.manager";
-	const string A_50_ID = "com.voidupdate.franticarchitect.vicepresident";
-	const string A_60_ID = "com.voidupdate.franticarchitect.seniorvicepresident";
-	const string A_70_ID = "com.voidupdate.franticarchitect.chiefexecutiveofficer";
+	const string A_total_20_ID = "com.voidupdate.franticarchitect.student";
+	const string A_total_40_ID = "com.voidupdate.franticarchitect.intern";
+	const string A_total_60_ID = "com.voidupdate.franticarchitect.junior";
+	const string A_total_80_ID = "com.voidupdate.franticarchitect.senior";
+	const string A_total_100_ID = "com.voidupdate.franticarchitect.manager";
+	const string A_total_120_ID = "com.voidupdate.franticarchitect.vicepresident";
+	const string A_total_140_ID = "com.voidupdate.franticarchitect.president";
+	const string A_total_160_ID = "com.voidupdate.franticarchitect.owner";
+	const string A_total_180_ID = "com.voidupdate.franticarchitect.legend";
+	const string A_total_200_ID = "com.voidupdate.franticarchitect.god";
+	
+	const string A_height_10_ID = "com.voidupdate.franticarchitect.tipi";
+	const string A_height_20_ID = "com.voidupdate.franticarchitect.igloo";
+	const string A_height_30_ID = "com.voidupdate.franticarchitect.barn";
+	const string A_height_40_ID = "com.voidupdate.franticarchitect.hobbithole";
+	const string A_height_50_ID = "com.voidupdate.franticarchitect.cottage";
+	const string A_height_60_ID = "com.voidupdate.franticarchitect.mansion";
+	const string A_height_70_ID = "com.voidupdate.franticarchitect.pyramid";
+	const string A_height_80_ID = "com.voidupdate.franticarchitect.skyscraper";
+	const string A_height_90_ID = "com.voidupdate.franticarchitect.castle";
+	const string A_height_100_ID = "com.voidupdate.franticarchitect.spaceelevator";
+	
 	
 	
 	bool menuFinishedTransitioning = true;
@@ -641,48 +656,121 @@ public class Game : MonoBehaviour
 					{
 						doneAchievements[achievement.id] = true;
 					}
-					if (curScore >= 10 && !doneAchievements.ContainsKey(A_10_ID))
+					if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
 					{
-						//Social.ReportProgress(A_10_ID, 100.0, null);
-						GKAchievementReporter.ReportAchievement(A_10_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_height_10_ID, 100f, true);
 						
 					}
-					if (curScore >= 20 && !doneAchievements.ContainsKey(A_20_ID))
+					if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
 					{
-						//Social.ReportProgress(A_20_ID, 100.0, null);
-						GKAchievementReporter.ReportAchievement(A_20_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
 						
 					}
-					if (curScore >= 30 && !doneAchievements.ContainsKey(A_30_ID))
+					if (curScore >= 30 && !doneAchievements.ContainsKey(A__height_30_ID))
 					{
-						//Social.ReportProgress(A_30_ID, 100.0, null);
-						GKAchievementReporter.ReportAchievement(A_30_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A__height_30_ID, 100f, true);
 						
 					}
-					if (curScore >= 40 && !doneAchievements.ContainsKey(A_40_ID))
+					if (curScore >= 40 && !doneAchievements.ContainsKey(A_height_40_ID))
 					{
-						//Social.ReportProgress(A_40_ID, 100.0, null);
-						GKAchievementReporter.ReportAchievement(A_40_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_height_40_ID, 100f, true);
 						
 					}
-					if (curScore >= 50 && !doneAchievements.ContainsKey(A_50_ID))
+					if (curScore >= 50 && !doneAchievements.ContainsKey(A_height_50_ID))
 					{
-						//Social.ReportProgress(A_50_ID, 100.0, null);
-						GKAchievementReporter.ReportAchievement(A_50_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_height_50_ID, 100f, true);
 						
 					}
-					if (curScore >= 60 && !doneAchievements.ContainsKey(A_60_ID))
+					if (curScore >= 60 && !doneAchievements.ContainsKey(A_height_60_ID))
 					{
-						//Social.ReportProgress(A_60_ID, 100.0, null);
-						GKAchievementReporter.ReportAchievement(A_60_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_height_60_ID, 100f, true);
 						
 					}
 					
-					if (curScore >= 70 && !doneAchievements.ContainsKey(A_70_ID))
+					if (curScore >= 70 && !doneAchievements.ContainsKey(A_height_70_ID))
 					{
-						//Social.ReportProgress(A_70_ID, 100.0, null);
-						GKAchievementReporter.ReportAchievement(A_70_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_height_70_ID, 100f, true);
 						
+					}
+			
+					if (curScore >= 80 && !doneAchievements.ContainsKey(A_height_80_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_height_80_ID, 100f, true);
+			
+					}
+			
+					if (curScore >= 90 && !doneAchievements.ContainsKey(A_height_90_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_height_90_ID, 100f, true);
+			
+					}
+			
+					if (curScore >= 100 && !doneAchievements.ContainsKey(A_height_100_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_height_100_ID, 100f, true);
+			
+					}
+			
+			
+			
+					if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 60 && !doneAchievements.ContainsKey(A_total_60_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_60_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 80 && !doneAchievements.ContainsKey(A_total_80_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_80_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 100 && !doneAchievements.ContainsKey(A_total_100_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_100_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 120 && !doneAchievements.ContainsKey(A_total_120_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_120_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 140 && !doneAchievements.ContainsKey(A_total_140_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_140_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 160 && !doneAchievements.ContainsKey(A_total_160_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_160_ID, 100f, true);
+			
+					}
+			
+					if (cubes.Count >= 180 && !doneAchievements.ContainsKey(A_total_180_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_180_ID, 100f, true);
+		
+					}
+			
+					if (cubes.Count >= 200 && !doneAchievements.ContainsKey(A_total_200_ID))
+					{
+						GKAchievementReporter.ReportAchievement(A_total_200_ID, 100f, true);
+			
 					}
 					
 				});
