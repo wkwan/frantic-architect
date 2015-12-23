@@ -74,7 +74,7 @@ public class VertexAttributeModifier : MonoBehaviour {
 		
 		while (true)
 		{
-			textComponent.renderMode = TextRenderFlags.DontRender; // Instructing TextMesh Pro not to upload the mesh as we will be modifying it.
+			//textComponent.renderMode = TextRenderFlags.DontRender; // Instructing TextMesh Pro not to upload the mesh as we will be modifying it.
 			textComponent.ForceMeshUpdate(); // Generate the mesh and populate the textInfo with data we can use and manipulate.
 			
 			TMP_TextInfo textInfo = textComponent.textInfo;
@@ -107,7 +107,7 @@ public class VertexAttributeModifier : MonoBehaviour {
 			//mesh.uv2 = textInfo.meshInfo.uvs2; // This should not be necessary so I'll investigate when I have time.
 			uiRenderer.SetMesh(mesh);
 			
-			textComponent.renderMode = TextRenderFlags.Render; // Instructing TextMesh Pro not to upload the mesh as we will be modifying it.
+			//textComponent.renderMode = TextRenderFlags.Render; // Instructing TextMesh Pro not to upload the mesh as we will be modifying it.
 			yield return new WaitForSeconds(0.075f);
 			
 			

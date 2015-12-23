@@ -16,6 +16,7 @@ using UnityStandardAssets.ImageEffects;
 
 public class Game : MonoBehaviour 
 {
+	public AnimationCurve vertexCurve;
 	public TextMeshProUGUI fps;
 	
 	public BloomOptimized bloom;
@@ -619,60 +620,127 @@ public class Game : MonoBehaviour
 		
 		changeCubeLeftRect.DOAnchorPos(new Vector2(-visibleRetryX * 1.2f, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		changeCubeRightRect.DOAnchorPos(new Vector2(visibleRetryX * 1.2f, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-		
-		//Debug.Log("num vertices " + score.mesh.vertices.Length);
-		//Debug.Log("num chars " + score.textInfo.characterCount);
-		//score.renderMode = TextRenderFlags.DontRender;
-		//for (int i = 0; i < score.textInfo.characterCount; i++)
-		//{
-		//	if (score.textInfo.characterInfo[i].isVisible)
-		//	{
-		//		int vertex_i_start = score.textInfo.characterInfo[i].vertexIndex;
-		//		for (int j = 0; j < 4; j++)
-		//		{
-		//			//score.mesh.vertices[vertex_i_start + j] += new Vector3(-10f, 0, 0);
-		//			score.mesh.vertices[vertex_i_start + j] += new Vector3(10f, 10f, 10f);
-					
-		//			//Debug.Log("modifying char " + i + " vertex " + (vertex_i_start + j));
-		//		}
-		//	}
 
-		//}
-		AnimationCurve vCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.25f, 2.0f), new Keyframe(0.5f, 0), new Keyframe(0.75f, 2.0f), new Keyframe(1, 0f));
-		vCurve.preWrapMode = WrapMode.Loop;
-		Vector3[] newVertexPositions;
-		totalCubesScore.renderMode = TextRenderFlags.DontRender;
-		Vector3[] newVertices = totalCubesScore.mesh.vertices;
-		for (int i = 0; i < totalCubesScore.mesh.vertices.Length; i++)
-		{
-			Debug.Log("vertex " + i + " " + totalCubesScore.mesh.vertices[i]);
-		}
-		for (int i = 0; i < totalCubesScore.textInfo.characterCount; i++)
-		{
-			if (totalCubesScore.textInfo.characterInfo[i].isVisible)
-			{
-				int start_vertex_i = totalCubesScore.textInfo.characterInfo[i].vertexIndex;
-				for (int j = 0; j < 4; j++)
-				{
-					newVertices[start_vertex_i + j].x += 100f;
-				}
-			}
-		}
-		totalCubesScore.mesh.vertices = newVertices;
-		for (int i = 0; i < totalCubesScore.mesh.vertices.Length; i++)
-		{
-			Debug.Log("vertex " + i + " " + totalCubesScore.mesh.vertices[i]);
-		}
-		//score.mesh.uv = score.textInfo.meshInfo.uv0s;
-		//score.mesh.uv2 = score.textInfo.meshInfo.uv2s;
-		//score.mesh.colors32 = score.textInfo.meshInfo.vertexColors;
-		Debug.Log("hey");
-		
-		
-		totalCubesScore.ForceMeshUpdate();
-		totalCubesScore.renderMode = TextRenderFlags.Render;
+		StartCoroutine(AnimateScore());
 		
 	}
+	
+	IEnumerator AnimateScore()
+	{
+		yield return new WaitForSeconds(1.3f);
+		yield return StartCoroutine(Wave(score));
+		StartCoroutine(Wave(totalCubesScore));
+	}
+	
+	IEnumerator Wave(TextMeshProUGUI t)
+	{
+		CanvasRenderer uiRenderer = t.canvasRenderer;
+		Vector3 vertices;
+		
+		int i = 0;
+		int prev_i = -1;
+		while (i <= t.textInfo.characterCount) //go one past the end of the array so we bring the last character back down
+		{
+			if (i == t.textInfo.characterCount || t.textInfo.characterInfo[i].isVisible)
+			{
+				
+				float maxOffset = 10f;
+				float curOffset = 0;
+				while (curOffset < maxOffset)
+				{
+					t.renderMode = TextRenderFlags.DontRender;
+					
+					float toMove = 50f * Time.deltaTime;
+					if (curOffset + toMove > maxOffset)
+					{
+						toMove = maxOffset - curOffset;
+					}
+					
+					Vector3[] newVertices = t.mesh.vertices;
+					if (i < t.textInfo.characterCount)
+					{
+
+						int v_start = t.textInfo.characterInfo[i].vertexIndex;
+						for (int j = 0; j < 4; j++)
+						{
+							newVertices[v_start + j].y += toMove;
+						}
+						
+					}
+
+					if (prev_i > -1 && t.textInfo.characterInfo[prev_i].isVisible)
+					{
+						int v_start_prev = t.textInfo.characterInfo[prev_i].vertexIndex;
+						for (int j = 0; j < 4; j++)
+						{
+							newVertices[v_start_prev + j].y -= toMove;
+						}
+					}
+					
+					t.mesh.vertices = newVertices;
+					uiRenderer.SetMesh(t.mesh);
+					curOffset += toMove;
+					t.renderMode = TextRenderFlags.Render;
+					
+					yield return new WaitForEndOfFrame();
+				}
+				prev_i = i;
+			}
+
+			i++;
+		}
+		
+	
+	}
+	
+	//IEnumerator AnimateVertexPositions(TextMeshProUGUI textComponent)
+	//{
+	//	CanvasRenderer uiRenderer = textComponent.canvasRenderer;
+	//	Vector3[] vertices;
+		
+	//	int loopCount = 0;
+		
+	//	while (true)
+	//	{
+	//		textComponent.renderMode = TextRenderFlags.DontRender;
+	//		textComponent.ForceMeshUpdate();
+			
+	//		TMP_TextInfo textInfo = textComponent.textInfo;
+	//		Mesh mesh = textComponent.mesh;
+	//		int characterCount = textInfo.characterCount;
+			
+			
+	//		vertices = textComponent.mesh.vertices;
+			
+	//		for (int i = 0; i < characterCount; i++)
+	//		{
+	//			if (!textInfo.characterInfo[i].isVisible)
+	//				continue;
+				
+	//			int vertexIndex = textInfo.characterInfo[i].vertexIndex;
+				
+	//			float offsetY = vertexCurve.Evaluate((float)i / characterCount + loopCount / 50f);
+	//			Debug.Log(offsetY);
+				
+	//			vertices[vertexIndex + 0].y += offsetY;
+	//			vertices[vertexIndex + 1].y += offsetY;
+	//			vertices[vertexIndex + 2].y += offsetY;
+	//			vertices[vertexIndex + 3].y += offsetY;
+				
+	//		}
+			
+	//		loopCount += 1;
+			
+	//		mesh.vertices = vertices;
+	//		uiRenderer.SetMesh(mesh);
+			
+	//		textComponent.renderMode = TextRenderFlags.Render;
+	//		yield return new WaitForSeconds(0.035f);
+			
+			
+	//	}
+		
+	//}
 
 	void GameOverCheck(bool dead)
 	{
