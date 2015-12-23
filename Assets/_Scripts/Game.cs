@@ -619,8 +619,61 @@ public class Game : MonoBehaviour
 		
 		changeCubeLeftRect.DOAnchorPos(new Vector2(-visibleRetryX * 1.2f, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		changeCubeRightRect.DOAnchorPos(new Vector2(visibleRetryX * 1.2f, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+		
+		//Debug.Log("num vertices " + score.mesh.vertices.Length);
+		//Debug.Log("num chars " + score.textInfo.characterCount);
+		//score.renderMode = TextRenderFlags.DontRender;
+		//for (int i = 0; i < score.textInfo.characterCount; i++)
+		//{
+		//	if (score.textInfo.characterInfo[i].isVisible)
+		//	{
+		//		int vertex_i_start = score.textInfo.characterInfo[i].vertexIndex;
+		//		for (int j = 0; j < 4; j++)
+		//		{
+		//			//score.mesh.vertices[vertex_i_start + j] += new Vector3(-10f, 0, 0);
+		//			score.mesh.vertices[vertex_i_start + j] += new Vector3(10f, 10f, 10f);
+					
+		//			//Debug.Log("modifying char " + i + " vertex " + (vertex_i_start + j));
+		//		}
+		//	}
+
+		//}
+		AnimationCurve vCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.25f, 2.0f), new Keyframe(0.5f, 0), new Keyframe(0.75f, 2.0f), new Keyframe(1, 0f));
+		vCurve.preWrapMode = WrapMode.Loop;
+		Vector3[] newVertexPositions;
+		totalCubesScore.renderMode = TextRenderFlags.DontRender;
+		Vector3[] newVertices = totalCubesScore.mesh.vertices;
+		for (int i = 0; i < totalCubesScore.mesh.vertices.Length; i++)
+		{
+			Debug.Log("vertex " + i + " " + totalCubesScore.mesh.vertices[i]);
+		}
+		for (int i = 0; i < totalCubesScore.textInfo.characterCount; i++)
+		{
+			if (totalCubesScore.textInfo.characterInfo[i].isVisible)
+			{
+				int start_vertex_i = totalCubesScore.textInfo.characterInfo[i].vertexIndex;
+				for (int j = 0; j < 4; j++)
+				{
+					newVertices[start_vertex_i + j].x += 100f;
+				}
+			}
+		}
+		totalCubesScore.mesh.vertices = newVertices;
+		for (int i = 0; i < totalCubesScore.mesh.vertices.Length; i++)
+		{
+			Debug.Log("vertex " + i + " " + totalCubesScore.mesh.vertices[i]);
+		}
+		//score.mesh.uv = score.textInfo.meshInfo.uv0s;
+		//score.mesh.uv2 = score.textInfo.meshInfo.uv2s;
+		//score.mesh.colors32 = score.textInfo.meshInfo.vertexColors;
+		Debug.Log("hey");
+		
+		
+		totalCubesScore.ForceMeshUpdate();
+		totalCubesScore.renderMode = TextRenderFlags.Render;
+		
 	}
-	
+
 	void GameOverCheck(bool dead)
 	{
 		if (dead)
