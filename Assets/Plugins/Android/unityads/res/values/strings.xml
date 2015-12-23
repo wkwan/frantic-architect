@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unityads_lib_name">Unity Ads</string>
+    <string name="unityads_tap_to_continue">Video paused. Tap screen to continue watching.</string>
+    <string name="unityads_mute_character">X</string>
+    <string name="unityads_buffering_text">Buffering&#8230;</string>
+    <string name="unityads_video_end_prefix">This video ends in </string>
+    <string name="unityads_video_end_suffix">seconds</string>
+    <string name="unityads_skip_video_prefix">You can skip this video in </string>
+    <string name="unityads_skip_video_suffix">seconds</string>
+    <string name="unityads_skip_video_text">Skip video</string>
+    <string name="unityads_default_video_length_text">00</string>
+</resources>

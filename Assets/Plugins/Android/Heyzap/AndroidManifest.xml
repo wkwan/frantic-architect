@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.heyzap">
+  <application>
+    <activity android:name="com.heyzap.sdk.ads.MediationTestActivity" />
+    <activity android:name="com.heyzap.sdk.ads.HeyzapProxyActivity" />
+    <activity android:name="com.heyzap.sdk.ads.VASTActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
+    <activity android:name="com.heyzap.sdk.ads.HeyzapInterstitialActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
+    <activity android:name="com.heyzap.sdk.ads.HeyzapVideoActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
+    <receiver android:name="com.heyzap.sdk.ads.PackageAddedReceiver">
+    <intent-filter>
+      <data android:scheme="package"/>
+      <action android:name="android.intent.action.PACKAGE_ADDED"/>
+     </intent-filter>
+    </receiver>
+  </application>
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-sdk android:minSdkVersion="9" />
+</manifest>

@@ -4,15 +4,13 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
-//using UnityEngine.Advertisements;
 #if UNITY_IOS
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.SocialPlatforms;
 #endif
 using UnityStandardAssets.ImageEffects;
+using Heyzap;
 
-//todo: particles shouldn't render if inside cubes (maybe use material's renderqueue)
-//todo: maybe particle system should appear at welding point
 
 public class Game : MonoBehaviour 
 {
@@ -210,10 +208,86 @@ public class Game : MonoBehaviour
 	
 	void Awake()
 	{
-		
+		PlayerPrefs.DeleteAll();
 		if (!initialized)
 		{
 			initialized = true;
+			HeyzapAds.Start("a386042ae6f2651999263ec59b3cf3f3", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
+			HZVideoAd.Fetch();
+			//HeyzapAds.ShowMediationTestSuite();
+			
+			HZInterstitialAd.AdDisplayListener listener = delegate(string adState, string adTag){
+				if ( adState.Equals("show") ) {
+		        // Sent when an ad has been displayed.
+		        // This is a good place to pause your app, if applicable.
+			    }
+			    if ( adState.Equals("hide") ) {
+			        // Sent when an ad has been removed from view.
+			        // This is a good place to unpause your app, if applicable.
+				    BringInUI(0f);
+			    }
+			    if ( adState.Equals("click") ) {
+			        // Sent when an ad has been clicked by the user.
+			    }
+			    if ( adState.Equals("failed") ) {
+			        // Sent when you call `show`, but there isn't an ad to be shown.
+			        // Some of the possible reasons for show errors:
+			        //    - `HeyzapAds.PauseExpensiveWork()` was called, which pauses 
+			        //      expensive operations like SDK initializations and ad
+			        //      fetches, andand `HeyzapAds.ResumeExpensiveWork()` has not
+			        //      yet been called
+			        //    - The given ad tag is disabled (see your app's Publisher
+			        //      Settings dashboard)
+			        //    - An ad is already showing
+			        //    - A recent IAP is blocking ads from being shown (see your
+			        //      app's Publisher Settings dashboard)
+			        //    - One or more of the segments the user falls into are
+			        //      preventing an ad from being shown (see your Segmentation
+			        //      Settings dashboard)
+			        //    - Incentivized ad rate limiting (see your app's Publisher
+			        //      Settings dashboard)
+			        //    - One of the mediated SDKs reported it had an ad to show
+			        //      but did not display one when asked (a rare case)
+			        //    - The SDK is waiting for a network request to return before an
+			        //      ad can show
+			    }
+			    if ( adState.Equals("available") ) {
+			        // Sent when an ad has been loaded and is ready to be displayed,
+			        //   either because we autofetched an ad or because you called
+			        //   `Fetch`.
+			    }
+			    if ( adState.Equals("fetch_failed") ) {
+			        // Sent when an ad has failed to load.
+			        // This is sent with when we try to autofetch an ad and fail, and also
+			        //    as a response to calls you make to `Fetch` that fail.
+			        // Some of the possible reasons for fetch failures:
+			        //    - Incentivized ad rate limiting (see your app's Publisher
+			        //      Settings dashboard)
+			        //    - None of the available ad networks had any fill
+			        //    - Network connectivity
+			        //    - The given ad tag is disabled (see your app's Publisher
+			        //      Settings dashboard)
+			        //    - One or more of the segments the user falls into are
+			        //      preventing an ad from being fetched (see your
+			        //      Segmentation Settings dashboard)
+			    }
+			    if ( adState.Equals("audio_starting") ) {
+			        // The ad about to be shown will need audio.
+			        // Mute any background music.
+			    }
+			    if ( adState.Equals("audio_finished") ) {
+			        // The ad being shown no longer needs audio.
+			        // Any background music can be resumed.
+			    }
+			};
+			
+			HZInterstitialAd.SetDisplayListener(listener);
+			
+			
+			
+			
+			
+			
 			Unibiller.onBillerReady += (state) => {
 				Debug.Log("done initializing unibill: " + state);
 			};
@@ -584,20 +658,22 @@ public class Game : MonoBehaviour
 		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
 		sharePic.Apply();
 		gamesPlayedThisSession++;
-		//TODO: put ads back in once Unity bug is fixed
-		//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && Advertisement.IsReady())
-		//{
-		//	yield return new WaitForSeconds(delay);
-		//	Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
-		//		resultCallback = result => {
-		//			BringInUI(0f);
-		//		}});
-		//}
-		//else
-		//{
-		//	BringInUI(0.5f);
-		//}
-		BringInUI(0.5f);    
+		Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedThisSession + " " + HZVideoAd.IsAvailable());
+		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && HZVideoAd.IsAvailable())
+		{
+			yield return new WaitForSeconds(delay);
+			HZVideoAd.Show();
+			Debug.Log("show video ad");
+			//Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
+			//	resultCallback = result => {
+			//		BringInUI(0f);
+			//	}});
+		}
+		else
+		{
+			BringInUI(0.5f);
+		}
+		//BringInUI(0.5f);    
 		yield break;
 	}
 	
@@ -1035,7 +1111,10 @@ public class Game : MonoBehaviour
 		
 		while (animTime < totalDuration)
 		{
-			cubeMesh.material.Lerp(cubeMesh.material, materials[curMat], animTime / totalDuration);
+			if (cubeMesh != null)
+			{
+				cubeMesh.material.Lerp(cubeMesh.material, materials[curMat], animTime / totalDuration);
+			}
 			yield return new WaitForEndOfFrame();
 			animTime += Time.deltaTime;   
 		}
