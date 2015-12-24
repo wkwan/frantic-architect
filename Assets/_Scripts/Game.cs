@@ -619,21 +619,27 @@ public class Game : MonoBehaviour
 		//{
 		//	BringInUI(0.5f);
 		//}
-		BringInUI(0.5f);    
+		StartCoroutine(BringInUI(0.5f));    
 		yield break;
 	}
 	
-	void BringInUI(float delay)
+	IEnumerator BringInUI(float delay)
 	{
-		Debug.Log("start bring in ui");
-		Debug.Log("BEFORE retry " + (retry == null) + " share " + (share == null) + " menu " + (menu == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
+		//Debug.Log("start bring in ui");
+		
+		yield return new WaitForSeconds(1f);
+		yield return StartCoroutine(Wave(score));
+		yield return StartCoroutine(Wave(totalCubesScore));
+		
+		
+		//Debug.Log("BEFORE retry " + (retry == null) + " share " + (share == null) + " menu " + (menu == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
 		RectTransform retryRect = retry.GetComponent<RectTransform>();
 		RectTransform shareRect = share.GetComponent<RectTransform>();
 		RectTransform menuRect = menu.GetComponent<RectTransform>();
 		RectTransform changeCubeLeftRect = changeCubeLeft.GetComponent<RectTransform>();
 		RectTransform changeCubeRightRect = changeCubeRight.GetComponent<RectTransform>();
 		
-		Debug.Log("retry " + (retryRect == null) + " share " + (shareRect == null) + " menu " + (menuRect == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
+		//Debug.Log("retry " + (retryRect == null) + " share " + (shareRect == null) + " menu " + (menuRect == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
 			
 		
 		retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
@@ -641,7 +647,7 @@ public class Game : MonoBehaviour
 		
 		menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay);
 		
-		Debug.Log("cube mat " + (cubeMatExample == null));
+		//Debug.Log("cube mat " + (cubeMatExample == null));
 		
 		cubeMatExample.gameObject.SetActive(true);
 		cubeMatExample.material.color = new Color(1, 1, 1, 0);
@@ -650,19 +656,9 @@ public class Game : MonoBehaviour
 		changeCubeLeftRect.DOAnchorPos(new Vector2(-visibleRetryX * 1.2f, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		changeCubeRightRect.DOAnchorPos(new Vector2(visibleRetryX * 1.2f, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		
-		Debug.Log("before animate score");
-		StartCoroutine(AnimateScore());
-		Debug.Log("after animate score");
 		
 	}
-	
-	IEnumerator AnimateScore()
-	{
-		yield return new WaitForSeconds(1.3f);
-		yield return StartCoroutine(Wave(score));
-		StartCoroutine(Wave(totalCubesScore));
-	}
-	
+
 	IEnumerator Wave(TextMeshProUGUI t)
 	{
 		CanvasRenderer uiRenderer = t.canvasRenderer;
