@@ -863,9 +863,9 @@ public class Game : MonoBehaviour
 						GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
 						
 					}
-					if (curScore >= 30 && !doneAchievements.ContainsKey(A__height_30_ID))
+					if (curScore >= 30 && !doneAchievements.ContainsKey(A_height_30_ID))
 					{
-						GKAchievementReporter.ReportAchievement(A__height_30_ID, 100f, true);
+						GKAchievementReporter.ReportAchievement(A_height_30_ID, 100f, true);
 						
 					}
 					if (curScore >= 40 && !doneAchievements.ContainsKey(A_height_40_ID))
