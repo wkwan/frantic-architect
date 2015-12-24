@@ -211,22 +211,21 @@ public class Game : MonoBehaviour
 		if (!initialized)
 		{
 			initialized = true;
-			HeyzapAds.Start("a386042ae6f2651999263ec59b3cf3f3", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
-			HZVideoAd.Fetch();
-			//HeyzapAds.ShowMediationTestSuite();
+			//HeyzapAds.Start("a386042ae6f2651999263ec59b3cf3f3", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
+			//HZVideoAd.Fetch();
 			
-			HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
-				Debug.Log("hz ad callback");
-			    if ( adState.Equals("hide") ) {
-			        // Sent when an ad has been removed from view.
-			        // This is a good place to unpause your app, if applicable.
-				    Debug.Log("hide ad callback");
-				    //BringInUI(0f);
-				    //StartCoroutine(BringInUIAfterAd());
-			    }
-			};
+			//HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
+			//	Debug.Log("hz ad callback");
+			//    if ( adState.Equals("hide") ) {
+			//        // Sent when an ad has been removed from view.
+			//        // This is a good place to unpause your app, if applicable.
+			//	    Debug.Log("hide ad callback");
+			//	    //BringInUI(0f);
+			//	    //StartCoroutine(BringInUIAfterAd());
+			//    }
+			//};
 			
-			HZVideoAd.SetDisplayListener(listener);
+			//HZVideoAd.SetDisplayListener(listener);
 			
 			
 			
@@ -604,23 +603,23 @@ public class Game : MonoBehaviour
 		sharePic.Apply();
 		gamesPlayedThisSession++;
 		Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedThisSession + " " + HZVideoAd.IsAvailable());
-		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && HZVideoAd.IsAvailable())
-		{
-			yield return new WaitForSeconds(2f);
-			HZVideoAd.Show();
-			HZVideoAd.Fetch();
-			Debug.Log("show video ad");
-			BringInUI(0.5f);
-			//Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
-			//	resultCallback = result => {
-			//		BringInUI(0f);
-			//	}});
-		}
-		else
-		{
-			BringInUI(0.5f);
-		}
-		//BringInUI(0.5f);    
+		//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && HZVideoAd.IsAvailable())
+		//{
+		//	yield return new WaitForSeconds(2f);
+		//	HZVideoAd.Show();
+		//	HZVideoAd.Fetch();
+		//	Debug.Log("show video ad");
+		//	BringInUI(0.5f);
+		//	//Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
+		//	//	resultCallback = result => {
+		//	//		BringInUI(0f);
+		//	//	}});
+		//}
+		//else
+		//{
+		//	BringInUI(0.5f);
+		//}
+		BringInUI(0.5f);    
 		yield break;
 	}
 	
