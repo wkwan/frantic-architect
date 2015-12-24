@@ -215,72 +215,18 @@ public class Game : MonoBehaviour
 			HZVideoAd.Fetch();
 			//HeyzapAds.ShowMediationTestSuite();
 			
-			HZInterstitialAd.AdDisplayListener listener = delegate(string adState, string adTag){
-				if ( adState.Equals("show") ) {
-		        // Sent when an ad has been displayed.
-		        // This is a good place to pause your app, if applicable.
-			    }
+			HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
+				Debug.Log("hz ad callback");
 			    if ( adState.Equals("hide") ) {
 			        // Sent when an ad has been removed from view.
 			        // This is a good place to unpause your app, if applicable.
-				    BringInUI(0f);
-			    }
-			    if ( adState.Equals("click") ) {
-			        // Sent when an ad has been clicked by the user.
-			    }
-			    if ( adState.Equals("failed") ) {
-			        // Sent when you call `show`, but there isn't an ad to be shown.
-			        // Some of the possible reasons for show errors:
-			        //    - `HeyzapAds.PauseExpensiveWork()` was called, which pauses 
-			        //      expensive operations like SDK initializations and ad
-			        //      fetches, andand `HeyzapAds.ResumeExpensiveWork()` has not
-			        //      yet been called
-			        //    - The given ad tag is disabled (see your app's Publisher
-			        //      Settings dashboard)
-			        //    - An ad is already showing
-			        //    - A recent IAP is blocking ads from being shown (see your
-			        //      app's Publisher Settings dashboard)
-			        //    - One or more of the segments the user falls into are
-			        //      preventing an ad from being shown (see your Segmentation
-			        //      Settings dashboard)
-			        //    - Incentivized ad rate limiting (see your app's Publisher
-			        //      Settings dashboard)
-			        //    - One of the mediated SDKs reported it had an ad to show
-			        //      but did not display one when asked (a rare case)
-			        //    - The SDK is waiting for a network request to return before an
-			        //      ad can show
-			    }
-			    if ( adState.Equals("available") ) {
-			        // Sent when an ad has been loaded and is ready to be displayed,
-			        //   either because we autofetched an ad or because you called
-			        //   `Fetch`.
-			    }
-			    if ( adState.Equals("fetch_failed") ) {
-			        // Sent when an ad has failed to load.
-			        // This is sent with when we try to autofetch an ad and fail, and also
-			        //    as a response to calls you make to `Fetch` that fail.
-			        // Some of the possible reasons for fetch failures:
-			        //    - Incentivized ad rate limiting (see your app's Publisher
-			        //      Settings dashboard)
-			        //    - None of the available ad networks had any fill
-			        //    - Network connectivity
-			        //    - The given ad tag is disabled (see your app's Publisher
-			        //      Settings dashboard)
-			        //    - One or more of the segments the user falls into are
-			        //      preventing an ad from being fetched (see your
-			        //      Segmentation Settings dashboard)
-			    }
-			    if ( adState.Equals("audio_starting") ) {
-			        // The ad about to be shown will need audio.
-			        // Mute any background music.
-			    }
-			    if ( adState.Equals("audio_finished") ) {
-			        // The ad being shown no longer needs audio.
-			        // Any background music can be resumed.
+				    Debug.Log("hide ad callback");
+				    //BringInUI(0f);
+				    //StartCoroutine(BringInUIAfterAd());
 			    }
 			};
 			
-			HZInterstitialAd.SetDisplayListener(listener);
+			HZVideoAd.SetDisplayListener(listener);
 			
 			
 			
@@ -651,7 +597,7 @@ public class Game : MonoBehaviour
 		InvokeRepeating("SwapHover", switchNeighbourSpeed, switchNeighbourSpeed);
 	}
 	
-	IEnumerator ShowAdTakeScreenCapAndBringInUI(float delay)
+	IEnumerator ShowAdTakeScreenCapAndBringInUI()
 	{
 		yield return new WaitForEndOfFrame(); //need to do this in order to call readpixels;
 		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
@@ -660,9 +606,11 @@ public class Game : MonoBehaviour
 		Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedThisSession + " " + HZVideoAd.IsAvailable());
 		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && HZVideoAd.IsAvailable())
 		{
-			yield return new WaitForSeconds(delay);
+			yield return new WaitForSeconds(2f);
 			HZVideoAd.Show();
+			HZVideoAd.Fetch();
 			Debug.Log("show video ad");
+			BringInUI(0.5f);
 			//Advertisement.Show(null, new UnityEngine.Advertisements.ShowOptions {
 			//	resultCallback = result => {
 			//		BringInUI(0f);
@@ -678,16 +626,23 @@ public class Game : MonoBehaviour
 	
 	void BringInUI(float delay)
 	{
+		Debug.Log("start bring in ui");
+		Debug.Log("BEFORE retry " + (retry == null) + " share " + (share == null) + " menu " + (menu == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
 		RectTransform retryRect = retry.GetComponent<RectTransform>();
 		RectTransform shareRect = share.GetComponent<RectTransform>();
 		RectTransform menuRect = menu.GetComponent<RectTransform>();
 		RectTransform changeCubeLeftRect = changeCubeLeft.GetComponent<RectTransform>();
 		RectTransform changeCubeRightRect = changeCubeRight.GetComponent<RectTransform>();
 		
+		Debug.Log("retry " + (retryRect == null) + " share " + (shareRect == null) + " menu " + (menuRect == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
+			
+		
 		retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		
 		menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay);
+		
+		Debug.Log("cube mat " + (cubeMatExample == null));
 		
 		cubeMatExample.gameObject.SetActive(true);
 		cubeMatExample.material.color = new Color(1, 1, 1, 0);
@@ -695,8 +650,10 @@ public class Game : MonoBehaviour
 		
 		changeCubeLeftRect.DOAnchorPos(new Vector2(-visibleRetryX * 1.2f, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
 		changeCubeRightRect.DOAnchorPos(new Vector2(visibleRetryX * 1.2f, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-
+		
+		Debug.Log("before animate score");
 		StartCoroutine(AnimateScore());
+		Debug.Log("after animate score");
 		
 	}
 	
@@ -840,7 +797,7 @@ public class Game : MonoBehaviour
 			//menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
 			
 	
-			StartCoroutine(ShowAdTakeScreenCapAndBringInUI(1f));
+			StartCoroutine(ShowAdTakeScreenCapAndBringInUI());
 			
 			#if UNITY_IOS && !UNITY_EDITOR
 			if (Social.localUser.authenticated)
