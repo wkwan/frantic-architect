@@ -208,7 +208,6 @@ public class Game : MonoBehaviour
 	
 	void Awake()
 	{
-		PlayerPrefs.DeleteAll();
 		if (!initialized)
 		{
 			initialized = true;
