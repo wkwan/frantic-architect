@@ -17,9 +17,7 @@
     <attr name="cameraTargetLng" format="float"/>
     <attr name="cameraTilt" format="float"/>
     <attr name="cameraZoom" format="float"/>
-
     <attr name="liteMode" format="boolean"/>
-
 
 
 
@@ -31,8 +29,6 @@
     <attr name="uiZoomGestures" format="boolean"/>
     <attr name="useViewLifecycle" format="boolean"/>
     <attr name="zOrderOnTop" format="boolean"/>
-
     <attr name="uiMapToolbar" format="boolean"/>
-
   </declare-styleable>
 </resources>

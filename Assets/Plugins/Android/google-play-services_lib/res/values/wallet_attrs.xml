@@ -11,6 +11,7 @@
         <!-- Google Wallet environment to use -->
         <attr name="environment" format="enum">
             <enum name="production" value="1"/>
+            <enum name="test" value="3"/>
             <enum name="sandbox" value="0"/>
             <enum name="strict_sandbox" value="2"/>
         </attr>
