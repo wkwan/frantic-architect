@@ -150,8 +150,9 @@ public class Game : MonoBehaviour
 	List<Pos> validNeighbours = new List<Pos>();
 	int curNeighbourInd;
 	
-	//float switchNeighbourSpeed = 0.7f; //testing
 	float switchNeighbourSpeed = 0.35f;
+	//float switchNeighbourSpeed = 1f;
+	
 	
 	
 	Transform cubeToPlace;
