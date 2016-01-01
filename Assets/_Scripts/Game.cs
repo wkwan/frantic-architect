@@ -14,6 +14,8 @@ using Heyzap;
 
 public class Game : MonoBehaviour 
 {
+	static int gamesPlayedSinceSeendAd = 0;
+	
 	public AnimationCurve vertexCurve;
 	public TextMeshProUGUI fps;
 	
@@ -190,9 +192,8 @@ public class Game : MonoBehaviour
 	
 	bool menuOpened = false;
 	
-	static int gamesPlayedThisSession = 0;
-	
 	static bool initialized = false;
+	bool canStartTakingInput = false;
 	
 	
 	void Shuffle<T>(List<T> list)  
@@ -216,7 +217,7 @@ public class Game : MonoBehaviour
 			HZVideoAd.Fetch();
 			
 			//HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
-			//	Debug.Log("hz ad callback");
+			//	            ("hz ad callback");
 			//    if ( adState.Equals("hide") ) {
 			//        // Sent when an ad has been removed from view.
 			//        // This is a good place to unpause your app, if applicable.
@@ -268,6 +269,7 @@ public class Game : MonoBehaviour
 	// Use this for initialization
 	void Start() 
 	{
+		canStartTakingInput = true;
 		sharePic = new Texture2D(Screen.width, Screen.height);
 		
 		origCamZ = cam.transform.localPosition.z;
@@ -602,14 +604,16 @@ public class Game : MonoBehaviour
 		yield return new WaitForEndOfFrame(); //need to do this in order to call readpixels;
 		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
 		sharePic.Apply();
-		gamesPlayedThisSession++;
-		Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedThisSession + " " + HZVideoAd.IsAvailable());
-		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedThisSession % 3 == 0 && HZVideoAd.IsAvailable())
+		gamesPlayedSinceSeendAd++;
+		float adRand = Random.Range(0f, 1f);
+		//Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedSinceSeendAd + " " + adRand + " " + HZVideoAd.IsAvailable());
+		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZVideoAd.IsAvailable())
 		{
 			yield return new WaitForSeconds(2f);
+			gamesPlayedSinceSeendAd = 0;
 			HZVideoAd.Show();
 			HZVideoAd.Fetch();
-			Debug.Log("show video ad");
+			//Debug.Log("show video ad");
 			StartCoroutine(BringInUI(0.5f));
 		}
 		else
@@ -1068,97 +1072,6 @@ public class Game : MonoBehaviour
 		}
 		cubeMesh.material = materials[curMat];
 	}
-	
-	//IEnumerator FadeOutTowerFlash(List<string> cubeKeysToRemove, bool toShiny, float duration)
-	//{
-	//	float startTime = Time.time;
-		
-	//	while (Time.time < startTime + duration - Time.deltaTime/2)
-	//	{
-	//		foreach (string cubeKey in cubeKeysToRemove)
-	//		{	
-	//			MeshRenderer cubeMesh = cubes[cubeKey].GetComponent<MeshRenderer>();
-	//			float lerpFraction = (Time.time - startTime)/duration;
-	//			if (toShiny)
-	//			{
-	//				cubeMesh.material.Lerp(redMat, redShinyMat, lerpFraction);
-	//			}
-	//			else
-	//			{
-	//				cubeMesh.material.Lerp(redShinyMat, redMat, lerpFraction); 
-	//			}
-	//		}
-			
-	//		yield return new WaitForEndOfFrame();
-	//	}
-	//}
-	
-	//IEnumerator FadeOutTower()
-	//{
-	//	goingToNextStage = true;
-	//	tower.isKinematic = true;
-		
-	//	List<string> cubeKeysToRemove = new List<string>();
-	//	foreach (string cubeKey in cubes.Keys)
-	//	{
-	//		if (cubes[cubeKey].GetInstanceID() != startCube.GetInstanceID())
-	//		{
-	//			cubes[cubeKey].GetComponent<BoxCollider>().enabled = false;
-	//			cubeKeysToRemove.Add(cubeKey);
-	//		}
-	//	}
-		
-	//	float TOWER_RED_DURATION = 0.3f;
-		
-	//	float startTime = Time.time;
-		
-	//	while (Time.time < startTime + TOWER_RED_DURATION - Time.deltaTime/2)
-	//	{
-	//		foreach (string cubeKey in cubeKeysToRemove)
-	//		{
-	//			MeshRenderer curRenderer = cubes[cubeKey].GetComponent<MeshRenderer>();
-	//			curRenderer.material.Lerp(curRenderer.material, redMat, (Time.time - startTime)/TOWER_RED_DURATION);
-	//		}
-	//		yield return new WaitForEndOfFrame();
-	//	}
-		
-		
-	//	float TOWER_FLASH_SHINY_DURATION = 0.22f;
-	//	float TOWER_FLASH_RED_DURATION = 0.14f;
-		
-	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
-	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
-	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
-	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
-	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, true, TOWER_FLASH_SHINY_DURATION));
-	//	yield return StartCoroutine(FadeOutTowerFlash(cubeKeysToRemove, false, TOWER_FLASH_RED_DURATION));
-		
-	//	yield return new WaitForSeconds(0.22f);
-		
-	//	float TOWER_FADE_DURATION = 0.65f;
-	//	startTime = Time.time;
-		
-	//	while (Time.time < startTime + TOWER_FADE_DURATION - Time.deltaTime/2)
-	//	{
-	//		float newAlpha = Mathf.Lerp(1, 0, (Time.time - startTime) / TOWER_FADE_DURATION);
-	//		foreach (string cubeKey in cubeKeysToRemove)
-	//		{
-	//			cubes[cubeKey].GetComponent<MeshRenderer>().material.color = new Color(albedoRed.r, albedoRed.g, albedoRed.b, newAlpha);
-	//		}
-	//		yield return new WaitForEndOfFrame();
-	//	}
-		
-		
-	//	foreach (string cubeKey in cubeKeysToRemove)
-	//	{
-	//		cubes[cubeKey].gameObject.SetActive(false);
-	//		Destroy(cubes[cubeKey].gameObject);
-	//		cubes.Remove(cubeKey);
-	//	}
-	//	tower.isKinematic = false;
-	//	SetupNewHover();
-	//	goingToNextStage = false;
-	//}
 
 	void FadeCubeToPlaceAndSetupHover(Transform cubeToPlace)
 	{
@@ -1196,7 +1109,7 @@ public class Game : MonoBehaviour
 	{
 		//fps.text = (1f/Time.deltaTime).ToString();
 		camPivot.transform.eulerAngles = new Vector3(0, camPivot.transform.eulerAngles.y + 20f * Time.deltaTime, 0);
-		if (isPlaying)
+		if (isPlaying && canStartTakingInput)
 		{
 			if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) && cubeToPlace != null && !goingToNextStage)
 			{
@@ -1294,16 +1207,6 @@ public class Game : MonoBehaviour
 			//Debug.Log(tower.velocity.magnitude);
 			
 		}
-		//else if (!isReloading && Time.time > timeDied + 3f)
-		//{
-		//	isReloading = true;
-			
-			//if (curScore > best)
-			//{
-			//	PlayerPrefs.SetInt(BEST, curScore);
-			//}
-			//transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
-		//}
 	}
 }
 
