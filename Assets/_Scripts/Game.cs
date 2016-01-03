@@ -251,13 +251,20 @@ public class Game : MonoBehaviour
 			Unibiller.Initialise();
 			
 			#if (UNITY_IOS || UNITY_ANDROID ) && !UNITY_EDITOR
-			Debug.Log("~~~~~try authenticate");
-			Social.localUser.Authenticate((success) =>
-			{
-				Debug.Log("~~~~done authenticating game center: " + success);
-			});
-			//GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
+				#if UNITY_ANDROID
+					PlayGamesPlatform.Activate();
+				#endif
+				Debug.Log("~~~~~try authenticate");
+				Social.localUser.Authenticate((success) =>
+				{
+					Debug.Log("~~~~done authenticating social: " + success);
+				});
+				//GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
+			
+
 			#endif
+			
+			
 			
 			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
@@ -419,13 +426,15 @@ public class Game : MonoBehaviour
 					#elif UNITY_ANDROID
 					if (Social.localUser.authenticated)
 					{
-						Social.ShowLeaderboardUI();
+						//Social.ShowLeaderboardUI();
+						PlayGamesPlatform.Instance.ShowLeaderboardUI(LEADERBOARD_ID);
 					}
 					else
 					{
 						Social.localUser.Authenticate((success) =>
 						{
-							Social.ShowLeaderboardUI();
+							//Social.ShowLeaderboardUI();
+						PlayGamesPlatform.Instance.ShowLeaderboardUI(LEADERBOARD_ID);
 						});
 					}
 					#endif
@@ -556,6 +565,8 @@ public class Game : MonoBehaviour
 	
 	IEnumerator CloseMenu()
 	{
+		statsPanel.gameObject.SetActive(false);
+		
 		menuFinishedTransitioning = false;
 		menuText.text = "Menu";
 		
@@ -581,6 +592,7 @@ public class Game : MonoBehaviour
 			menuPanel.gameObject.SetActive(false);
 			
 		});
+		
 
 
 	}
