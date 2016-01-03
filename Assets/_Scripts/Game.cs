@@ -6,10 +6,15 @@ using TMPro;
 using UnityEngine.UI;
 #if UNITY_IOS
 using UnityEngine.SocialPlatforms.GameCenter;
-using UnityEngine.SocialPlatforms;
+#elif UNITY_ANDROID
+using GooglePlayGames;
 #endif
+using UnityEngine.SocialPlatforms;
+
 using UnityStandardAssets.ImageEffects;
 using Heyzap;
+
+//TODO: close stats if open when pressing close
 
 
 public class Game : MonoBehaviour 
@@ -25,7 +30,6 @@ public class Game : MonoBehaviour
 	public TextMeshProUGUI bestTotalCubesScore;
 	const string BEST_TOTAL_CUBES_SCORE = "bestTotalCubesScore";
 	const string BEST_TOTAL_CUBES_SAVED_TO_CLOUD = "bestTotalCubesSavedToCloud";
-	const string LEADERBOARD_TOTAL_ID = "com.voidupdate.franticarchitect.total";
 	
 	int bestTotalCubes;
 	
@@ -61,7 +65,14 @@ public class Game : MonoBehaviour
 	public ParticleSystem[] particlePfs;
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud"; //misleading var name, 1 means saved to cloud
 	
+	#if UNITY_IOS
 	const string LEADERBOARD_ID = "com.voidupdate.franticarchitect.leaderboard";
+	const string LEADERBOARD_TOTAL_ID = "com.voidupdate.franticarchitect.total";
+	#elif UNITY_ANDROID
+	const string LEADERBOARD_ID = "CgkIpbyk6fQBEAIQAA";
+	const string LEADERBOARD_TOTAL_ID = "CgkIpbyk6fQBEAIQAQ";
+	#endif
+	
 	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
 	
 	const string A_total_20_ID = "com.voidupdate.franticarchitect.student";
@@ -239,10 +250,11 @@ public class Game : MonoBehaviour
 			};
 			Unibiller.Initialise();
 			
-			#if UNITY_IOS && !UNITY_EDITOR
+			#if (UNITY_IOS || UNITY_ANDROID ) && !UNITY_EDITOR
+			Debug.Log("~~~~~try authenticate");
 			Social.localUser.Authenticate((success) =>
 			{
-				Debug.Log("done authenticating game center: " + success);
+				Debug.Log("~~~~done authenticating game center: " + success);
 			});
 			//GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
 			#endif
@@ -391,18 +403,32 @@ public class Game : MonoBehaviour
 		{
 			if (!isReloading && isDead)
 			{
-				#if UNITY_IOS && !UNITY_EDITOR
-				if (Social.localUser.authenticated)
-				{
-					GameCenterPlatform.ShowLeaderboardUI(LEADERBOARD_ID, UnityEngine.SocialPlatforms.TimeScope.AllTime);
-				}
-				else
-				{
-					Social.localUser.Authenticate((success) =>
+				#if !UNITY_EDITOR
+					#if UNITY_IOS
+					if (Social.localUser.authenticated)
 					{
 						GameCenterPlatform.ShowLeaderboardUI(LEADERBOARD_ID, UnityEngine.SocialPlatforms.TimeScope.AllTime);
-					});
-				}
+					}
+					else
+					{
+						Social.localUser.Authenticate((success) =>
+						{
+							GameCenterPlatform.ShowLeaderboardUI(LEADERBOARD_ID, UnityEngine.SocialPlatforms.TimeScope.AllTime);
+						});
+					}
+					#elif UNITY_ANDROID
+					if (Social.localUser.authenticated)
+					{
+						Social.ShowLeaderboardUI();
+					}
+					else
+					{
+						Social.localUser.Authenticate((success) =>
+						{
+							Social.ShowLeaderboardUI();
+						});
+					}
+					#endif
 				#endif
 			}
 		});
@@ -411,7 +437,7 @@ public class Game : MonoBehaviour
 		{
 			if (!isReloading && isDead)
 			{
-				#if UNITY_IOS && !UNITY_EDITOR
+				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
 					Social.ShowAchievementsUI();
@@ -930,7 +956,7 @@ public class Game : MonoBehaviour
 			if (curScore > best)
 			{
 				PlayerPrefs.SetInt(BEST, curScore);
-				#if UNITY_IOS && !UNITY_EDITOR
+				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 				PlayerPrefs.SetInt(BEST_SCORE_NOT_SAVED_TO_CLOUD, 0);
 				#endif
 			}
@@ -938,7 +964,7 @@ public class Game : MonoBehaviour
 			if (cubes.Count > bestTotalCubes)
 			{
 				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SCORE, cubes.Count);
-				#if UNITY_IOS && !UNITY_EDITOR
+				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SAVED_TO_CLOUD, 0);
 				#endif
 			}
@@ -949,7 +975,7 @@ public class Game : MonoBehaviour
 			
 			int newBestTotal = System.Math.Max(cubes.Count, bestTotalCubes);
 			
-			#if UNITY_IOS && !UNITY_EDITOR 
+			#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR 
 			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
 			{
 				Debug.Log("should submit score");
