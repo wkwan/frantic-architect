@@ -163,7 +163,7 @@ public class Game : MonoBehaviour
 	Pos curPos;
 
 	Dictionary<string, Transform> cubes = new Dictionary<string, Transform>();
-	string[] lastCubes = new string[3];
+	List<Pos> cubePositionsByTime = new List<Pos>();
 	int topY = 0;
 	int best = 0;
 	List<Pos> validNeighbours = new List<Pos>();
@@ -300,28 +300,49 @@ public class Game : MonoBehaviour
 			//continueSecs.DOFade(0f, 0.3f);
 			//continueButton.image.DOFade(0f, 0.3f).OnComplete(());
 			isDead = false;
+			isPlaying = true;
 			continueRect.anchoredPosition = new Vector2(continueAnchorX, continueRect.anchoredPosition.y);
 			continueButton.image.color = new Color(1, 1, 1, 1);
 			continueText.alpha = 1f;
-			continueSecs.alpha = 1f;
+			continueSecs.alpha = 1f;	
 			
-			foreach (string lastCubeKey in lastCubes)
+			int cubePosIndToStartRemoving;
+			
+			int totalCubes = cubePositionsByTime.Count;
+			if (totalCubes < 6)
 			{
-				if (lastCubeKey != null)
-				{
-					Debug.Log("destroy cube at " + lastCubeKey);
-					cubes[lastCubeKey].gameObject.SetActive(false);
-					Destroy(cubes[lastCubeKey].gameObject);
-					cubes.Remove(lastCubeKey);
-				}
+				curPos = new Pos(0, 0, 0);
+			}
+			else
+			{
+				curPos = cubePositionsByTime[totalCubes - 6];
+			}
+			
+			Debug.Log("total cubes " + totalCubes);
+			for (int i = totalCubes - 1; i > 0 && i > totalCubes - 6; i--)
+			{
+
+				Debug.Log("destroy cube at pos " + cubePositionsByTime[i].Key() + " contains key " + cubes.ContainsKey(cubePositionsByTime[i].Key()).ToString());
+				
+				cubes[cubePositionsByTime[i].Key()].gameObject.SetActive(false);
+				Destroy(cubes[cubePositionsByTime[i].Key()].gameObject);
+				cubes.Remove(cubePositionsByTime[i].Key());
+				
+				cubePositionsByTime.RemoveAt(i);
 			}
 			
 			
+			
+			Debug.Log("curpos is " + curPos.Key());
+
 			tower.transform.position = Vector3.zero;
 			tower.transform.eulerAngles = Vector3.zero;
+			SetupNewHover();
+			//Debug.Log("transition fade back out after undo");
 			transition.DOFade(0f, 0.5f).OnComplete(() =>
 			{
 				tower.WakeUp();
+				
 			});
 		});
 	}
@@ -342,10 +363,12 @@ public class Game : MonoBehaviour
 		
 		continueButton.onClick.AddListener(() =>
 		{
+			continueButton.interactable = false;
 			gamesPlayedSinceSeendAd = 0;
 			//HZVideoAd.Show();
 			//HZVideoAd.Fetch();
 			
+			//Debug.Log("undo moves");
 			UndoMoves();
 			
 		});
@@ -399,6 +422,8 @@ public class Game : MonoBehaviour
 		Pos zero = new Pos(0, 0, 0);
 		cubes[zero.Key()] = startCube;
 		curPos = zero;
+		cubePositionsByTime.Add(curPos);
+		Debug.Log("add initial cube " + curPos.Key());
 		SetupNewHover();
 		isPlaying = true; //testing
 		if (justStarted)
@@ -722,6 +747,7 @@ public class Game : MonoBehaviour
 		//Debug.Log("start bring in ui");
 		//if (HZVideoAd.IsAvailable())
 		//{
+		continueButton.interactable = true;
 		continueSecs.text = "3";
 		continueRect.DOAnchorPos(new Vector2(0, continueRect.anchoredPosition.y), 0.5f);
 		
@@ -742,6 +768,7 @@ public class Game : MonoBehaviour
 			yield return new WaitForSeconds(0.3f);
 			continueText.alpha = 0;
 			continueSecs.alpha = 0;
+			continueButton.interactable = false;
 		}
 
 		//}
@@ -872,6 +899,7 @@ public class Game : MonoBehaviour
 	
 			StartCoroutine(ShowAdTakeScreenCapAndBringInUI());
 			
+			//todo: do this after the continue button disappears
 			#if UNITY_IOS && !UNITY_EDITOR
 			if (Social.localUser.authenticated)
 			{
@@ -1090,6 +1118,7 @@ public class Game : MonoBehaviour
 			newMesh.material.SetColor("_EmissionColor", emissionBlue);
 			
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
+			Debug.Log("swap hover set parent to  " + curPos.Key());
 			cubeToPlace.SetParent(cubes[curPos.Key()]);
 			
 		}
@@ -1211,11 +1240,14 @@ public class Game : MonoBehaviour
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
 				
-				lastCubes[2] = lastCubes[1];
-				lastCubes[1] = lastCubes[0];
-				lastCubes[0] = validNeighbours[curNeighbourInd].Key();
+
 				
 				curPos = validNeighbours[curNeighbourInd];
+				
+				cubePositionsByTime.Add(curPos);
+				
+				Debug.Log("add cube " + curPos.Key());
+				
 				
 				totalCubesScore.text = cubes.Count.ToString();
 				
