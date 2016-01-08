@@ -19,9 +19,14 @@ using Heyzap;
 
 public class Game : MonoBehaviour 
 {
+	public float continueAnchorX;
+	public Button continueButton;
+	public RectTransform continueRect;
+	public TextMeshProUGUI continueText;
+	public TextMeshProUGUI continueSecs;
+	
 	static int gamesPlayedSinceSeendAd = 0;
 	
-	public AnimationCurve vertexCurve;
 	public TextMeshProUGUI fps;
 	
 	public BloomOptimized bloom;
@@ -158,6 +163,7 @@ public class Game : MonoBehaviour
 	Pos curPos;
 
 	Dictionary<string, Transform> cubes = new Dictionary<string, Transform>();
+	string[] lastCubes = new string[3];
 	int topY = 0;
 	int best = 0;
 	List<Pos> validNeighbours = new List<Pos>();
@@ -227,18 +233,19 @@ public class Game : MonoBehaviour
 			HeyzapAds.Start("a386042ae6f2651999263ec59b3cf3f3", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
 			HZVideoAd.Fetch();
 			
-			//HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
-			//	            ("hz ad callback");
-			//    if ( adState.Equals("hide") ) {
-			//        // Sent when an ad has been removed from view.
-			//        // This is a good place to unpause your app, if applicable.
-			//	    Debug.Log("hide ad callback");
-			//	    //BringInUI(0f);
-			//	    //StartCoroutine(BringInUIAfterAd());
-			//    }
-			//};
+			HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
+				Debug.Log("hz ad callback");
+			    if ( adState.Equals("hide") ) {
+			        // Sent when an ad has been removed from view.
+			        // This is a good place to unpause your app, if applicable.
+				    Debug.Log("hide ad callback");
+				    //BringInUI(0f);
+				    //StartCoroutine(BringInUIAfterAd());
+			    }
+			};
 			
-			//HZVideoAd.SetDisplayListener(listener);
+			Debug.Log("set display listener");
+			HZVideoAd.SetDisplayListener(listener);
 			
 			
 			
@@ -284,10 +291,47 @@ public class Game : MonoBehaviour
 	//	redShinyMat.SetColor("_EmissionColor", emissionRedShiny);
 	//}
 	
+	void UndoMoves()
+	{
+		transition.DOFade(1f, 0.5f).OnComplete(() =>
+		{
+			tower.Sleep();
+			//continueText.DOFade(0f, 0.3f);
+			//continueSecs.DOFade(0f, 0.3f);
+			//continueButton.image.DOFade(0f, 0.3f).OnComplete(());
+			isDead = false;
+			continueRect.anchoredPosition = new Vector2(continueAnchorX, continueRect.anchoredPosition.y);
+			continueButton.image.color = new Color(1, 1, 1, 1);
+			continueText.alpha = 1f;
+			continueSecs.alpha = 1f;
+			
+			foreach (string lastCubeKey in lastCubes)
+			{
+				if (lastCubeKey != null)
+				{
+					Debug.Log("destroy cube at " + lastCubeKey);
+					cubes[lastCubeKey].gameObject.SetActive(false);
+					Destroy(cubes[lastCubeKey].gameObject);
+					cubes.Remove(lastCubeKey);
+				}
+			}
+			
+			
+			tower.transform.position = Vector3.zero;
+			tower.transform.eulerAngles = Vector3.zero;
+			transition.DOFade(0f, 0.5f).OnComplete(() =>
+			{
+				tower.WakeUp();
+			});
+		});
+	}
+	
 
 	// Use this for initialization
 	void Start() 
 	{
+		continueAnchorX = continueRect.anchoredPosition.x;
+		
 		canStartTakingInput = true;
 		sharePic = new Texture2D(Screen.width, Screen.height);
 		
@@ -295,6 +339,16 @@ public class Game : MonoBehaviour
 		startCube.GetComponent<MeshRenderer>().material = materials[curMat];
 		cubeMatExample.material = materials[curMat];
 		//MakeMaterials();
+		
+		continueButton.onClick.AddListener(() =>
+		{
+			gamesPlayedSinceSeendAd = 0;
+			//HZVideoAd.Show();
+			//HZVideoAd.Fetch();
+			
+			UndoMoves();
+			
+		});
 		
 		changeCubeLeft.onClick.AddListener(() =>
 		{
@@ -645,56 +699,91 @@ public class Game : MonoBehaviour
 		gamesPlayedSinceSeendAd++;
 		float adRand = Random.Range(0f, 1f);
 		//Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedSinceSeendAd + " " + adRand + " " + HZVideoAd.IsAvailable());
-		if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZVideoAd.IsAvailable())
-		{
-			yield return new WaitForSeconds(2f);
-			gamesPlayedSinceSeendAd = 0;
-			HZVideoAd.Show();
-			HZVideoAd.Fetch();
-			//Debug.Log("show video ad");
-			StartCoroutine(BringInUI(0.5f));
-		}
-		else
-		{
-			StartCoroutine(BringInUI(0.5f));  
-		}
-		//StartCoroutine(BringInUI(0.5f));    
+		//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZVideoAd.IsAvailable())
+		//{
+		//	yield return new WaitForSeconds(2f);
+		//	gamesPlayedSinceSeendAd = 0;
+		//	HZVideoAd.Show();
+		//	HZVideoAd.Fetch();
+		//	//Debug.Log("show video ad");
+		//	StartCoroutine(BringInUI(0.5f));
+		//}
+		//else
+		//{
+		//	StartCoroutine(BringInUI(0.5f));  
+		//}
+		StartCoroutine(BringInUI(0.5f)); 
+		
 		yield break;
 	}
 	
 	IEnumerator BringInUI(float delay)
 	{
 		//Debug.Log("start bring in ui");
+		//if (HZVideoAd.IsAvailable())
+		//{
+		continueSecs.text = "3";
+		continueRect.DOAnchorPos(new Vector2(0, continueRect.anchoredPosition.y), 0.5f);
 		
+		yield return new WaitForSeconds(1.5f);
+		if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "2";
 		yield return new WaitForSeconds(1f);
-		yield return StartCoroutine(Wave(score));
-		yield return StartCoroutine(Wave(totalCubesScore));
+		if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "1";
+		yield return new WaitForSeconds(1f);
+		if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "0";
 		
+		if (gamesPlayedSinceSeendAd > 0)
+		{
+			//todo: fade doesn't work, but not noticeable because blends in with background
+			//continueText.DOColor(new Color(1, 1, 1, 0), 0.3f);
+			//continueSecs.DOColor(new Color(1, 1, 1, 0), 0.3f);
+			continueButton.image.DOFade(0f, 0.3f);
+			
+			yield return new WaitForSeconds(0.3f);
+			continueText.alpha = 0;
+			continueSecs.alpha = 0;
+		}
+
+		//}
+		//else
+		//{
+		//	yield return new WaitForSeconds(1f);
+		//}
+
 		
+		if (gamesPlayedSinceSeendAd > 0) //continue button not clicked
+		{
+			yield return StartCoroutine(Wave(score));
+			yield return StartCoroutine(Wave(totalCubesScore));
+			
+			
 		//Debug.Log("BEFORE retry " + (retry == null) + " share " + (share == null) + " menu " + (menu == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
-		RectTransform retryRect = retry.GetComponent<RectTransform>();
-		RectTransform shareRect = share.GetComponent<RectTransform>();
-		RectTransform menuRect = menu.GetComponent<RectTransform>();
-		RectTransform changeCubeLeftRect = changeCubeLeft.GetComponent<RectTransform>();
-		RectTransform changeCubeRightRect = changeCubeRight.GetComponent<RectTransform>();
-		
+			RectTransform retryRect = retry.GetComponent<RectTransform>();
+			RectTransform shareRect = share.GetComponent<RectTransform>();
+			RectTransform menuRect = menu.GetComponent<RectTransform>();
+			RectTransform changeCubeLeftRect = changeCubeLeft.GetComponent<RectTransform>();
+			RectTransform changeCubeRightRect = changeCubeRight.GetComponent<RectTransform>();
+			
 		//Debug.Log("retry " + (retryRect == null) + " share " + (shareRect == null) + " menu " + (menuRect == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
 			
-		
-		retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-		shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-		
-		menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay);
-		
+			
+			retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+			shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+			
+			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay);
+			
 		//Debug.Log("cube mat " + (cubeMatExample == null));
+			
+			cubeMatExample.gameObject.SetActive(true);
+			cubeMatExample.material.color = new Color(1, 1, 1, 0);
+			cubeMatExample.material.DOFade(1f, 1f).SetDelay(0.6f);
+			
+			changeCubeLeftRect.DOAnchorPos(new Vector2(-visibleRetryX * 1.2f, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+			changeCubeRightRect.DOAnchorPos(new Vector2(visibleRetryX * 1.2f, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
+			
+		}
 		
-		cubeMatExample.gameObject.SetActive(true);
-		cubeMatExample.material.color = new Color(1, 1, 1, 0);
-		cubeMatExample.material.DOFade(1f, 1f).SetDelay(0.6f);
-		
-		changeCubeLeftRect.DOAnchorPos(new Vector2(-visibleRetryX * 1.2f, changeCubeLeftRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-		changeCubeRightRect.DOAnchorPos(new Vector2(visibleRetryX * 1.2f, changeCubeRightRect.anchoredPosition.y), 0.5f).SetDelay(delay);
-		
+
 		
 	}
 
@@ -754,59 +843,9 @@ public class Game : MonoBehaviour
 			}
 
 			i++;
-		}
-		
-	
+		}		
 	}
-	
-	//IEnumerator AnimateVertexPositions(TextMeshProUGUI textComponent)
-	//{
-	//	CanvasRenderer uiRenderer = textComponent.canvasRenderer;
-	//	Vector3[] vertices;
-		
-	//	int loopCount = 0;
-		
-	//	while (true)
-	//	{
-	//		textComponent.renderMode = TextRenderFlags.DontRender;
-	//		textComponent.ForceMeshUpdate();
-			
-	//		TMP_TextInfo textInfo = textComponent.textInfo;
-	//		Mesh mesh = textComponent.mesh;
-	//		int characterCount = textInfo.characterCount;
-			
-			
-	//		vertices = textComponent.mesh.vertices;
-			
-	//		for (int i = 0; i < characterCount; i++)
-	//		{
-	//			if (!textInfo.characterInfo[i].isVisible)
-	//				continue;
-				
-	//			int vertexIndex = textInfo.characterInfo[i].vertexIndex;
-				
-	//			float offsetY = vertexCurve.Evaluate((float)i / characterCount + loopCount / 50f);
-	//			Debug.Log(offsetY);
-				
-	//			vertices[vertexIndex + 0].y += offsetY;
-	//			vertices[vertexIndex + 1].y += offsetY;
-	//			vertices[vertexIndex + 2].y += offsetY;
-	//			vertices[vertexIndex + 3].y += offsetY;
-				
-	//		}
-			
-	//		loopCount += 1;
-			
-	//		mesh.vertices = vertices;
-	//		uiRenderer.SetMesh(mesh);
-			
-	//		textComponent.renderMode = TextRenderFlags.Render;
-	//		yield return new WaitForSeconds(0.035f);
-			
-			
-	//	}
-		
-	//}
+
 
 	void GameOverCheck(bool dead)
 	{
@@ -1052,6 +1091,7 @@ public class Game : MonoBehaviour
 			
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
 			cubeToPlace.SetParent(cubes[curPos.Key()]);
+			
 		}
 		
 		//METHOD 1: same order each loop
@@ -1170,6 +1210,11 @@ public class Game : MonoBehaviour
 				cubeToPlace.GetComponent<BoxCollider>().enabled = true;
 				tower.WakeUp();
 				cubes[validNeighbours[curNeighbourInd].Key()] = cubeToPlace;
+				
+				lastCubes[2] = lastCubes[1];
+				lastCubes[1] = lastCubes[0];
+				lastCubes[0] = validNeighbours[curNeighbourInd].Key();
+				
 				curPos = validNeighbours[curNeighbourInd];
 				
 				totalCubesScore.text = cubes.Count.ToString();
