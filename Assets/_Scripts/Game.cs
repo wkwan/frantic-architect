@@ -73,8 +73,8 @@ public class Game : MonoBehaviour
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud"; //misleading var name, 1 means saved to cloud
 	
 	#if UNITY_IOS
-	const string LEADERBOARD_ID = "com.bulkypix.franticarchitect.leaderboard.001";
-	const string LEADERBOARD_TOTAL_ID = "com.bulkypix.franticarchitect.leaderboard.002";
+	const string LEADERBOARD_ID = "com.bulkypix.franticarchitect.leaderboard.height";
+	const string LEADERBOARD_TOTAL_ID = "com.bulkypix.franticarchitect.leaderboard.total";
 	#elif UNITY_ANDROID
 	const string LEADERBOARD_ID = "CgkIpbyk6fQBEAIQAA";
 	const string LEADERBOARD_TOTAL_ID = "CgkIpbyk6fQBEAIQAQ";
@@ -82,27 +82,28 @@ public class Game : MonoBehaviour
 	
 	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
 	
-	const string A_total_20_ID = "com.bulkypix.achievement.franticarchitect.001";
-	const string A_total_40_ID = "com.bulkypix.achievement.franticarchitect.002";
-	const string A_total_60_ID = "com.bulkypix.achievement.franticarchitect.003";
-	const string A_total_80_ID = "com.bulkypix.achievement.franticarchitect.004";
-	const string A_total_100_ID = "com.bulkypix.achievement.franticarchitect.005";
-	const string A_total_120_ID = "com.bulkypix.achievement.franticarchitect.006";
-	const string A_total_140_ID = "com.bulkypix.achievement.franticarchitect.007";
-	const string A_total_160_ID = "com.bulkypix.achievement.franticarchitect.008";
-	const string A_total_180_ID = "com.bulkypix.achievement.franticarchitect.009";
-	const string A_total_200_ID = "com.bulkypix.achievement.franticarchitect.010";
+	const string A_total_20_ID = "com.bulkypix.franticarchitect.achievement.student";
+	const string A_total_40_ID = "com.bulkypix.franticarchitect.achievement.intern";
+	const string A_total_60_ID = "com.bulkypix.franticarchitect.achievement.junior";
+	const string A_total_80_ID = "com.bulkypix.franticarchitect.achievement.senior";
+	const string A_total_100_ID = "com.bulkypix.franticarchitect.achievement.manager";
+	const string A_total_120_ID = "com.bulkypix.franticarchitect.achievement.vicepresident";
+	const string A_total_140_ID = "com.bulkypix.franticarchitect.achievement.president";
+	const string A_total_160_ID = "com.bulkypix.franticarchitect.achievement.owner";
+	const string A_total_180_ID = "com.bulkypix.franticarchitect.achievement.legend";
+	const string A_total_200_ID = "com.bulkypix.franticarchitect.achievement.god";
 	
-	const string A_height_10_ID = "com.bulkypix.achievement.franticarchitect.011";
-	const string A_height_20_ID = "com.bulkypix.achievement.franticarchitect.012";
-	const string A_height_30_ID = "com.bulkypix.achievement.franticarchitect.013";
-	const string A_height_40_ID = "com.bulkypix.achievement.franticarchitect.014";
-	const string A_height_50_ID = "com.bulkypix.achievement.franticarchitect.015";
-	const string A_height_60_ID = "com.bulkypix.achievement.franticarchitect.016";
-	const string A_height_70_ID = "com.bulkypix.achievement.franticarchitect.017";
-	const string A_height_80_ID = "com.bulkypix.achievement.franticarchitect.018";
-	const string A_height_90_ID = "com.bulkypix.achievement.franticarchitect.019";
-	const string A_height_100_ID = "com.bulkypix.achievement.franticarchitect.020";
+	const string A_height_10_ID = "com.bulkypix.franticarchitect.achievement.tipi";
+	const string A_height_20_ID = "com.bulkypix.franticarchitect.achievement.igloo";
+	const string A_height_30_ID = "com.bulkypix.franticarchitect.achievement.barn";
+	const string A_height_40_ID = "com.bulkypix.franticarchitect.achievement.hobbithole";
+	const string A_height_50_ID = "com.bulkypix.franticarchitect.achievement.cottage";
+	const string A_height_60_ID = "com.bulkypix.franticarchitect.achievement.mansion";
+	const string A_height_70_ID = "com.bulkypix.franticarchitect.achievement.pyramid";
+	const string A_height_80_ID = "com.bulkypix.franticarchitect.achievement.skyscraper";
+	const string A_height_90_ID = "com.bulkypix.franticarchitect.achievement.castle";
+	const string A_height_100_ID = "com.bulkypix.franticarchitect.achievement.spaceelevator";
+	
 	
 	
 	
@@ -775,6 +776,10 @@ public class Game : MonoBehaviour
 		}
 		else
 		{
+			if (!HZVideoAd.IsAvailable())
+			{
+				HZVideoAd.Fetch();
+			}
 			yield return new WaitForSeconds(1f);
 		}
 
@@ -786,6 +791,7 @@ public class Game : MonoBehaviour
 				{
 					Social.LoadAchievements((achievements) =>
 					{
+						Debug.Log("OK got achievements callback");
 						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
 						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
 						{
@@ -851,13 +857,11 @@ public class Game : MonoBehaviour
 						if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
 						{
 							GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
-					
 						}
 					
 						if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
 						{
 							GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
-					
 						}
 					
 						if (cubes.Count >= 60 && !doneAchievements.ContainsKey(A_total_60_ID))
