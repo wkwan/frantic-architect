@@ -13,12 +13,14 @@ using UnityEngine.SocialPlatforms;
 
 using UnityStandardAssets.ImageEffects;
 using Heyzap;
+using UnityEngine.SceneManagement;
 
 //TODO: close stats if open when pressing close
 
 
 public class Game : MonoBehaviour 
 {
+	bool continueUsed = false;
 	public float continueAnchorX;
 	public Button continueButton;
 	public RectTransform continueRect;
@@ -241,6 +243,7 @@ public class Game : MonoBehaviour
 				    Debug.Log("hide ad callback");
 				    //BringInUI(0f);
 				    //StartCoroutine(BringInUIAfterAd());
+				    UndoMoves();
 			    }
 			};
 			
@@ -365,11 +368,11 @@ public class Game : MonoBehaviour
 		{
 			continueButton.interactable = false;
 			gamesPlayedSinceSeendAd = 0;
-			//HZVideoAd.Show();
-			//HZVideoAd.Fetch();
+			HZVideoAd.Show();
+			HZVideoAd.Fetch();
 			
 			//Debug.Log("undo moves");
-			UndoMoves();
+			//UndoMoves();
 			
 		});
 		
@@ -449,7 +452,7 @@ public class Game : MonoBehaviour
 			if (!isReloading && isDead)
 			{
 				isReloading = true;
-				transition.DOFade(1, FADE_DURATION).OnComplete(() => Application.LoadLevel("Game"));
+				transition.DOFade(1, FADE_DURATION).OnComplete(() => SceneManager.LoadScene("Game"));
 			}
 		});
 		
@@ -743,43 +746,249 @@ public class Game : MonoBehaviour
 	}
 	
 	IEnumerator BringInUI(float delay)
-	{
+	{					
 		//Debug.Log("start bring in ui");
-		//if (HZVideoAd.IsAvailable())
-		//{
-		continueButton.interactable = true;
-		continueSecs.text = "3";
-		continueRect.DOAnchorPos(new Vector2(0, continueRect.anchoredPosition.y), 0.5f);
-		
-		yield return new WaitForSeconds(1.5f);
-		if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "2";
-		yield return new WaitForSeconds(1f);
-		if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "1";
-		yield return new WaitForSeconds(1f);
-		if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "0";
-		
-		if (gamesPlayedSinceSeendAd > 0)
+		if (HZVideoAd.IsAvailable() && !continueUsed && cubePositionsByTime.Count > 9)
 		{
-			//todo: fade doesn't work, but not noticeable because blends in with background
-			//continueText.DOColor(new Color(1, 1, 1, 0), 0.3f);
-			//continueSecs.DOColor(new Color(1, 1, 1, 0), 0.3f);
-			continueButton.image.DOFade(0f, 0.3f);
+			continueUsed = true;
+			continueButton.interactable = true;
+			continueSecs.text = "3";
+			continueRect.DOAnchorPos(new Vector2(0, continueRect.anchoredPosition.y), 0.5f);
 			
-			yield return new WaitForSeconds(0.3f);
-			continueText.alpha = 0;
-			continueSecs.alpha = 0;
-			continueButton.interactable = false;
-		}
+			yield return new WaitForSeconds(1.5f);
+			if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "2";
+			yield return new WaitForSeconds(1f);
+			if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "1";
+			yield return new WaitForSeconds(1f);
+			if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "0";
+			
+			if (gamesPlayedSinceSeendAd > 0)
+			{
+				//todo: fade doesn't work, but not noticeable because blends in with background
+				//continueText.DOColor(new Color(1, 1, 1, 0), 0.3f);
+				//continueSecs.DOColor(new Color(1, 1, 1, 0), 0.3f);
+				continueButton.image.DOFade(0f, 0.3f);
+				
+				yield return new WaitForSeconds(0.3f);
+				continueText.alpha = 0;
+				continueSecs.alpha = 0;
+				continueButton.interactable = false;
+			}
 
-		//}
-		//else
-		//{
-		//	yield return new WaitForSeconds(1f);
-		//}
+		}
+		else
+		{
+			yield return new WaitForSeconds(1f);
+		}
 
 		
 		if (gamesPlayedSinceSeendAd > 0) //continue button not clicked
 		{
+			#if UNITY_IOS && !UNITY_EDITOR
+				if (Social.localUser.authenticated)
+				{
+					Social.LoadAchievements((achievements) =>
+					{
+						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
+						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
+						{
+							doneAchievements[achievement.id] = true;
+						}
+						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_10_ID, 100f, true);
+					
+						}
+						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
+					
+						}
+						if (curScore >= 30 && !doneAchievements.ContainsKey(A_height_30_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_30_ID, 100f, true);
+					
+						}
+						if (curScore >= 40 && !doneAchievements.ContainsKey(A_height_40_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_40_ID, 100f, true);
+					
+						}
+						if (curScore >= 50 && !doneAchievements.ContainsKey(A_height_50_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_50_ID, 100f, true);
+					
+						}
+						if (curScore >= 60 && !doneAchievements.ContainsKey(A_height_60_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_60_ID, 100f, true);
+					
+						}
+					
+						if (curScore >= 70 && !doneAchievements.ContainsKey(A_height_70_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_70_ID, 100f, true);
+					
+						}
+					
+						if (curScore >= 80 && !doneAchievements.ContainsKey(A_height_80_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_80_ID, 100f, true);
+					
+						}
+					
+						if (curScore >= 90 && !doneAchievements.ContainsKey(A_height_90_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_90_ID, 100f, true);
+					
+						}
+					
+						if (curScore >= 100 && !doneAchievements.ContainsKey(A_height_100_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_height_100_ID, 100f, true);
+					
+						}
+					
+					
+					
+						if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 60 && !doneAchievements.ContainsKey(A_total_60_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_60_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 80 && !doneAchievements.ContainsKey(A_total_80_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_80_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 100 && !doneAchievements.ContainsKey(A_total_100_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_100_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 120 && !doneAchievements.ContainsKey(A_total_120_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_120_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 140 && !doneAchievements.ContainsKey(A_total_140_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_140_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 160 && !doneAchievements.ContainsKey(A_total_160_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_160_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 180 && !doneAchievements.ContainsKey(A_total_180_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_180_ID, 100f, true);
+					
+						}
+					
+						if (cubes.Count >= 200 && !doneAchievements.ContainsKey(A_total_200_ID))
+						{
+							GKAchievementReporter.ReportAchievement(A_total_200_ID, 100f, true);
+					
+						}
+					
+					});
+				}
+			
+			#endif
+			
+			if (curScore > best)
+			{
+				PlayerPrefs.SetInt(BEST, curScore);
+				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
+				PlayerPrefs.SetInt(BEST_SCORE_NOT_SAVED_TO_CLOUD, 0);
+				#endif
+			}
+			
+			if (cubes.Count > bestTotalCubes)
+			{
+				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SCORE, cubes.Count);
+				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
+				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SAVED_TO_CLOUD, 0);
+				#endif
+			}
+			
+			
+			int newBest = System.Math.Max(curScore, best);
+			statBest.text = "Tallest Tower: " + newBest.ToString();
+			
+			int newBestTotal = System.Math.Max(cubes.Count, bestTotalCubes);
+			
+			#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR 
+			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
+			{
+				Debug.Log("should submit score");
+				Social.ReportScore(newBest, LEADERBOARD_ID, (submitSuccess) =>
+				{
+					Debug.Log("submit score complete");
+					if (submitSuccess)
+					{
+						PlayerPrefs.DeleteKey(BEST_SCORE_NOT_SAVED_TO_CLOUD);
+						Debug.Log("submit score success");
+					}
+				});
+			}
+			if (PlayerPrefs.HasKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD) && Social.localUser.authenticated)
+			{
+				Debug.Log("should submit score total");
+				Social.ReportScore(newBestTotal, LEADERBOARD_TOTAL_ID, (submitSuccess) =>
+				{
+					Debug.Log("submit score complete total");
+					if (submitSuccess)
+					{
+						PlayerPrefs.DeleteKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD);
+						Debug.Log("submit score success");
+					}
+				});
+			}
+			
+			#endif
+			
+			int dailyRecord = PlayerPrefs.GetInt(DAILY_RECORD + System.DateTime.Today.ToString(), 0);
+			if (curScore > dailyRecord)
+			{
+				dailyRecord = curScore;
+			}
+			statDaily.text = "Tallest Today: " + dailyRecord;
+			
+			int games = PlayerPrefs.GetInt(GAMES, 0) + 1;
+			PlayerPrefs.SetInt(GAMES, games);
+			statGames.text = "Games Played: " + games.ToString();
+			
+			int total = PlayerPrefs.GetInt(TOTAL, 0) + curScore;
+			PlayerPrefs.SetInt(TOTAL, total);
+			statAve.text = "Average Height: " + Mathf.RoundToInt((float)total/games).ToString();
+			
+			int numCubes = PlayerPrefs.GetInt(CUBES, 0) + cubes.Count - 1;
+			PlayerPrefs.SetInt(CUBES, numCubes);
+			statCubes.text = "Total Cubes: " + numCubes.ToString();
+			
+			
+			
 			yield return StartCoroutine(Wave(score));
 			yield return StartCoroutine(Wave(totalCubesScore));
 			
@@ -899,209 +1108,6 @@ public class Game : MonoBehaviour
 	
 			StartCoroutine(ShowAdTakeScreenCapAndBringInUI());
 			
-			//todo: do this after the continue button disappears
-			#if UNITY_IOS && !UNITY_EDITOR
-			if (Social.localUser.authenticated)
-			{
-				Social.LoadAchievements((achievements) =>
-				{
-					Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
-					foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
-					{
-						doneAchievements[achievement.id] = true;
-					}
-					if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_10_ID, 100f, true);
-						
-					}
-					if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
-						
-					}
-					if (curScore >= 30 && !doneAchievements.ContainsKey(A_height_30_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_30_ID, 100f, true);
-						
-					}
-					if (curScore >= 40 && !doneAchievements.ContainsKey(A_height_40_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_40_ID, 100f, true);
-						
-					}
-					if (curScore >= 50 && !doneAchievements.ContainsKey(A_height_50_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_50_ID, 100f, true);
-						
-					}
-					if (curScore >= 60 && !doneAchievements.ContainsKey(A_height_60_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_60_ID, 100f, true);
-						
-					}
-					
-					if (curScore >= 70 && !doneAchievements.ContainsKey(A_height_70_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_70_ID, 100f, true);
-						
-					}
-			
-					if (curScore >= 80 && !doneAchievements.ContainsKey(A_height_80_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_80_ID, 100f, true);
-			
-					}
-			
-					if (curScore >= 90 && !doneAchievements.ContainsKey(A_height_90_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_90_ID, 100f, true);
-			
-					}
-			
-					if (curScore >= 100 && !doneAchievements.ContainsKey(A_height_100_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_height_100_ID, 100f, true);
-			
-					}
-			
-			
-			
-					if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 60 && !doneAchievements.ContainsKey(A_total_60_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_60_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 80 && !doneAchievements.ContainsKey(A_total_80_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_80_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 100 && !doneAchievements.ContainsKey(A_total_100_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_100_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 120 && !doneAchievements.ContainsKey(A_total_120_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_120_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 140 && !doneAchievements.ContainsKey(A_total_140_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_140_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 160 && !doneAchievements.ContainsKey(A_total_160_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_160_ID, 100f, true);
-			
-					}
-			
-					if (cubes.Count >= 180 && !doneAchievements.ContainsKey(A_total_180_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_180_ID, 100f, true);
-		
-					}
-			
-					if (cubes.Count >= 200 && !doneAchievements.ContainsKey(A_total_200_ID))
-					{
-						GKAchievementReporter.ReportAchievement(A_total_200_ID, 100f, true);
-			
-					}
-					
-				});
-			}
-
-			#endif
-			
-			if (curScore > best)
-			{
-				PlayerPrefs.SetInt(BEST, curScore);
-				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
-				PlayerPrefs.SetInt(BEST_SCORE_NOT_SAVED_TO_CLOUD, 0);
-				#endif
-			}
-			
-			if (cubes.Count > bestTotalCubes)
-			{
-				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SCORE, cubes.Count);
-				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
-				PlayerPrefs.SetInt(BEST_TOTAL_CUBES_SAVED_TO_CLOUD, 0);
-				#endif
-			}
-			
-			
-			int newBest = System.Math.Max(curScore, best);
-			statBest.text = "Tallest Tower: " + newBest.ToString();
-			
-			int newBestTotal = System.Math.Max(cubes.Count, bestTotalCubes);
-			
-			#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR 
-			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
-			{
-				Debug.Log("should submit score");
-				Social.ReportScore(newBest, LEADERBOARD_ID, (submitSuccess) =>
-				{
-					Debug.Log("submit score complete");
-					if (submitSuccess)
-					{
-						PlayerPrefs.DeleteKey(BEST_SCORE_NOT_SAVED_TO_CLOUD);
-						Debug.Log("submit score success");
-					}
-				});
-			}
-			if (PlayerPrefs.HasKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD) && Social.localUser.authenticated)
-			{
-				Debug.Log("should submit score total");
-				Social.ReportScore(newBestTotal, LEADERBOARD_TOTAL_ID, (submitSuccess) =>
-				{
-					Debug.Log("submit score complete total");
-					if (submitSuccess)
-					{
-						PlayerPrefs.DeleteKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD);
-						Debug.Log("submit score success");
-					}
-				});
-			}
-			
-			#endif
-			
-			int dailyRecord = PlayerPrefs.GetInt(DAILY_RECORD + System.DateTime.Today.ToString(), 0);
-			if (curScore > dailyRecord)
-			{
-				dailyRecord = curScore;
-			}
-			statDaily.text = "Tallest Today: " + dailyRecord;
-			
-			int games = PlayerPrefs.GetInt(GAMES, 0) + 1;
-			PlayerPrefs.SetInt(GAMES, games);
-			statGames.text = "Games Played: " + games.ToString();
-			
-			int total = PlayerPrefs.GetInt(TOTAL, 0) + curScore;
-			PlayerPrefs.SetInt(TOTAL, total);
-			statAve.text = "Average Height: " + Mathf.RoundToInt((float)total/games).ToString();
-			
-			int numCubes = PlayerPrefs.GetInt(CUBES, 0) + cubes.Count - 1;
-			PlayerPrefs.SetInt(CUBES, numCubes);
-			statCubes.text = "Total Cubes: " + numCubes.ToString();
 		}
 	}
 	
