@@ -746,7 +746,7 @@ public class Game : MonoBehaviour
 	IEnumerator BringInUI(float delay)
 	{					
 		//Debug.Log("start bring in ui");
-		if (HZVideoAd.IsAvailable() && numContinuesUsed < 2)
+		if (HZVideoAd.IsAvailable() && numContinuesUsed < 2 && cubePositionsByTime.Count > 9)
 		{
 			numContinuesUsed++;
 			continueButton.interactable = true;
