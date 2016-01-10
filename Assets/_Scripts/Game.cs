@@ -555,7 +555,7 @@ public class Game : MonoBehaviour
 				//});
 				
 
-				NPBinding.Sharing.ShareImage("OMG! I scored " + curScore.ToString() + " on #FranticArchitect.", sharePic, null, (result) =>
+				NPBinding.Sharing.ShareImage("My creation in #FranticArchitect.", sharePic, null, (result) =>
 				{
 					Debug.Log("share result " + result);
 				});
