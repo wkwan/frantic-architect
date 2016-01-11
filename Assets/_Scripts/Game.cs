@@ -20,7 +20,8 @@ using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour 
 {
-	int numContinuesUsed = 0;
+	bool continueJustClicked = false;
+	bool continueUsed = false;
 	public float continueAnchorX;
 	public Button continueButton;
 	public RectTransform continueRect;
@@ -366,8 +367,9 @@ public class Game : MonoBehaviour
 		
 		continueButton.onClick.AddListener(() =>
 		{
+			continueJustClicked = true;
+			continueUsed = true;
 			continueButton.interactable = false;
-			gamesPlayedSinceSeendAd = 0;
 			HZVideoAd.Show();
 			HZVideoAd.Fetch();
 			
@@ -725,6 +727,7 @@ public class Game : MonoBehaviour
 		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
 		sharePic.Apply();
 		gamesPlayedSinceSeendAd++;
+		continueJustClicked = false;
 		//float adRand = Random.Range(0f, 1f);
 		//Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedSinceSeendAd + " " + adRand + " " + HZVideoAd.IsAvailable());
 		//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZVideoAd.IsAvailable())
@@ -748,21 +751,20 @@ public class Game : MonoBehaviour
 	IEnumerator BringInUI(float delay)
 	{					
 		//Debug.Log("start bring in ui");
-		if (HZVideoAd.IsAvailable() && numContinuesUsed < 2 && cubePositionsByTime.Count > 9)
+		if (HZVideoAd.IsAvailable() && !continueUsed && cubePositionsByTime.Count > 9)
 		{
-			numContinuesUsed++;
 			continueButton.interactable = true;
 			continueSecs.text = "3";
 			continueRect.DOAnchorPos(new Vector2(0, continueRect.anchoredPosition.y), 0.5f);
 			
 			yield return new WaitForSeconds(1.5f);
-			if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "2";
+			if (!continueUsed) continueSecs.text = "2";
 			yield return new WaitForSeconds(1f);
-			if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "1";
+			if (!continueUsed) continueSecs.text = "1";
 			yield return new WaitForSeconds(1f);
-			if (gamesPlayedSinceSeendAd > 0) continueSecs.text = "0";
+			if (!continueUsed) continueSecs.text = "0";
 			
-			if (gamesPlayedSinceSeendAd > 0)
+			if (!continueUsed)
 			{
 				//todo: fade doesn't work, but not noticeable because blends in with background
 				//continueText.DOColor(new Color(1, 1, 1, 0), 0.3f);
@@ -786,7 +788,7 @@ public class Game : MonoBehaviour
 		}
 
 		
-		if (gamesPlayedSinceSeendAd > 0) //continue button not clicked
+		if (!continueJustClicked) //continue button not clicked
 		{
 			#if UNITY_IOS && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
