@@ -1,0 +1,12 @@
+{
+    "group":       "Chartboost",
+    "patches":     [],
+    "libs":        [],
+    "frameworks":  ["StoreKit.framework","Security.framework","AdSupport.framework:weak"],
+    "frameworksearchpaths":[],
+    "headerpaths": [],
+    "files":       [],
+    "folders":     [],
+    "excludes":    [],
+    "buildSettings": {}
+}
