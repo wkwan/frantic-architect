@@ -14,6 +14,7 @@ using UnityEngine.SocialPlatforms;
 using UnityStandardAssets.ImageEffects;
 using Heyzap;
 using UnityEngine.SceneManagement;
+using ChartboostSDK;
 
 //TODO: close stats if open when pressing close
 
@@ -238,8 +239,7 @@ public class Game : MonoBehaviour
 			HeyzapAds.Start("a386042ae6f2651999263ec59b3cf3f3", HeyzapAds.FLAG_NO_OPTIONS);
 			
 			HZVideoAd.Fetch();
-
-
+			
 			Unibiller.onBillerReady += (state) => {
 				Debug.Log("done initializing unibill: " + state);
 			};
@@ -1014,12 +1014,18 @@ public class Game : MonoBehaviour
 			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay).OnComplete(() =>
 			{
 				float adRand = Random.Range(0f, 1f);
-				//TODO: should only take into account interstitials for ad frequence
-				if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZInterstitialAd.IsAvailable())
+				//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZInterstitialAd.IsAvailable())
+				//{
+					//Debug.Log("show interstitial");
+				//	gamesPlayedSinceSeendAd = 0;
+				//	HZInterstitialAd.Show();
+				//}
+				if (gamesPlayedSinceSeendAd > 2)
 				{
-					Debug.Log("show interstitial");
+					Debug.Log("show chartboost interstitial");
+				
 					gamesPlayedSinceSeendAd = 0;
-					HZInterstitialAd.Show();
+					Chartboost.showInterstitial(CBLocation.HomeScreen);
 				}
 			});
 			
