@@ -611,6 +611,7 @@ public class Game : MonoBehaviour, IStoreListener
 		
 		removeAds.onClick.AddListener(() =>
 		{
+			Debug.Log("is store controller null " + (storeController == null));
 			if (!isReloading && isDead && storeController != null)
 			{
 			//	if (!Unibiller.Initialised)
@@ -643,7 +644,7 @@ public class Game : MonoBehaviour, IStoreListener
 				//{
 				//	Unibiller.restoreTransactions();
 				//}
-		
+				Debug.Log("initiate restore purchase");
 				var apple = storeExtensions.GetExtension<IAppleExtensions>();
 				apple.RestoreTransactions((result) =>
 				{
