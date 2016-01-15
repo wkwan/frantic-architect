@@ -244,7 +244,7 @@ public class Game : MonoBehaviour, IStoreListener
 	}
 	public void OnInitializeFailed(InitializationFailureReason error) 
 	{
-		Debug.Log("store initialize fail");
+		Debug.Log("store initialize fail " + error.ToString());
 		
 	}
 	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) 
