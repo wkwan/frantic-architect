@@ -16,10 +16,12 @@ using Heyzap;
 using UnityEngine.SceneManagement;
 using ChartboostSDK;
 
+using UnityEngine.Purchasing;
+
 //TODO: close stats if open when pressing close
 
 
-public class Game : MonoBehaviour 
+public class Game : MonoBehaviour, IStoreListener
 {
 	bool continueJustClicked = false;
 	bool continueUsed = false;
@@ -82,6 +84,7 @@ public class Game : MonoBehaviour
 	const string LEADERBOARD_TOTAL_ID = "CgkIpbyk6fQBEAIQAQ";
 	#endif
 	
+	//TODO: change for ANDROID
 	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
 	
 	const string A_total_20_ID = "com.bulkypix.franticarchitect.achievement.student";
@@ -230,6 +233,31 @@ public class Game : MonoBehaviour
 		}  
 	}
 	
+	public IStoreController storeController;
+	public IExtensionProvider storeExtensions;
+	
+	public void OnInitialized(IStoreController controller, IExtensionProvider extensions) 
+	{
+		storeController = controller;
+		storeExtensions = extensions;
+		Debug.Log("store initialize success");
+	}
+	public void OnInitializeFailed(InitializationFailureReason error) 
+	{
+		Debug.Log("store initialize fail");
+		
+	}
+	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) 
+	{ 
+		Debug.Log("store purchase complete");
+		PlayerPrefs.SetInt(NO_ADS_ID, 1);
+		return PurchaseProcessingResult.Complete; 
+	}
+	public void OnPurchaseFailed(Product item, PurchaseFailureReason r) 
+	{
+		Debug.Log("store purchase fail");
+	}
+	
 	void Awake()
 	{
 		if (!initialized)
@@ -240,10 +268,15 @@ public class Game : MonoBehaviour
 			
 			HZVideoAd.Fetch();
 			
-			Unibiller.onBillerReady += (state) => {
-				Debug.Log("done initializing unibill: " + state);
-			};
-			Unibiller.Initialise();
+			//Unibiller.onBillerReady += (state) => {
+			//	Debug.Log("done initializing unibill: " + state);
+			//};
+			//Unibiller.Initialise();
+			
+			var module = StandardPurchasingModule.Instance();
+			ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
+			builder.AddProduct(NO_ADS_ID, ProductType.NonConsumable);
+			UnityPurchasing.Initialize(this, builder);
 			
 			#if (UNITY_IOS || UNITY_ANDROID ) && !UNITY_EDITOR
 				#if UNITY_ANDROID
@@ -370,8 +403,18 @@ public class Game : MonoBehaviour
 			continueJustClicked = true;
 			continueUsed = true;
 			continueButton.interactable = false;
-			HZVideoAd.Show();
-			HZVideoAd.Fetch();
+			
+			//TODO: cache whether or not we have the key
+			if (PlayerPrefs.HasKey(NO_ADS_ID))
+			{
+				UndoMoves();
+			}
+			else
+			{
+				HZVideoAd.Show();
+				HZVideoAd.Fetch();
+			}
+
 			
 			//Debug.Log("undo moves");
 			//UndoMoves();
@@ -568,35 +611,47 @@ public class Game : MonoBehaviour
 		
 		removeAds.onClick.AddListener(() =>
 		{
-			if (!isReloading && isDead)
+			if (!isReloading && isDead && storeController != null)
 			{
-				if (!Unibiller.Initialised)
-				{
-			//todo: error msg or initiate purchase on complete
-					Unibiller.Initialise();
-				}
-				else if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0)
-				{
-					Unibiller.initiatePurchase(NO_ADS_ID);
-				}
+			//	if (!Unibiller.Initialised)
+			//	{
+			////todo: error msg or initiate purchase on complete
+			//		Unibiller.Initialise();
+			//	}
+			//	else if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0)
+			//	{
+			//		Unibiller.initiatePurchase(NO_ADS_ID);
+			//	}
+				storeController.InitiatePurchase(NO_ADS_ID);
+				Debug.Log("initiate purchase");
 			}
 		});
 		
+		//TODO: remove button if not iOS
+		#if UNITY_IOS
 		restorePurchases.onClick.AddListener(() =>
 		{
-			if (!isReloading && isDead)
+			if (!isReloading && isDead && storeController != null)
 			{
-				if (!Unibiller.Initialised)
+				
+				//if (!Unibiller.Initialised)
+				//{
+				////todo: error msg or restore purchase on complete
+				//	Unibiller.Initialise();
+				//}
+				//else
+				//{
+				//	Unibiller.restoreTransactions();
+				//}
+		
+				var apple = storeExtensions.GetExtension<IAppleExtensions>();
+				apple.RestoreTransactions((result) =>
 				{
-				//todo: error msg or restore purchase on complete
-					Unibiller.Initialise();
-				}
-				else
-				{
-					Unibiller.restoreTransactions();
-				}
+					Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
+				});
 			}
 		});
+		#endif 
 		
 		rate.onClick.AddListener(() =>
 		{
@@ -751,8 +806,13 @@ public class Game : MonoBehaviour
 	IEnumerator BringInUI(float delay)
 	{					
 		//Debug.Log("start bring in ui");
-		if (HZVideoAd.IsAvailable() && !continueUsed && cubePositionsByTime.Count > 9)
+		bool disabledAds = PlayerPrefs.HasKey(NO_ADS_ID);
+		if ((HZVideoAd.IsAvailable() || disabledAds) && !continueUsed && cubePositionsByTime.Count > 9)
 		{
+			if (disabledAds)
+			{
+				continueText.text = "Continue?";
+			}
 			continueButton.interactable = true;
 			continueSecs.text = "3";
 			continueRect.DOAnchorPos(new Vector2(0, continueRect.anchoredPosition.y), 0.5f);
@@ -1013,14 +1073,14 @@ public class Game : MonoBehaviour
 			
 			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay).OnComplete(() =>
 			{
-				float adRand = Random.Range(0f, 1f);
+				//float adRand = Random.Range(0f, 1f);
 				//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZInterstitialAd.IsAvailable())
 				//{
 					//Debug.Log("show interstitial");
 				//	gamesPlayedSinceSeendAd = 0;
 				//	HZInterstitialAd.Show();
 				//}
-				if (gamesPlayedSinceSeendAd > 2)
+				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
 				{
 					Debug.Log("show chartboost interstitial");
 				
