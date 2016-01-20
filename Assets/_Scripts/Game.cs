@@ -608,12 +608,18 @@ public class Game : MonoBehaviour, IStoreListener
 		removeAds.onClick.AddListener(() =>
 		{
 			Debug.Log("is store controller null " + (storeController == null));
-			if (storeController == null)
+
+			if (!isReloading && isDead)
 			{
-				InitializeIAP();
-			}
-			if (!isReloading && isDead && storeController != null)
-			{
+				if (storeController != null)
+				{
+					storeController.InitiatePurchase(NO_ADS_ID);
+					Debug.Log("initiate purchase");
+				}
+				else
+				{
+					InitializeIAP();
+				}
 			//	if (!Unibiller.Initialised)
 			//	{
 			////todo: error msg or initiate purchase on complete
@@ -623,8 +629,7 @@ public class Game : MonoBehaviour, IStoreListener
 			//	{
 			//		Unibiller.initiatePurchase(NO_ADS_ID);
 			//	}
-				storeController.InitiatePurchase(NO_ADS_ID);
-				Debug.Log("initiate purchase");
+
 			}
 		});
 		
@@ -632,11 +637,8 @@ public class Game : MonoBehaviour, IStoreListener
 		#if UNITY_IOS
 		restorePurchases.onClick.AddListener(() =>
 		{
-			if (storeController == null)
-			{
-				InitializeIAP();
-			}
-			if (!isReloading && isDead && storeController != null)
+
+			if (!isReloading && isDead)
 			{
 				
 				//if (!Unibiller.Initialised)
@@ -648,12 +650,20 @@ public class Game : MonoBehaviour, IStoreListener
 				//{
 				//	Unibiller.restoreTransactions();
 				//}
-				Debug.Log("initiate restore purchase");
-				var apple = storeExtensions.GetExtension<IAppleExtensions>();
-				apple.RestoreTransactions((result) =>
+				if (storeController != null)
 				{
-					Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
-				});
+					Debug.Log("initiate restore purchase");
+					var apple = storeExtensions.GetExtension<IAppleExtensions>();
+					apple.RestoreTransactions((result) =>
+					{
+						Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
+					});
+				}
+				else
+				{
+					InitializeIAP();
+				}
+
 			}
 		});
 		#endif 
