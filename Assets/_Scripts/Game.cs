@@ -85,7 +85,7 @@ public class Game : MonoBehaviour, IStoreListener
 	#endif
 	
 	//TODO: change for ANDROID
-	const string NO_ADS_ID = "com.voidupdate.franticarchitect.noads";
+	const string NO_ADS_ID = "com.bulkypix.franticarchitect.inapp.noads";
 	
 	const string A_total_20_ID = "com.bulkypix.franticarchitect.achievement.student";
 	const string A_total_40_ID = "com.bulkypix.franticarchitect.achievement.intern";
@@ -258,13 +258,21 @@ public class Game : MonoBehaviour, IStoreListener
 		Debug.Log("store purchase fail");
 	}
 	
+	void InitializeIAP()
+	{
+		var module = StandardPurchasingModule.Instance();
+		ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
+		builder.AddProduct(NO_ADS_ID, ProductType.NonConsumable);
+		UnityPurchasing.Initialize(this, builder);
+	}
+	
 	void Awake()
 	{
 		if (!initialized)
 		{
 			initialized = true;
-			//HeyzapAds.Start("a386042ae6f2651999263ec59b3cf3f3", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
-			HeyzapAds.Start("a386042ae6f2651999263ec59b3cf3f3", HeyzapAds.FLAG_NO_OPTIONS);
+			//HeyzapAds.Start("77b53e077ca7c3fae8d6adf8f4caf688", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
+			HeyzapAds.Start("77b53e077ca7c3fae8d6adf8f4caf688", HeyzapAds.FLAG_NO_OPTIONS);
 			
 			HZVideoAd.Fetch();
 			
@@ -273,10 +281,7 @@ public class Game : MonoBehaviour, IStoreListener
 			//};
 			//Unibiller.Initialise();
 			
-			var module = StandardPurchasingModule.Instance();
-			ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
-			builder.AddProduct(NO_ADS_ID, ProductType.NonConsumable);
-			UnityPurchasing.Initialize(this, builder);
+			InitializeIAP();
 			
 			#if (UNITY_IOS || UNITY_ANDROID ) && !UNITY_EDITOR
 				#if UNITY_ANDROID
@@ -339,12 +344,8 @@ public class Game : MonoBehaviour, IStoreListener
 				curPos = cubePositionsByTime[totalCubes - 6];
 			}
 			
-			Debug.Log("total cubes " + totalCubes);
 			for (int i = totalCubes - 1; i > 0 && i > totalCubes - 6; i--)
 			{
-
-				Debug.Log("destroy cube at pos " + cubePositionsByTime[i].Key() + " contains key " + cubes.ContainsKey(cubePositionsByTime[i].Key()).ToString());
-				
 				cubes[cubePositionsByTime[i].Key()].gameObject.SetActive(false);
 				Destroy(cubes[cubePositionsByTime[i].Key()].gameObject);
 				cubes.Remove(cubePositionsByTime[i].Key());
@@ -353,9 +354,6 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 			
 			
-			
-			Debug.Log("curpos is " + curPos.Key());
-
 			tower.transform.position = Vector3.zero;
 			tower.transform.eulerAngles = Vector3.zero;
 			SetupNewHover();
@@ -385,7 +383,6 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 		};
 		
-		Debug.Log("set display listener");
 		HZVideoAd.SetDisplayListener(listener);
 		
 		continueAnchorX = continueRect.anchoredPosition.x;
@@ -471,7 +468,6 @@ public class Game : MonoBehaviour, IStoreListener
 		cubes[zero.Key()] = startCube;
 		curPos = zero;
 		cubePositionsByTime.Add(curPos);
-		Debug.Log("add initial cube " + curPos.Key());
 		SetupNewHover();
 		isPlaying = true; //testing
 		if (justStarted)
@@ -612,6 +608,10 @@ public class Game : MonoBehaviour, IStoreListener
 		removeAds.onClick.AddListener(() =>
 		{
 			Debug.Log("is store controller null " + (storeController == null));
+			if (storeController == null)
+			{
+				InitializeIAP();
+			}
 			if (!isReloading && isDead && storeController != null)
 			{
 			//	if (!Unibiller.Initialised)
@@ -632,6 +632,10 @@ public class Game : MonoBehaviour, IStoreListener
 		#if UNITY_IOS
 		restorePurchases.onClick.AddListener(() =>
 		{
+			if (storeController == null)
+			{
+				InitializeIAP();
+			}
 			if (!isReloading && isDead && storeController != null)
 			{
 				
@@ -1081,7 +1085,8 @@ public class Game : MonoBehaviour, IStoreListener
 				//	gamesPlayedSinceSeendAd = 0;
 				//	HZInterstitialAd.Show();
 				//}
-				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
+				//if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
+				if (true)
 				{
 					Debug.Log("show chartboost interstitial");
 				
@@ -1206,7 +1211,6 @@ public class Game : MonoBehaviour, IStoreListener
 			newMesh.material.SetColor("_EmissionColor", emissionBlue);
 			
 			cubeToPlace.GetComponent<BoxCollider>().enabled = false;
-			Debug.Log("swap hover set parent to  " + curPos.Key());
 			cubeToPlace.SetParent(cubes[curPos.Key()]);
 			
 		}
@@ -1333,9 +1337,6 @@ public class Game : MonoBehaviour, IStoreListener
 				curPos = validNeighbours[curNeighbourInd];
 				
 				cubePositionsByTime.Add(curPos);
-				
-				Debug.Log("add cube " + curPos.Key());
-				
 				
 				totalCubesScore.text = cubes.Count.ToString();
 				
