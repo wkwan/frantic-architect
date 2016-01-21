@@ -1,4 +1,4 @@
-Smart Localization 2 by Niklas Borglund & Jakob Hillerström 
+Smart Localization 2 by Niklas Borglund & Jakob Hillerstrï¿½m 
 
 niklasborglund[at]gmail[dot]com, @NiklasBorglund
 zurric[at]gmail[dot]com, @zuric 
@@ -23,7 +23,7 @@ There's an example scene in SmartLocalization->Examples called LoadAllLanguages,
 languages and values on the screen. The code for the example is also included and lies within the same folder.
 
 Code Examples
---------------
+-------------- 
 //Returns a text value in the current language for the key
 string myKey = LanguageManager.Instance.GetTextValue("MYKEY");
 

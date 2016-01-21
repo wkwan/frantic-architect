@@ -18,11 +18,23 @@ using ChartboostSDK;
 
 using UnityEngine.Purchasing;
 
+using SmartLocalization;
+
 //TODO: close stats if open when pressing close
 
 
 public class Game : MonoBehaviour, IStoreListener
 {
+	public TextMeshProUGUI achievementsText;
+	public TextMeshProUGUI backText;
+	public TextMeshProUGUI heightText;
+	public TextMeshProUGUI leaderboardText;
+	public TextMeshProUGUI rateText;
+	public TextMeshProUGUI removeAdsText;
+	public TextMeshProUGUI restorePurchasesText;
+	public TextMeshProUGUI statsText;
+	public TextMeshProUGUI totalCubesText;
+	
 	bool continueJustClicked = false;
 	bool continueUsed = false;
 	public float continueAnchorX;
@@ -301,7 +313,6 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
-			
 		}
 
 	}
@@ -446,19 +457,23 @@ public class Game : MonoBehaviour, IStoreListener
 		muted = PlayerPrefs.HasKey(MUTED);
 		if (muted)
 		{
-			muteText.text = "Unmute";
+			muteText.text = LanguageManager.Instance.GetTextValue("UNMUTE");
+		}
+		else
+		{
+			muteText.text = LanguageManager.Instance.GetTextValue("MUTE");
 		}
 		mute.onClick.AddListener(() =>
 		{
 			muted = !muted;
 			if (muted)
 			{
-				muteText.text = "Unmute";
+				muteText.text = LanguageManager.Instance.GetTextValue("UNMUTE");
 				PlayerPrefs.SetInt(MUTED, 1);
 			}
 			else
 			{
-				muteText.text = "Mute";
+				muteText.text = LanguageManager.Instance.GetTextValue("MUTE");
 				PlayerPrefs.DeleteKey(MUTED);
 			}
 		});
@@ -481,11 +496,11 @@ public class Game : MonoBehaviour, IStoreListener
 			transition.DOFade(0, 0.5f);
 		}
 		best = PlayerPrefs.GetInt(BEST, 0);
-		bestScore.text = "Best: " + best;
+		bestScore.text = LanguageManager.Instance.GetTextValue("BEST") + ": " + best;
 		SetScore();
 		
 		bestTotalCubes= PlayerPrefs.GetInt(BEST_TOTAL_CUBES_SCORE, 0);
-		bestTotalCubesScore.text = "Best: " + bestTotalCubes;
+		bestTotalCubesScore.text = LanguageManager.Instance.GetTextValue("BEST") + ": " + bestTotalCubes;
 		
 		
 		retry.onClick.AddListener(() =>
@@ -678,13 +693,26 @@ public class Game : MonoBehaviour, IStoreListener
 				#endif
 			}
 		});
+		
+		title.text = LanguageManager.Instance.GetTextValue("TITLE");
+		achievementsText.text = LanguageManager.Instance.GetTextValue("ACHIEVEMENTS");
+		backText.text = LanguageManager.Instance.GetTextValue("BACK");
+		heightText.text = LanguageManager.Instance.GetTextValue("HEIGHT");
+		leaderboardText.text = LanguageManager.Instance.GetTextValue("LEADERBOARD");
+		rateText.text = LanguageManager.Instance.GetTextValue("RATE");
+		removeAdsText.text = LanguageManager.Instance.GetTextValue("REMOVE_ADS");
+		restorePurchasesText.text = LanguageManager.Instance.GetTextValue("RESTORE_PURCHASES");
+		statsText.text = LanguageManager.Instance.GetTextValue("STATS");
+		menuText.text = LanguageManager.Instance.GetTextValue("MENU");
+		totalCubesText.text = LanguageManager.Instance.GetTextValue("TOTAL_CUBES");
+		
 	}
 	
 	//for some reason, coroutine seems less laggy than DOTween's SetDelay
 	IEnumerator OpenMenu()
 	{
 		menuFinishedTransitioning = false;
-		menuText.text = "Close";
+		menuText.text = LanguageManager.Instance.GetTextValue("CLOSE");
 		
 		float outsideX = 500f;
 		float duration = 0.7f;
@@ -722,7 +750,7 @@ public class Game : MonoBehaviour, IStoreListener
 		statsPanel.gameObject.SetActive(false);
 		
 		menuFinishedTransitioning = false;
-		menuText.text = "Menu";
+		menuText.text = LanguageManager.Instance.GetTextValue("MENU");
 		
 		float outsideX = 500f;
 		float duration = 0.7f;
@@ -826,7 +854,7 @@ public class Game : MonoBehaviour, IStoreListener
 		{
 			if (disabledAds)
 			{
-				continueText.text = "Continue?";
+				continueText.text = LanguageManager.Instance.GetTextValue("BEST");
 			}
 			continueButton.interactable = true;
 			continueSecs.text = "3";
@@ -1053,19 +1081,19 @@ public class Game : MonoBehaviour, IStoreListener
 			{
 				dailyRecord = curScore;
 			}
-			statDaily.text = "Tallest Today: " + dailyRecord;
-			
+			statDaily.text = LanguageManager.Instance.GetTextValue("TALLEST_TODAY") + ": " + dailyRecord;
+
 			int games = PlayerPrefs.GetInt(GAMES, 0) + 1;
 			PlayerPrefs.SetInt(GAMES, games);
-			statGames.text = "Games Played: " + games.ToString();
+			statGames.text = LanguageManager.Instance.GetTextValue("GAMES_PLAYED") + ": " + games.ToString();
 			
 			int total = PlayerPrefs.GetInt(TOTAL, 0) + curScore;
 			PlayerPrefs.SetInt(TOTAL, total);
-			statAve.text = "Average Height: " + Mathf.RoundToInt((float)total/games).ToString();
+			statAve.text = LanguageManager.Instance.GetTextValue("AVERAGE_HEIGHT") + ": " + Mathf.RoundToInt((float)total/games).ToString();
 			
 			int numCubes = PlayerPrefs.GetInt(CUBES, 0) + cubes.Count - 1;
 			PlayerPrefs.SetInt(CUBES, numCubes);
-			statCubes.text = "Total Cubes: " + numCubes.ToString();
+			statCubes.text = LanguageManager.Instance.GetTextValue("TOTAL_CUBES") + ": " + numCubes.ToString();
 			
 			
 			
