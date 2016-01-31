@@ -245,8 +245,8 @@ public class Game : MonoBehaviour, IStoreListener
 		}  
 	}
 	
-	public IStoreController storeController;
-	public IExtensionProvider storeExtensions;
+	static IStoreController storeController;
+	static IExtensionProvider storeExtensions;
 	
 	public void OnInitialized(IStoreController controller, IExtensionProvider extensions) 
 	{
@@ -293,7 +293,6 @@ public class Game : MonoBehaviour, IStoreListener
 			//};
 			//Unibiller.Initialise();
 			
-			InitializeIAP();
 			
 			#if (UNITY_IOS || UNITY_ANDROID ) && !UNITY_EDITOR
 				#if UNITY_ANDROID
@@ -313,7 +312,17 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
+			
+			if (!PlayerPrefs.HasKey(NO_ADS_ID)) Chartboost.showInterstitial(CBLocation.Startup);
+			
 		}
+		
+		if (storeController == null || storeExtensions == null)
+		{
+			InitializeIAP();
+		}
+		
+		
 
 	}
 	
@@ -381,7 +390,7 @@ public class Game : MonoBehaviour, IStoreListener
 	// Use this for initialization
 	void Start() 
 	{			
-		
+		if (!PlayerPrefs.HasKey(NO_ADS_ID)) Chartboost.showInterstitial(CBLocation.Startup);
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
 			Debug.Log("hz ad callback");
 			if ( adState.Equals("hide") ) {
@@ -671,7 +680,10 @@ public class Game : MonoBehaviour, IStoreListener
 					var apple = storeExtensions.GetExtension<IAppleExtensions>();
 					apple.RestoreTransactions((result) =>
 					{
-						Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
+						if (result) {
+							//purchase restored
+							//TODO: show dialog box
+						}
 					});
 				}
 				else
@@ -824,7 +836,6 @@ public class Game : MonoBehaviour, IStoreListener
 		yield return new WaitForEndOfFrame(); //need to do this in order to call readpixels;
 		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
 		sharePic.Apply();
-		gamesPlayedSinceSeendAd++;
 		continueJustClicked = false;
 		//float adRand = Random.Range(0f, 1f);
 		//Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedSinceSeendAd + " " + adRand + " " + HZVideoAd.IsAvailable());
@@ -854,7 +865,7 @@ public class Game : MonoBehaviour, IStoreListener
 		{
 			if (disabledAds)
 			{
-				continueText.text = LanguageManager.Instance.GetTextValue("BEST");
+				continueText.text = LanguageManager.Instance.GetTextValue("CONTINUE");
 			}
 			continueButton.interactable = true;
 			continueSecs.text = "3";
@@ -1076,6 +1087,9 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			#endif
 			
+			gamesPlayedSinceSeendAd++;
+			
+			
 			int dailyRecord = PlayerPrefs.GetInt(DAILY_RECORD + System.DateTime.Today.ToString(), 0);
 			if (curScore > dailyRecord)
 			{
@@ -1123,13 +1137,13 @@ public class Game : MonoBehaviour, IStoreListener
 				//	gamesPlayedSinceSeendAd = 0;
 				//	HZInterstitialAd.Show();
 				//}
-				//if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
-				if (true)
+				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
+				//if (true)
 				{
 					Debug.Log("show chartboost interstitial");
 				
 					gamesPlayedSinceSeendAd = 0;
-					Chartboost.showInterstitial(CBLocation.HomeScreen);
+					Chartboost.showInterstitial(CBLocation.LevelComplete);
 				}
 			});
 			

@@ -180,6 +180,7 @@
 		<value>Unmute</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>Watch a video to continue?</value>
+		<value>Watch a video
+to continue?</value>
 	</data>
 </root>
