@@ -79,12 +79,6 @@ public class Game : MonoBehaviour, IStoreListener
 	public Color albedoRedShiny;
 	public Color emissionRedShiny;
 	
-	//Material redMat;
-	//Material redShinyMat;
-	
-	//public Material white;
-	
-	//public ParticleSystem smokePf;
 	public ParticleSystem[] particlePfs;
 	const string BEST_SCORE_NOT_SAVED_TO_CLOUD = "bestScoreSavedToCloud"; //misleading var name, 1 means saved to cloud
 	
@@ -167,9 +161,6 @@ public class Game : MonoBehaviour, IStoreListener
 	public AudioSource levelUpSound;
 	public AudioSource dieSound;
 
-	//public Material blue;
-	//public Material red;
-	//public Material redShiny;
 	public Image transition; 
 	public TextMeshProUGUI title;
 	public TextMeshProUGUI score;
@@ -198,7 +189,6 @@ public class Game : MonoBehaviour, IStoreListener
 	
 	bool placedFirstBlock = false;
 	bool isPlaying = true;
-	//bool isMovingCam = false;
 	
 	static System.Random rng = new System.Random();  
 	
@@ -219,8 +209,6 @@ public class Game : MonoBehaviour, IStoreListener
 	bool isDead = false;
 	
 	const int ZOOM_HEIGHT = 10;
-	//const int LEVEL_HEIGHT = 10;
-	//const int LEVEL_HEIGHT = 2;
 	
 	int target = ZOOM_HEIGHT;
 	
@@ -288,11 +276,6 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			HZVideoAd.Fetch();
 			
-			//Unibiller.onBillerReady += (state) => {
-			//	Debug.Log("done initializing unibill: " + state);
-			//};
-			//Unibiller.Initialise();
-			
 			
 			#if (UNITY_IOS || UNITY_ANDROID ) && !UNITY_EDITOR
 				#if UNITY_ANDROID
@@ -303,9 +286,6 @@ public class Game : MonoBehaviour, IStoreListener
 				{
 					Debug.Log("~~~~done authenticating social: " + success);
 				});
-				//GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
-			
-
 			#endif
 			
 			
@@ -313,7 +293,7 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
 			
-			if (!PlayerPrefs.HasKey(NO_ADS_ID)) Chartboost.showInterstitial(CBLocation.Startup);
+			if (!PlayerPrefs.HasKey(NO_ADS_ID)) Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
 			
 		}
 		
@@ -326,25 +306,12 @@ public class Game : MonoBehaviour, IStoreListener
 
 	}
 	
-	//void MakeMaterials()
-	//{
-	//	redMat = Instantiate<Material>(cubeMatExample.material);
-	//	redMat.color = albedoRed;
-		
-	//	redShinyMat = Instantiate<Material>(cubeMatExample.material);
-	//	redShinyMat.color = albedoRedShiny;
-	//	redShinyMat.EnableKeyword("_EMISSION");
-	//	redShinyMat.SetColor("_EmissionColor", emissionRedShiny);
-	//}
 	
 	void UndoMoves()
 	{
 		transition.DOFade(1f, 0.5f).OnComplete(() =>
 		{
 			tower.Sleep();
-			//continueText.DOFade(0f, 0.3f);
-			//continueSecs.DOFade(0f, 0.3f);
-			//continueButton.image.DOFade(0f, 0.3f).OnComplete(());
 			isDead = false;
 			isPlaying = true;
 			continueRect.anchoredPosition = new Vector2(continueAnchorX, continueRect.anchoredPosition.y);
@@ -390,15 +357,12 @@ public class Game : MonoBehaviour, IStoreListener
 	// Use this for initialization
 	void Start() 
 	{			
-		if (!PlayerPrefs.HasKey(NO_ADS_ID)) Chartboost.showInterstitial(CBLocation.Startup);
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
 			Debug.Log("hz ad callback");
 			if ( adState.Equals("hide") ) {
 				        // Sent when an ad has been removed from view.
 				        // This is a good place to unpause your app, if applicable.
 				Debug.Log("hide ad callback");
-					    //BringInUI(0f);
-					    //StartCoroutine(BringInUIAfterAd());
 				UndoMoves();
 			}
 		};
@@ -413,7 +377,6 @@ public class Game : MonoBehaviour, IStoreListener
 		origCamZ = cam.transform.localPosition.z;
 		startCube.GetComponent<MeshRenderer>().material = materials[curMat];
 		cubeMatExample.material = materials[curMat];
-		//MakeMaterials();
 		
 		continueButton.onClick.AddListener(() =>
 		{
@@ -430,12 +393,7 @@ public class Game : MonoBehaviour, IStoreListener
 			{
 				HZVideoAd.Show();
 				HZVideoAd.Fetch();
-			}
-
-			
-			//Debug.Log("undo moves");
-			//UndoMoves();
-			
+			}			
 		});
 		
 		changeCubeLeft.onClick.AddListener(() =>
@@ -447,7 +405,6 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 			cubeMatExample.material = materials[curMat];
 			PlayerPrefs.SetInt(CUR_MAT, curMat);
-			//MakeMaterials();
 		});
 		
 		changeCubeRight.onClick.AddListener(() =>
@@ -459,8 +416,6 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 			cubeMatExample.material = materials[curMat];
 			PlayerPrefs.SetInt(CUR_MAT, curMat);
-			//MakeMaterials();
-			
 		});
 		
 		muted = PlayerPrefs.HasKey(MUTED);
@@ -616,12 +571,6 @@ public class Game : MonoBehaviour, IStoreListener
 			{
 				Debug.Log("share clicked");
 				NPBinding.UI.SetPopoverPointAtLastTouchPosition();
-				//NPBinding.Sharing.ShareTextMessageOnSocialNetwork("test", (result) =>
-				//{
-				//	Debug.Log("share result " + result);
-				//});
-				
-
 				NPBinding.Sharing.ShareImage("My creation in #FranticArchitect.", sharePic, null, (result) =>
 				{
 					Debug.Log("share result " + result);
@@ -631,8 +580,6 @@ public class Game : MonoBehaviour, IStoreListener
 		
 		removeAds.onClick.AddListener(() =>
 		{
-			Debug.Log("is store controller null " + (storeController == null));
-
 			if (!isReloading && isDead)
 			{
 				if (storeController != null)
@@ -644,16 +591,6 @@ public class Game : MonoBehaviour, IStoreListener
 				{
 					InitializeIAP();
 				}
-			//	if (!Unibiller.Initialised)
-			//	{
-			////todo: error msg or initiate purchase on complete
-			//		Unibiller.Initialise();
-			//	}
-			//	else if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0)
-			//	{
-			//		Unibiller.initiatePurchase(NO_ADS_ID);
-			//	}
-
 			}
 		});
 		
@@ -664,16 +601,6 @@ public class Game : MonoBehaviour, IStoreListener
 
 			if (!isReloading && isDead)
 			{
-				
-				//if (!Unibiller.Initialised)
-				//{
-				////todo: error msg or restore purchase on complete
-				//	Unibiller.Initialise();
-				//}
-				//else
-				//{
-				//	Unibiller.restoreTransactions();
-				//}
 				if (storeController != null)
 				{
 					Debug.Log("initiate restore purchase");
@@ -794,7 +721,6 @@ public class Game : MonoBehaviour, IStoreListener
 	void SetScore()
 	{
 		score.text = curScore.ToString() + " / " + target.ToString();
-		//score.text = curScore.ToString();
 	}
 	
 	
@@ -837,21 +763,6 @@ public class Game : MonoBehaviour, IStoreListener
 		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
 		sharePic.Apply();
 		continueJustClicked = false;
-		//float adRand = Random.Range(0f, 1f);
-		//Debug.Log(Unibiller.GetPurchaseCount(NO_ADS_ID) + " " + gamesPlayedSinceSeendAd + " " + adRand + " " + HZVideoAd.IsAvailable());
-		//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZVideoAd.IsAvailable())
-		//{
-		//	yield return new WaitForSeconds(2f);
-		//	gamesPlayedSinceSeendAd = 0;
-		//	HZVideoAd.Show();
-		//	HZVideoAd.Fetch();
-		//	//Debug.Log("show video ad");
-		//	StartCoroutine(BringInUI(0.5f));
-		//}
-		//else
-		//{
-		//	StartCoroutine(BringInUI(0.5f));  
-		//}
 		StartCoroutine(BringInUI(0.5f)); 
 		
 		yield break;
@@ -859,7 +770,6 @@ public class Game : MonoBehaviour, IStoreListener
 	
 	IEnumerator BringInUI(float delay)
 	{					
-		//Debug.Log("start bring in ui");
 		bool disabledAds = PlayerPrefs.HasKey(NO_ADS_ID);
 		if ((HZVideoAd.IsAvailable() || disabledAds) && !continueUsed && cubePositionsByTime.Count > 9)
 		{
@@ -868,10 +778,14 @@ public class Game : MonoBehaviour, IStoreListener
 				continueText.text = LanguageManager.Instance.GetTextValue("CONTINUE");
 			}
 			continueButton.interactable = true;
-			continueSecs.text = "3";
+			continueSecs.text = "5";
 			continueRect.DOAnchorPos(new Vector2(0, continueRect.anchoredPosition.y), 0.5f);
 			
 			yield return new WaitForSeconds(1.5f);
+			if (!continueUsed) continueSecs.text = "4";
+			yield return new WaitForSeconds(1f);
+			if (!continueUsed) continueSecs.text = "3";
+			yield return new WaitForSeconds(1f);
 			if (!continueUsed) continueSecs.text = "2";
 			yield return new WaitForSeconds(1f);
 			if (!continueUsed) continueSecs.text = "1";
@@ -1130,15 +1044,7 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay).OnComplete(() =>
 			{
-				//float adRand = Random.Range(0f, 1f);
-				//if (Unibiller.GetPurchaseCount(NO_ADS_ID) == 0 && gamesPlayedSinceSeendAd > 2 && adRand < 0.4f && HZInterstitialAd.IsAvailable())
-				//{
-					//Debug.Log("show interstitial");
-				//	gamesPlayedSinceSeendAd = 0;
-				//	HZInterstitialAd.Show();
-				//}
 				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
-				//if (true)
 				{
 					Debug.Log("show chartboost interstitial");
 				
@@ -1146,8 +1052,6 @@ public class Game : MonoBehaviour, IStoreListener
 					Chartboost.showInterstitial(CBLocation.LevelComplete);
 				}
 			});
-			
-		//Debug.Log("cube mat " + (cubeMatExample == null));
 			
 			cubeMatExample.gameObject.SetActive(true);
 			cubeMatExample.material.color = new Color(1, 1, 1, 0);
@@ -1236,15 +1140,6 @@ public class Game : MonoBehaviour, IStoreListener
 				cubeToPlace.gameObject.SetActive(false);
 				Destroy(cubeToPlace.gameObject);
 			}
-			
-			//RectTransform retryRect = retry.GetComponent<RectTransform>();
-			//RectTransform shareRect = share.GetComponent<RectTransform>();
-			//RectTransform menuRect = menu.GetComponent<RectTransform>();
-			//retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
-			//shareRect.DOAnchorPos(new Vector2(-visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(0.5f);
-			//menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(0.5f);
-			
-	
 			StartCoroutine(ShowAdTakeScreenCapAndBringInUI());
 			
 		}
@@ -1407,20 +1302,6 @@ public class Game : MonoBehaviour, IStoreListener
 					});
 					
 					
-					//if (topY % LEVEL_HEIGHT == 0)
-					//{
-					//	if (!muted) levelUpSound.Play();
-					//	target += LEVEL_HEIGHT;
-					//	topY = 0;
-					//	curPos = new Pos(0, 0, 0);
-					//	switchNeighbourSpeed = Mathf.Max(0.1f, switchNeighbourSpeed * 0.85f);
-					//	StartCoroutine(FadeOutTower());
-					//} 
-					//else
-					//{
-					//	if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
-					//	FadeCubeToPlaceAndSetupHover(cubeToPlace);
-					//}
 					if (topY % ZOOM_HEIGHT == 0)
 					{
 						target += ZOOM_HEIGHT;
@@ -1428,15 +1309,10 @@ public class Game : MonoBehaviour, IStoreListener
 						StartCoroutine(ZoomOut());
 						if (!muted) levelUpSound.Play();
 					}
-					//else
-					//{
-						
-					//}
+
 					if (!muted) scoreSounds[Random.Range(0, scoreSounds.Length)].Play();
 					
-					
-					
-					
+
 					FadeCubeToPlaceAndSetupHover(cubeToPlace);
 					
 					
@@ -1460,8 +1336,7 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 
 			GameOverCheck(tower != null && tower.velocity.magnitude > 0.3f); //todo: should stay alive if the tower is still grounded on the platform (even though there might be a slight shift in position)
-			//Debug.Log(tower.velocity.magnitude);
-			
+
 		}
 	}
 }
