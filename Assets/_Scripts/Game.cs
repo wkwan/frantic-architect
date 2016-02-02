@@ -1233,11 +1233,9 @@ public class Game : MonoBehaviour, IStoreListener
 		float startY = cam.transform.localPosition.y;
 		float startZ = cam.transform.localPosition.z;
 		
-		//TODO: find the exact fraction of orig so that the top of the tower is aligned at the same spot
 		float endY = startY - (origCamZ*(0.73f))/2f;
 		float endZ = startZ + (origCamZ*(0.73f));
 		
-		//TODO: zooming out too far shows edges of background gradient
 		while (Time.time < startTime + DURATION - Time.deltaTime/2)
 		{
 			float lerpFraction = (Time.time - startTime) / DURATION;
