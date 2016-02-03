@@ -386,7 +386,6 @@ public class Game : MonoBehaviour, IStoreListener
 			continueUsed = true;
 			continueButton.interactable = false;
 			
-			//TODO: cache whether or not we have the key
 			if (PlayerPrefs.HasKey(NO_ADS_ID))
 			{
 				UndoMoves();
@@ -571,7 +570,6 @@ public class Game : MonoBehaviour, IStoreListener
 		{
 			if (!isReloading && isDead)
 			{
-				Debug.Log("share clicked");
 				NPBinding.UI.SetPopoverPointAtLastTouchPosition();
 				NPBinding.Sharing.ShareImage("My creation in #FranticArchitect.", sharePic, null, (result) =>
 				{
@@ -587,7 +585,6 @@ public class Game : MonoBehaviour, IStoreListener
 				if (storeController != null)
 				{
 					storeController.InitiatePurchase(NO_ADS_ID);
-					Debug.Log("initiate purchase");
 				}
 				else
 				{
@@ -605,7 +602,6 @@ public class Game : MonoBehaviour, IStoreListener
 			{
 				if (storeController != null)
 				{
-					Debug.Log("initiate restore purchase");
 					var apple = storeExtensions.GetExtension<IAppleExtensions>();
 					apple.RestoreTransactions((result) =>
 					{
@@ -653,9 +649,7 @@ public class Game : MonoBehaviour, IStoreListener
 			if (!PlayerPrefs.HasKey(NO_ADS_ID)) 
 			{
 
-				Debug.Log("show the startup interstitial");
 				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
-				Debug.Log("cache the first chartboost level complete interstitial");
 				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 			}
 		}
@@ -838,7 +832,6 @@ public class Game : MonoBehaviour, IStoreListener
 				{
 					Social.LoadAchievements((achievements) =>
 					{
-						Debug.Log("OK got achievements callback");
 						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
 						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
 						{
@@ -989,27 +982,21 @@ public class Game : MonoBehaviour, IStoreListener
 			#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR 
 			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
 			{
-				Debug.Log("should submit score");
 				Social.ReportScore(newBest, LEADERBOARD_ID, (submitSuccess) =>
 				{
-					Debug.Log("submit score complete");
 					if (submitSuccess)
 					{
 						PlayerPrefs.DeleteKey(BEST_SCORE_NOT_SAVED_TO_CLOUD);
-						Debug.Log("submit score success");
 					}
 				});
 			}
 			if (PlayerPrefs.HasKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD) && Social.localUser.authenticated)
 			{
-				Debug.Log("should submit score total");
 				Social.ReportScore(newBestTotal, LEADERBOARD_TOTAL_ID, (submitSuccess) =>
 				{
-					Debug.Log("submit score complete total");
 					if (submitSuccess)
 					{
 						PlayerPrefs.DeleteKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD);
-						Debug.Log("submit score success");
 					}
 				});
 			}
@@ -1044,14 +1031,11 @@ public class Game : MonoBehaviour, IStoreListener
 			yield return StartCoroutine(Wave(totalCubesScore));
 			
 			
-		//Debug.Log("BEFORE retry " + (retry == null) + " share " + (share == null) + " menu " + (menu == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
 			RectTransform retryRect = retry.GetComponent<RectTransform>();
 			RectTransform shareRect = share.GetComponent<RectTransform>();
 			RectTransform menuRect = menu.GetComponent<RectTransform>();
 			RectTransform changeCubeLeftRect = changeCubeLeft.GetComponent<RectTransform>();
 			RectTransform changeCubeRightRect = changeCubeRight.GetComponent<RectTransform>();
-			
-		//Debug.Log("retry " + (retryRect == null) + " share " + (shareRect == null) + " menu " + (menuRect == null) + " left " + (changeCubeLeft == null) + " right " + (changeCubeRight == null));
 			
 			
 			retryRect.DOAnchorPos(new Vector2(visibleRetryX, retryRect.anchoredPosition.y), 0.5f).SetDelay(delay);
@@ -1063,11 +1047,9 @@ public class Game : MonoBehaviour, IStoreListener
 				{
 					if (Chartboost.hasInterstitial(CBLocation.LevelComplete))
 					{
-						Debug.Log("show chartboost interstitial");
 						gamesPlayedSinceSeendAd = 0;
 						Chartboost.showInterstitial(CBLocation.LevelComplete);
 					}
-					Debug.Log("cache chartboost interstitial");
 					Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 				}
 			});
