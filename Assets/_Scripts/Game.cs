@@ -218,6 +218,7 @@ public class Game : MonoBehaviour, IStoreListener
 	bool menuOpened = false;
 	
 	static bool initialized = false;
+	static bool initializedWithStart = false;
 	bool canStartTakingInput = false;
 	
 	
@@ -274,7 +275,10 @@ public class Game : MonoBehaviour, IStoreListener
 			//HeyzapAds.Start("77b53e077ca7c3fae8d6adf8f4caf688", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
 			HeyzapAds.Start("77b53e077ca7c3fae8d6adf8f4caf688", HeyzapAds.FLAG_NO_OPTIONS);
 			
-			HZVideoAd.Fetch();
+			if (!PlayerPrefs.HasKey(NO_ADS_ID)) 
+			{
+				HZVideoAd.Fetch();
+			}
 			
 			
 			#if (UNITY_IOS || UNITY_ANDROID ) && !UNITY_EDITOR
@@ -292,9 +296,6 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
-			
-			if (!PlayerPrefs.HasKey(NO_ADS_ID)) Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
-			
 		}
 		
 		if (storeController == null || storeExtensions == null)
@@ -356,7 +357,8 @@ public class Game : MonoBehaviour, IStoreListener
 
 	// Use this for initialization
 	void Start() 
-	{			
+	{		
+		
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
 			Debug.Log("hz ad callback");
 			if ( adState.Equals("hide") ) {
@@ -644,6 +646,19 @@ public class Game : MonoBehaviour, IStoreListener
 		statsText.text = LanguageManager.Instance.GetTextValue("STATS");
 		menuText.text = LanguageManager.Instance.GetTextValue("MENU");
 		totalCubesText.text = LanguageManager.Instance.GetTextValue("TOTAL_CUBES");
+		
+		if (!initializedWithStart)
+		{
+			initializedWithStart = true;
+			if (!PlayerPrefs.HasKey(NO_ADS_ID)) 
+			{
+
+				Debug.Log("show the startup interstitial");
+				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
+				Debug.Log("cache the first chartboost level complete interstitial");
+				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
+			}
+		}
 		
 	}
 	
@@ -1046,10 +1061,14 @@ public class Game : MonoBehaviour, IStoreListener
 			{
 				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
 				{
-					Debug.Log("show chartboost interstitial");
-				
-					gamesPlayedSinceSeendAd = 0;
-					Chartboost.showInterstitial(CBLocation.LevelComplete);
+					if (Chartboost.hasInterstitial(CBLocation.LevelComplete))
+					{
+						Debug.Log("show chartboost interstitial");
+						gamesPlayedSinceSeendAd = 0;
+						Chartboost.showInterstitial(CBLocation.LevelComplete);
+					}
+					Debug.Log("cache chartboost interstitial");
+					Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 				}
 			});
 			
