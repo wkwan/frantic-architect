@@ -646,9 +646,9 @@ public class Game : MonoBehaviour, IStoreListener
 		if (!initializedWithStart)
 		{
 			initializedWithStart = true;
+			Chartboost.setShouldRequestInterstitialsInFirstSession(false);
 			if (!PlayerPrefs.HasKey(NO_ADS_ID)) 
 			{
-
 				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
 				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 			}
