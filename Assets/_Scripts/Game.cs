@@ -25,6 +25,8 @@ using SmartLocalization;
 
 public class Game : MonoBehaviour, IStoreListener
 {
+	const string PLAYED_BEFORE = "PLAYED_BEFORE";
+	static bool playedBefore = true;
 	public TextMeshProUGUI achievementsText;
 	public TextMeshProUGUI backText;
 	public TextMeshProUGUI heightText;
@@ -271,6 +273,8 @@ public class Game : MonoBehaviour, IStoreListener
 	{
 		if (!initialized)
 		{
+			playedBefore = PlayerPrefs.HasKey(PLAYED_BEFORE);
+			if (!playedBefore) PlayerPrefs.SetInt(PLAYED_BEFORE, 1);
 			initialized = true;
 			//HeyzapAds.Start("77b53e077ca7c3fae8d6adf8f4caf688", HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING);
 			HeyzapAds.Start("77b53e077ca7c3fae8d6adf8f4caf688", HeyzapAds.FLAG_NO_OPTIONS);
@@ -646,9 +650,14 @@ public class Game : MonoBehaviour, IStoreListener
 		if (!initializedWithStart)
 		{
 			initializedWithStart = true;
-			Chartboost.setShouldRequestInterstitialsInFirstSession(false);
-			if (!PlayerPrefs.HasKey(NO_ADS_ID)) 
+			//Debug.Log("set should request interstitials first session");
+			//Chartboost.setShouldRequestInterstitialsInFirstSession(false);
+			if (!PlayerPrefs.HasKey(NO_ADS_ID) && playedBefore) 
 			{
+				//	Chartboost.didFailToLoadInterstitial += (CBLocation location, CBImpressionError error) =>
+				//	{
+				//		Debug.Log("failed to load interstial at " + location.ToString() + " " + error.ToString());
+				//	};
 				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
 				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 			}
@@ -1043,13 +1052,21 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay).OnComplete(() =>
 			{
-				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2)
+				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2 && playedBefore)
 				{
 					if (Chartboost.hasInterstitial(CBLocation.LevelComplete))
 					{
+						//Debug.Log("show interstitial");
 						gamesPlayedSinceSeendAd = 0;
 						Chartboost.showInterstitial(CBLocation.LevelComplete);
 					}
+					//Debug.Log("cache interstitial");
+					
+					//Debug.Log("show and cache interstitial");
+					//gamesPlayedSinceSeendAd = 0;
+					//Chartboost.showInterstitial(CBLocation.LevelComplete);
+					
+					
 					Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 				}
 			});
