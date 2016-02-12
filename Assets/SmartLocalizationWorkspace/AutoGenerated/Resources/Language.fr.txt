@@ -117,67 +117,66 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 	<data name="ACHIEVEMENTS" xml:space="preserve">
-		<value>Achievements</value>
+		<value>Succès</value>
 	</data>
 	<data name="AVERAGE_HEIGHT" xml:space="preserve">
-		<value>Average Height</value>
+		<value>Hauteur moyenne</value>
 	</data>
 	<data name="BACK" xml:space="preserve">
-		<value>Back</value>
+		<value>Retour</value>
 	</data>
 	<data name="BEST" xml:space="preserve">
-		<value>Best</value>
+		<value>Record</value>
 	</data>
 	<data name="CLOSE" xml:space="preserve">
-		<value>Close</value>
+		<value>Fermer</value>
 	</data>
 	<data name="CONTINUE" xml:space="preserve">
-		<value>Continue?</value>
+		<value>Continuer ?</value>
 	</data>
 	<data name="FRANTIC_ARCHITECT" xml:space="preserve">
 		<value>Frantic Architect</value>
 	</data>
 	<data name="GAMES_PLAYED" xml:space="preserve">
-		<value>Games Played</value>
+		<value>Nombre de parties</value>
 	</data>
 	<data name="HEIGHT" xml:space="preserve">
-		<value>Height</value>
+		<value>Hauteur</value>
 	</data>
 	<data name="LEADERBOARD" xml:space="preserve">
-		<value>Leaderboard</value>
+		<value>Classement</value>
 	</data>
 	<data name="MENU" xml:space="preserve">
 		<value>Menu</value>
 	</data>
 	<data name="MUTE" xml:space="preserve">
-		<value>Mute</value>
+		<value>Désactiver les sons</value>
 	</data>
 	<data name="RATE" xml:space="preserve">
-		<value>Rate</value>
+		<value>Noter</value>
 	</data>
 	<data name="REMOVE_ADS" xml:space="preserve">
-		<value>Remove Ads</value>
+		<value>Retirer les pubs</value>
 	</data>
 	<data name="RESTORE_PURCHASES" xml:space="preserve">
-		<value>Restore Purchases</value>
+		<value>Restaurer les achats</value>
 	</data>
 	<data name="STATS" xml:space="preserve">
 		<value>Stats</value>
 	</data>
 	<data name="TALLEST_TODAY" xml:space="preserve">
-		<value>Tallest Today</value>
+		<value>Record de hauteur aujourd'hui</value>
 	</data>
 	<data name="TALLEST_TOWER" xml:space="preserve">
-		<value>Tallest Tower</value>
+		<value>Record de hauteur</value>
 	</data>
 	<data name="TOTAL_CUBES" xml:space="preserve">
-		<value>Total Cubes</value>
+		<value>Nombre de cubes</value>
 	</data>
 	<data name="UNMUTE" xml:space="preserve">
-		<value>Unmute</value>
+		<value>Activer les sons</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>Watch a video
-to continue?</value>
+		<value>Regarder une vidéo pour continuer ?</value>
 	</data>
 </root>

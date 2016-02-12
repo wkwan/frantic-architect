@@ -3,9 +3,15 @@
   <version>0</version>
   <CultureInfos>
     <CultureInfo>
-      <languageCode>en-US</languageCode>
-      <englishName>English (United States)</englishName>
-      <nativeName>English (United States)</nativeName>
+      <languageCode>en</languageCode>
+      <englishName>English</englishName>
+      <nativeName>English</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>fr</languageCode>
+      <englishName>French</englishName>
+      <nativeName>français</nativeName>
       <isRightToLeft>false</isRightToLeft>
     </CultureInfo>
   </CultureInfos>

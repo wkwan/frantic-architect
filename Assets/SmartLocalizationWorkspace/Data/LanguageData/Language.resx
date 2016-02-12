@@ -170,9 +170,6 @@
 	<data name="TALLEST_TOWER" xml:space="preserve">
 		<value>Tallest Tower</value>
 	</data>
-	<data name="TITLE" xml:space="preserve">
-		<value>Frantic Architect</value>
-	</data>
 	<data name="TOTAL_CUBES" xml:space="preserve">
 		<value>Total Cubes</value>
 	</data>

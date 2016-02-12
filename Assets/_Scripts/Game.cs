@@ -362,7 +362,19 @@ public class Game : MonoBehaviour, IStoreListener
 	// Use this for initialization
 	void Start() 
 	{		
-		
+		SmartCultureInfo systemLanguage = LanguageManager.Instance.GetSupportedSystemLanguage();
+		//SmartCultureInfo systemLanguage = null;
+		if (systemLanguage != null)
+		{
+			Debug.Log("lang " + systemLanguage.languageCode + " supported");
+			LanguageManager.Instance.ChangeLanguage(systemLanguage.languageCode);
+		}
+		else
+		{
+			Debug.Log("lang not supported");
+			LanguageManager.Instance.ChangeLanguage("en");
+			//LanguageManager.Instance.ChangeLanguage("fr");
+		}
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
 			Debug.Log("hz ad callback");
 			if ( adState.Equals("hide") ) {
@@ -635,7 +647,7 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 		});
 		
-		title.text = LanguageManager.Instance.GetTextValue("TITLE");
+		title.text = LanguageManager.Instance.GetTextValue("FRANTIC_ARCHITECT");
 		achievementsText.text = LanguageManager.Instance.GetTextValue("ACHIEVEMENTS");
 		backText.text = LanguageManager.Instance.GetTextValue("BACK");
 		heightText.text = LanguageManager.Instance.GetTextValue("HEIGHT");
@@ -984,7 +996,7 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			
 			int newBest = System.Math.Max(curScore, best);
-			statBest.text = "Tallest Tower: " + newBest.ToString();
+			statBest.text = LanguageManager.Instance.GetTextValue("TALLEST_TOWER") + ": " + newBest.ToString();
 			
 			int newBestTotal = System.Math.Max(cubes.Count, bestTotalCubes);
 			
