@@ -273,6 +273,8 @@ public class Game : MonoBehaviour, IStoreListener
 	{
 		if (!initialized)
 		{
+
+			
 			playedBefore = PlayerPrefs.HasKey(PLAYED_BEFORE);
 			if (!playedBefore) PlayerPrefs.SetInt(PLAYED_BEFORE, 1);
 			initialized = true;
@@ -362,19 +364,37 @@ public class Game : MonoBehaviour, IStoreListener
 	// Use this for initialization
 	void Start() 
 	{		
-		SmartCultureInfo systemLanguage = LanguageManager.Instance.GetSupportedSystemLanguage();
+
+		if (!initializedWithStart)
+		{
+			initializedWithStart = true;
+			//Debug.Log("set should request interstitials first session");
+			//Chartboost.setShouldRequestInterstitialsInFirstSession(false);
+			if (!PlayerPrefs.HasKey(NO_ADS_ID) && playedBefore) 
+			{
+				//	Chartboost.didFailToLoadInterstitial += (CBLocation location, CBImpressionError error) =>
+				//	{
+				//		Debug.Log("failed to load interstial at " + location.ToString() + " " + error.ToString());
+				//	};
+				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
+				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
+			}
+			
+			SmartCultureInfo systemLanguage = LanguageManager.Instance.GetSupportedSystemLanguage();
 		//SmartCultureInfo systemLanguage = null;
-		if (systemLanguage != null)
-		{
-			Debug.Log("lang " + systemLanguage.languageCode + " supported");
-			LanguageManager.Instance.ChangeLanguage(systemLanguage.languageCode);
-		}
-		else
-		{
-			Debug.Log("lang not supported");
-			LanguageManager.Instance.ChangeLanguage("en");
+			if (systemLanguage != null)
+			{
+				Debug.Log("lang " + systemLanguage.languageCode + " supported");
+				LanguageManager.Instance.ChangeLanguage(systemLanguage.languageCode);
+			}
+			else
+			{
+				Debug.Log("lang not supported");
+				LanguageManager.Instance.ChangeLanguage("en");
 			//LanguageManager.Instance.ChangeLanguage("fr");
+			}
 		}
+		
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
 			Debug.Log("hz ad callback");
 			if ( adState.Equals("hide") ) {
@@ -658,22 +678,6 @@ public class Game : MonoBehaviour, IStoreListener
 		statsText.text = LanguageManager.Instance.GetTextValue("STATS");
 		menuText.text = LanguageManager.Instance.GetTextValue("MENU");
 		totalCubesText.text = LanguageManager.Instance.GetTextValue("TOTAL_CUBES");
-		
-		if (!initializedWithStart)
-		{
-			initializedWithStart = true;
-			//Debug.Log("set should request interstitials first session");
-			//Chartboost.setShouldRequestInterstitialsInFirstSession(false);
-			if (!PlayerPrefs.HasKey(NO_ADS_ID) && playedBefore) 
-			{
-				//	Chartboost.didFailToLoadInterstitial += (CBLocation location, CBImpressionError error) =>
-				//	{
-				//		Debug.Log("failed to load interstial at " + location.ToString() + " " + error.ToString());
-				//	};
-				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
-				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
-			}
-		}
 		
 	}
 	
