@@ -117,66 +117,66 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 	<data name="ACHIEVEMENTS" xml:space="preserve">
-		<value>높이</value>
+		<value>업적 시스템</value>
 	</data>
 	<data name="AVERAGE_HEIGHT" xml:space="preserve">
-		<value>높이</value>
+		<value>평균 높이</value>
 	</data>
 	<data name="BACK" xml:space="preserve">
-		<value>높이</value>
+		<value>돌아가기</value>
 	</data>
 	<data name="BEST" xml:space="preserve">
-		<value>높이</value>
+		<value>최고 기록</value>
 	</data>
 	<data name="CLOSE" xml:space="preserve">
-		<value>높이</value>
+		<value>닫기</value>
 	</data>
 	<data name="CONTINUE" xml:space="preserve">
-		<value>높이</value>
+		<value>계속하시겠습니까?</value>
 	</data>
 	<data name="FRANTIC_ARCHITECT" xml:space="preserve">
-		<value>높이</value>
+		<value>프랜틱 아키텍트</value>
 	</data>
 	<data name="GAMES_PLAYED" xml:space="preserve">
-		<value>높이</value>
+		<value>게임 횟수</value>
 	</data>
 	<data name="HEIGHT" xml:space="preserve">
 		<value>높이</value>
 	</data>
 	<data name="LEADERBOARD" xml:space="preserve">
-		<value>높이</value>
+		<value>리더보드</value>
 	</data>
 	<data name="MENU" xml:space="preserve">
-		<value>높이</value>
+		<value>메뉴</value>
 	</data>
 	<data name="MUTE" xml:space="preserve">
-		<value>높이</value>
+		<value>묵음</value>
 	</data>
 	<data name="RATE" xml:space="preserve">
-		<value>높이</value>
+		<value>등급</value>
 	</data>
 	<data name="REMOVE_ADS" xml:space="preserve">
-		<value>높이</value>
+		<value>광고 제거</value>
 	</data>
 	<data name="RESTORE_PURCHASES" xml:space="preserve">
-		<value>높이</value>
+		<value>구매 복원</value>
 	</data>
 	<data name="STATS" xml:space="preserve">
-		<value>높이</value>
+		<value>통계</value>
 	</data>
 	<data name="TALLEST_TODAY" xml:space="preserve">
-		<value>높이</value>
+		<value>오늘의 최고 높이</value>
 	</data>
 	<data name="TALLEST_TOWER" xml:space="preserve">
-		<value>높이</value>
+		<value>가장 높은 타워</value>
 	</data>
 	<data name="TOTAL_CUBES" xml:space="preserve">
-		<value>높이</value>
+		<value>총 큐브 수</value>
 	</data>
 	<data name="UNMUTE" xml:space="preserve">
-		<value>높이</value>
+		<value>묵음 해제</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>높이</value>
+		<value>계속해서 비디오를 보시겠습니까?</value>
 	</data>
 </root>

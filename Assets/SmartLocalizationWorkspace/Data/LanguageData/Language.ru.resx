@@ -117,66 +117,66 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 	<data name="ACHIEVEMENTS" xml:space="preserve">
-		<value />
+		<value>Достижения</value>
 	</data>
 	<data name="AVERAGE_HEIGHT" xml:space="preserve">
-		<value />
+		<value>Средняя высота</value>
 	</data>
 	<data name="BACK" xml:space="preserve">
-		<value />
+		<value>Назад</value>
 	</data>
 	<data name="BEST" xml:space="preserve">
-		<value />
+		<value>Лучший результат</value>
 	</data>
 	<data name="CLOSE" xml:space="preserve">
-		<value />
+		<value>Закрыть</value>
 	</data>
 	<data name="CONTINUE" xml:space="preserve">
-		<value />
+		<value>Продолжить?</value>
 	</data>
 	<data name="FRANTIC_ARCHITECT" xml:space="preserve">
-		<value />
+		<value>Frantic Architect</value>
 	</data>
 	<data name="GAMES_PLAYED" xml:space="preserve">
-		<value />
+		<value>Количество сыгранных игр</value>
 	</data>
 	<data name="HEIGHT" xml:space="preserve">
-		<value />
+		<value>Высота</value>
 	</data>
 	<data name="LEADERBOARD" xml:space="preserve">
-		<value />
+		<value>Турнирная таблица</value>
 	</data>
 	<data name="MENU" xml:space="preserve">
-		<value />
+		<value>Меню</value>
 	</data>
 	<data name="MUTE" xml:space="preserve">
-		<value />
+		<value>Выключить звук</value>
 	</data>
 	<data name="RATE" xml:space="preserve">
-		<value />
+		<value>Скорость</value>
 	</data>
 	<data name="REMOVE_ADS" xml:space="preserve">
-		<value />
+		<value>Отключить рекламу</value>
 	</data>
 	<data name="RESTORE_PURCHASES" xml:space="preserve">
-		<value />
+		<value>Восстановить покупки</value>
 	</data>
 	<data name="STATS" xml:space="preserve">
-		<value />
+		<value>Статистика</value>
 	</data>
 	<data name="TALLEST_TODAY" xml:space="preserve">
-		<value />
+		<value>Наибольшая высота за сегодня</value>
 	</data>
 	<data name="TALLEST_TOWER" xml:space="preserve">
-		<value />
+		<value>Самая высокая башня</value>
 	</data>
 	<data name="TOTAL_CUBES" xml:space="preserve">
-		<value />
+		<value>Всего кубиков</value>
 	</data>
 	<data name="UNMUTE" xml:space="preserve">
-		<value />
+		<value>Включить звук</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value />
+		<value>Смотреть видео, чтобы продолжить?</value>
 	</data>
 </root>
