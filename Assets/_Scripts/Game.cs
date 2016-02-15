@@ -19,12 +19,19 @@ using ChartboostSDK;
 using UnityEngine.Purchasing;
 
 using SmartLocalization;
+using System.Runtime.InteropServices;
 
 //TODO: Double character wave when clicking fast on game over
 
 
 public class Game : MonoBehaviour, IStoreListener
 {
+	
+	#if UNITY_IOS
+	[DllImport ("__Internal")]
+	private static extern string GetSystemLanguage();
+	#endif
+	
 	public TMP_FontAsset korean;
 	public TMP_FontAsset japanese;
 	public TMP_FontAsset chinese;
@@ -251,22 +258,22 @@ public class Game : MonoBehaviour, IStoreListener
 	{
 		storeController = controller;
 		storeExtensions = extensions;
-		Debug.Log("store initialize success");
+		//Debug.Log("store initialize success");
 	}
 	public void OnInitializeFailed(InitializationFailureReason error) 
 	{
-		Debug.Log("store initialize fail " + error.ToString());
+		//Debug.Log("store initialize fail " + error.ToString());
 		
 	}
 	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) 
 	{ 
-		Debug.Log("store purchase complete");
+		//Debug.Log("store purchase complete");
 		PlayerPrefs.SetInt(NO_ADS_ID, 1);
 		return PurchaseProcessingResult.Complete; 
 	}
 	public void OnPurchaseFailed(Product item, PurchaseFailureReason r) 
 	{
-		Debug.Log("store purchase fail");
+		//Debug.Log("store purchase fail");
 	}
 	
 	void InitializeIAP()
@@ -372,7 +379,7 @@ public class Game : MonoBehaviour, IStoreListener
 	// Use this for initialization
 	void Start() 
 	{		
-
+		
 		if (!initializedWithStart)
 		{
 			initializedWithStart = true;
@@ -387,91 +394,58 @@ public class Game : MonoBehaviour, IStoreListener
 				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
 				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 			}
-			
-			SmartCultureInfo systemLanguage = LanguageManager.Instance.GetSupportedSystemLanguage();
-			
-			List<SmartCultureInfo> supportedLanguages = LanguageManager.Instance.GetSupportedLanguages();
-			
-			foreach (SmartCultureInfo supportedLang in supportedLanguages)
-			{
-				Debug.Log("a supported lang " + supportedLang.languageCode + " " + supportedLang.englishName);
-			}
-			Debug.Log("app sys lang is " + Application.systemLanguage);
-			Debug.Log("lang manager lang is " + LanguageManager.Instance.GetSystemLanguageEnglishName());
-			
-			
-			
-			//if (systemLanguage != null)
-			//{
-			//	Debug.Log("lang " + systemLanguage.languageCode + " supported");
-			//	lang = systemLanguage.languageCode;
-			//	LanguageManager.Instance.ChangeLanguage(lang);
-			//}
-			//else
-			//{
-			//	Debug.Log("null sys lang");
-			//	if (Application.systemLanguage.ToString() == "ChineseTraditional")
-			//	{
-			//		lang = "zh-CHT";
-			//		Debug.Log("chinese traditional!!");
-			//	}
-			//	else if (Application.systemLanguage.ToString() == "Chinese" || Application.systemLanguage.ToString() == "ChineseSimplified")
-			//	{
-			//		lang = "zh-CHS";
-			//		Debug.Log("chinese simplified");
-			//	}
-			//	else
-			//	{
-			//		lang = "en";
-			//		Debug.Log("lang not supported, using English");
-					
-			//	}
-			//	LanguageManager.Instance.ChangeLanguage(lang);
-			//}
-			
-			
-			////NOTE: SmartCultureInfo doesn't work well for ChineseTraditional, maybe should switch over to Unity's built-in system
-			//SystemLanguage systemLang = Application.systemLanguage;
-			//if (systemLang == SystemLanguage.Korean)
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("ko");
-			//}
-			//else if (systemLang == SystemLanguage.Japanese)
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("ja");
-			//}
-			//else if (systemLang == SystemLanguage.ChineseTraditional)
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("zh-CHT");
-			//}
-			//else if (systemLang == SystemLanguage.Chinese)
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("zh-CHS");
-			//}
-			//else if (systemLang == SystemLanguage.ChineseSimplified)
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("zh-CHS");
-			//}
-			//else if (systemLang == SystemLanguage.Russian)
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("ru");
-			//}
-			//else if (systemLang == SystemLanguage.French)
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("fr");
-			//}
-			//else if (systemLang == SystemLanguage.)
-			//else 
-			//{
-			//	LanguageManager.Instance.ChangeLanguage("en");
-			//}
 		}
 		
+		////NOTE: SmartCultureInfo doesn't work for ChineseTraditional.
 		
-		//testing
+		SmartCultureInfo systemLanguage = LanguageManager.Instance.GetSupportedSystemLanguage();
 		
-		lang = "ja";
-		LanguageManager.Instance.ChangeLanguage(lang);
+		//Debug.Log("app sys lang is " + Application.systemLanguage);
+		//Debug.Log("lang manager lang is " + LanguageManager.Instance.GetSystemLanguageEnglishName() + " " + LanguageManager.Instance.GetSupportedSystemLanguageCode());
+		
+		
+		
+		if (systemLanguage != null)
+		{
+			//Debug.Log("lang " + systemLanguage.languageCode + " supported");
+			
+			
+			lang = systemLanguage.languageCode;
+			#if UNITY_IOS
+			//UNITY BUG: ChineseTraditional (not Hong Kong) labelled as Chinese
+			if (systemLanguage.languageCode == "zh-CHS")
+			{
+				string realLang = GetSystemLanguage();
+				//Debug.Log("try getting real lang of " + realLang);
+				if (realLang == "zh-Hant-CA")
+				{
+					//Debug.Log("actually chose chinese traditional");
+					lang = "zh-CHT";
+				}
+			}
+			#endif
+			LanguageManager.Instance.ChangeLanguage(lang);
+		}
+		else
+		{
+			//Debug.Log("null sys lang");
+			if (Application.systemLanguage.ToString() == "ChineseTraditional")
+			{
+				lang = "zh-CHT";
+				//Debug.Log("chinese traditional!!, should be the Hong Kong case");
+			}
+			else
+			{
+				lang = "en";
+				//Debug.Log("lang not supported, using English");
+				
+			}
+			LanguageManager.Instance.ChangeLanguage(lang);
+		}
+
+		
+		
+
 		
 		
 		if (lang == "ko" || lang == "ja" || lang == "zh-CHS" || lang == "zh-CHT" || lang == "ru" || lang == "tr")
@@ -533,11 +507,11 @@ public class Game : MonoBehaviour, IStoreListener
 		}
 		
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
-			Debug.Log("hz ad callback");
+			//Debug.Log("hz ad callback");
 			if ( adState.Equals("hide") ) {
 				        // Sent when an ad has been removed from view.
 				        // This is a good place to unpause your app, if applicable.
-				Debug.Log("hide ad callback");
+				//Debug.Log("hide ad callback");
 				UndoMoves();
 			}
 		};
@@ -746,7 +720,7 @@ public class Game : MonoBehaviour, IStoreListener
 				NPBinding.UI.SetPopoverPointAtLastTouchPosition();
 				NPBinding.Sharing.ShareImage("My creation in #FranticArchitect.", sharePic, null, (result) =>
 				{
-					Debug.Log("share result " + result);
+					//Debug.Log("share result " + result);
 				});
 			}
 		});
@@ -946,9 +920,7 @@ public class Game : MonoBehaviour, IStoreListener
 		{
 			if (disabledAds)
 			{
-				continueText.text = LanguageManager.Instance.GetTextValue("CONTINUE");
-				continueText.text = LanguageManager.Instance.GetTextValue("VIDEO_CONTINUE");
-				
+				continueText.text = LanguageManager.Instance.GetTextValue("CONTINUE");				
 			}
 			else
 			{
