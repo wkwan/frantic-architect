@@ -397,6 +397,9 @@ public class Game : MonoBehaviour, IStoreListener
 				Debug.Log("a supported lang " + supportedLang.languageCode + " " + supportedLang.englishName);
 			}
 			Debug.Log("app sys lang is " + Application.systemLanguage);
+			Debug.Log("lang manager lang is " + LanguageManager.Instance.GetSystemLanguageEnglishName());
+			
+			
 			
 			if (systemLanguage != null)
 			{
@@ -406,11 +409,64 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 			else
 			{
-				lang = "en";
-				Debug.Log("lang not supported");
+				Debug.Log("null sys lang");
+				if (Application.systemLanguage.ToString() == "ChineseTraditional")
+				{
+					lang = "zh-CHT";
+					Debug.Log("chinese traditional!!");
+				}
+				else if (Application.systemLanguage.ToString() == "Chinese" || Application.systemLanguage.ToString() == "ChineseSimplified")
+				{
+					lang = "zh-CHS";
+					Debug.Log("chinese simplified");
+				}
+				else
+				{
+					lang = "en";
+					Debug.Log("lang not supported, using English");
+					
+				}
 				LanguageManager.Instance.ChangeLanguage(lang);
 			}
+			
+			
+			////NOTE: SmartCultureInfo doesn't work well for ChineseTraditional, maybe should switch over to Unity's built-in system
+			//SystemLanguage systemLang = Application.systemLanguage;
+			//if (systemLang == SystemLanguage.Korean)
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("ko");
+			//}
+			//else if (systemLang == SystemLanguage.Japanese)
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("ja");
+			//}
+			//else if (systemLang == SystemLanguage.ChineseTraditional)
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("zh-CHT");
+			//}
+			//else if (systemLang == SystemLanguage.Chinese)
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("zh-CHS");
+			//}
+			//else if (systemLang == SystemLanguage.ChineseSimplified)
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("zh-CHS");
+			//}
+			//else if (systemLang == SystemLanguage.Russian)
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("ru");
+			//}
+			//else if (systemLang == SystemLanguage.French)
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("fr");
+			//}
+			//else if (systemLang == SystemLanguage.)
+			//else 
+			//{
+			//	LanguageManager.Instance.ChangeLanguage("en");
+			//}
 		}
+		
 		
 		//testing
 		//LanguageManager.Instance.ChangeLanguage("ko-KR");

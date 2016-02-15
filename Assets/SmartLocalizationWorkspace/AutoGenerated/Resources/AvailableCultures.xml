@@ -9,15 +9,33 @@
       <isRightToLeft>false</isRightToLeft>
     </CultureInfo>
     <CultureInfo>
+      <languageCode>de</languageCode>
+      <englishName>German</englishName>
+      <nativeName>Deutsch</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
       <languageCode>en</languageCode>
       <englishName>English</englishName>
       <nativeName>English</nativeName>
       <isRightToLeft>false</isRightToLeft>
     </CultureInfo>
     <CultureInfo>
+      <languageCode>es</languageCode>
+      <englishName>Spanish</englishName>
+      <nativeName>español</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
       <languageCode>fr</languageCode>
       <englishName>French</englishName>
       <nativeName>français</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>it</languageCode>
+      <englishName>Italian</englishName>
+      <nativeName>italiano</nativeName>
       <isRightToLeft>false</isRightToLeft>
     </CultureInfo>
     <CultureInfo>
@@ -33,6 +51,18 @@
       <isRightToLeft>false</isRightToLeft>
     </CultureInfo>
     <CultureInfo>
+      <languageCode>nl</languageCode>
+      <englishName>Dutch</englishName>
+      <nativeName>Nederlands</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>pt</languageCode>
+      <englishName>Portuguese</englishName>
+      <nativeName>português</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
       <languageCode>ru</languageCode>
       <englishName>Russian</englishName>
       <nativeName>Русский</nativeName>
@@ -42,36 +72,6 @@
       <languageCode>tr</languageCode>
       <englishName>Turkish</englishName>
       <nativeName>Türkçe</nativeName>
-      <isRightToLeft>false</isRightToLeft>
-    </CultureInfo>
-    <CultureInfo>
-      <languageCode>zh-TW</languageCode>
-      <englishName>Chinese (Taiwan)</englishName>
-      <nativeName>中文 (台湾)</nativeName>
-      <isRightToLeft>false</isRightToLeft>
-    </CultureInfo>
-    <CultureInfo>
-      <languageCode>zh-CN</languageCode>
-      <englishName>Chinese (China)</englishName>
-      <nativeName>中文 (中国)</nativeName>
-      <isRightToLeft>false</isRightToLeft>
-    </CultureInfo>
-    <CultureInfo>
-      <languageCode>zh-HK</languageCode>
-      <englishName>Chinese (Hong Kong S.A.R., China)</englishName>
-      <nativeName>中文 (中国香港特别行政区)</nativeName>
-      <isRightToLeft>false</isRightToLeft>
-    </CultureInfo>
-    <CultureInfo>
-      <languageCode>zh-SG</languageCode>
-      <englishName>Chinese (Singapore)</englishName>
-      <nativeName>中文 (新加坡)</nativeName>
-      <isRightToLeft>false</isRightToLeft>
-    </CultureInfo>
-    <CultureInfo>
-      <languageCode>zh-MO</languageCode>
-      <englishName>Chinese (Macao S.A.R. China)</englishName>
-      <nativeName>中文 (中国澳门特别行政区)</nativeName>
       <isRightToLeft>false</isRightToLeft>
     </CultureInfo>
     <CultureInfo>
