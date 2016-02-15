@@ -25,6 +25,14 @@ using SmartLocalization;
 
 public class Game : MonoBehaviour, IStoreListener
 {
+	public TMP_FontAsset korean;
+	public TMP_FontAsset japanese;
+	public TMP_FontAsset chineseSimplified;
+	public TMP_FontAsset chineseTraditional;
+	public TMP_FontAsset russian;
+	public TMP_FontAsset turkish;
+	
+	static string lang;
 	const string PLAYED_BEFORE = "PLAYED_BEFORE";
 	static bool playedBefore = true;
 	public TextMeshProUGUI achievementsText;
@@ -381,18 +389,86 @@ public class Game : MonoBehaviour, IStoreListener
 			}
 			
 			SmartCultureInfo systemLanguage = LanguageManager.Instance.GetSupportedSystemLanguage();
-		//SmartCultureInfo systemLanguage = null;
+			
+			List<SmartCultureInfo> supportedLanguages = LanguageManager.Instance.GetSupportedLanguages();
+			
+			foreach (SmartCultureInfo supportedLang in supportedLanguages)
+			{
+				Debug.Log("a supported lang " + supportedLang.languageCode + " " + supportedLang.englishName);
+			}
+			Debug.Log("app sys lang is " + Application.systemLanguage);
+			
 			if (systemLanguage != null)
 			{
 				Debug.Log("lang " + systemLanguage.languageCode + " supported");
-				LanguageManager.Instance.ChangeLanguage(systemLanguage.languageCode);
+				lang = systemLanguage.languageCode;
+				LanguageManager.Instance.ChangeLanguage(lang);
 			}
 			else
 			{
+				lang = "en";
 				Debug.Log("lang not supported");
-				LanguageManager.Instance.ChangeLanguage("en");
-			//LanguageManager.Instance.ChangeLanguage("fr");
+				LanguageManager.Instance.ChangeLanguage(lang);
 			}
+		}
+		
+		//testing
+		//LanguageManager.Instance.ChangeLanguage("ko-KR");
+		//lang = "ko";
+		
+		
+		if (lang == "ko" || lang == "ja" || lang == "zh-CHS" || lang == "zh-CHT" || lang == "ru" || lang == "tr")
+		{
+			TMP_FontAsset fontAsset = null;
+			if (lang == "ko")
+			{
+				fontAsset = korean;
+			}
+			else if (lang == "ja")
+			{
+				fontAsset = japanese;
+			}
+			else if (lang == "zh-CHS")
+			{
+				fontAsset = chineseSimplified;
+			}
+			else if (lang == "zh-CHT")
+			{
+				fontAsset = chineseTraditional;
+			}
+			else if (lang == "ru")
+			{
+				fontAsset = russian;
+			}
+			else if (lang == "tr")
+			{
+				fontAsset = turkish;
+			}
+			
+			muteText.font = fontAsset;
+			bestScore.font = fontAsset;
+			bestTotalCubesScore.font = fontAsset;
+			title.font = fontAsset;
+			achievementsText.font = fontAsset;
+			backText.font = fontAsset;
+			heightText.font = fontAsset;
+			leaderboardText.font = fontAsset;
+			rateText.font = fontAsset;
+			removeAdsText.font = fontAsset;
+			restorePurchasesText.font = fontAsset;
+			statsText.font = fontAsset;
+			menuText.font = fontAsset;
+			totalCubesText.font = fontAsset;
+			continueText.font = fontAsset;
+			continueSecs.font = fontAsset;
+			statBest.font = fontAsset;
+			statDaily.font = fontAsset;
+			statGames.font = fontAsset;
+			statAve.font = fontAsset;
+			statCubes.font = fontAsset;
+			totalCubesScore.font = fontAsset;
+			score.font = fontAsset;
+			
 		}
 		
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){

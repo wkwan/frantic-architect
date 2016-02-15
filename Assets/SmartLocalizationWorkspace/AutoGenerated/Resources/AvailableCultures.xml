@@ -3,6 +3,12 @@
   <version>0</version>
   <CultureInfos>
     <CultureInfo>
+      <languageCode>zh-CHS</languageCode>
+      <englishName>Chinese</englishName>
+      <nativeName>中文</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
       <languageCode>en</languageCode>
       <englishName>English</englishName>
       <nativeName>English</nativeName>
@@ -18,6 +24,60 @@
       <languageCode>ja</languageCode>
       <englishName>Japanese</englishName>
       <nativeName>日本語</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>ko</languageCode>
+      <englishName>Korean</englishName>
+      <nativeName>한국어</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>ru</languageCode>
+      <englishName>Russian</englishName>
+      <nativeName>Русский</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>tr</languageCode>
+      <englishName>Turkish</englishName>
+      <nativeName>Türkçe</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>zh-TW</languageCode>
+      <englishName>Chinese (Taiwan)</englishName>
+      <nativeName>中文 (台湾)</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>zh-CN</languageCode>
+      <englishName>Chinese (China)</englishName>
+      <nativeName>中文 (中国)</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>zh-HK</languageCode>
+      <englishName>Chinese (Hong Kong S.A.R., China)</englishName>
+      <nativeName>中文 (中国香港特别行政区)</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>zh-SG</languageCode>
+      <englishName>Chinese (Singapore)</englishName>
+      <nativeName>中文 (新加坡)</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>zh-MO</languageCode>
+      <englishName>Chinese (Macao S.A.R. China)</englishName>
+      <nativeName>中文 (中国澳门特别行政区)</nativeName>
+      <isRightToLeft>false</isRightToLeft>
+    </CultureInfo>
+    <CultureInfo>
+      <languageCode>zh-CHT</languageCode>
+      <englishName>Chinese</englishName>
+      <nativeName>中文</nativeName>
       <isRightToLeft>false</isRightToLeft>
     </CultureInfo>
   </CultureInfos>
