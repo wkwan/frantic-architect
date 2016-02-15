@@ -177,6 +177,7 @@
 		<value>Sonido</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>¿Ver un vídeo para continuar?</value>
+		<value>¿Ver un vídeo
+para continuar?</value>
 	</data>
 </root>

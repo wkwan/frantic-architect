@@ -177,6 +177,7 @@
 		<value>Suoni attivi</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>Vuoi guardare un video per continuare?</value>
+		<value>Vuoi guardare un
+video per continuare?</value>
 	</data>
 </root>

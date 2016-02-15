@@ -177,6 +177,7 @@
 		<value>Desativar mudo</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>Ver um vídeo para continuar?</value>
+		<value>Ver um vídeo
+para continuar?</value>
 	</data>
 </root>

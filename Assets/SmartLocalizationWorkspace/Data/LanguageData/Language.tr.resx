@@ -177,6 +177,7 @@
 		<value>Sesi Aç</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>Devam etmek için bir video izle?</value>
+		<value>Devam etmek için
+bir video izle?</value>
 	</data>
 </root>

@@ -177,6 +177,7 @@
 		<value>Stummschaltung aufheben</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>Ein Video sehen, um fortzufahren?</value>
+		<value>Ein Video sehen,
+um fortzufahren?</value>
 	</data>
 </root>

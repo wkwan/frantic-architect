@@ -20,17 +20,17 @@ using UnityEngine.Purchasing;
 
 using SmartLocalization;
 
-//TODO: close stats if open when pressing close
+//TODO: Double character wave when clicking fast on game over
 
 
 public class Game : MonoBehaviour, IStoreListener
 {
 	public TMP_FontAsset korean;
 	public TMP_FontAsset japanese;
-	public TMP_FontAsset chineseSimplified;
-	public TMP_FontAsset chineseTraditional;
+	public TMP_FontAsset chinese;
 	public TMP_FontAsset russian;
 	public TMP_FontAsset turkish;
+	public TMP_FontAsset turkishBold;
 	
 	static string lang;
 	const string PLAYED_BEFORE = "PLAYED_BEFORE";
@@ -401,33 +401,33 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			
 			
-			if (systemLanguage != null)
-			{
-				Debug.Log("lang " + systemLanguage.languageCode + " supported");
-				lang = systemLanguage.languageCode;
-				LanguageManager.Instance.ChangeLanguage(lang);
-			}
-			else
-			{
-				Debug.Log("null sys lang");
-				if (Application.systemLanguage.ToString() == "ChineseTraditional")
-				{
-					lang = "zh-CHT";
-					Debug.Log("chinese traditional!!");
-				}
-				else if (Application.systemLanguage.ToString() == "Chinese" || Application.systemLanguage.ToString() == "ChineseSimplified")
-				{
-					lang = "zh-CHS";
-					Debug.Log("chinese simplified");
-				}
-				else
-				{
-					lang = "en";
-					Debug.Log("lang not supported, using English");
+			//if (systemLanguage != null)
+			//{
+			//	Debug.Log("lang " + systemLanguage.languageCode + " supported");
+			//	lang = systemLanguage.languageCode;
+			//	LanguageManager.Instance.ChangeLanguage(lang);
+			//}
+			//else
+			//{
+			//	Debug.Log("null sys lang");
+			//	if (Application.systemLanguage.ToString() == "ChineseTraditional")
+			//	{
+			//		lang = "zh-CHT";
+			//		Debug.Log("chinese traditional!!");
+			//	}
+			//	else if (Application.systemLanguage.ToString() == "Chinese" || Application.systemLanguage.ToString() == "ChineseSimplified")
+			//	{
+			//		lang = "zh-CHS";
+			//		Debug.Log("chinese simplified");
+			//	}
+			//	else
+			//	{
+			//		lang = "en";
+			//		Debug.Log("lang not supported, using English");
 					
-				}
-				LanguageManager.Instance.ChangeLanguage(lang);
-			}
+			//	}
+			//	LanguageManager.Instance.ChangeLanguage(lang);
+			//}
 			
 			
 			////NOTE: SmartCultureInfo doesn't work well for ChineseTraditional, maybe should switch over to Unity's built-in system
@@ -469,8 +469,9 @@ public class Game : MonoBehaviour, IStoreListener
 		
 		
 		//testing
-		//LanguageManager.Instance.ChangeLanguage("ko-KR");
-		//lang = "ko";
+		
+		lang = "ja";
+		LanguageManager.Instance.ChangeLanguage(lang);
 		
 		
 		if (lang == "ko" || lang == "ja" || lang == "zh-CHS" || lang == "zh-CHT" || lang == "ru" || lang == "tr")
@@ -484,13 +485,9 @@ public class Game : MonoBehaviour, IStoreListener
 			{
 				fontAsset = japanese;
 			}
-			else if (lang == "zh-CHS")
+			else if (lang == "zh-CHS" || lang == "zh-CHT")
 			{
-				fontAsset = chineseSimplified;
-			}
-			else if (lang == "zh-CHT")
-			{
-				fontAsset = chineseTraditional;
+				fontAsset = chinese;
 			}
 			else if (lang == "ru")
 			{
@@ -501,10 +498,18 @@ public class Game : MonoBehaviour, IStoreListener
 				fontAsset = turkish;
 			}
 			
+			if (lang == "ko" || lang == "ja")
+			{
+				title.font = fontAsset;
+			}
+			else if (lang == "tr")
+			{
+				title.font = turkishBold;
+			}
+			
 			muteText.font = fontAsset;
 			bestScore.font = fontAsset;
 			bestTotalCubesScore.font = fontAsset;
-			title.font = fontAsset;
 			achievementsText.font = fontAsset;
 			backText.font = fontAsset;
 			heightText.font = fontAsset;
@@ -942,6 +947,12 @@ public class Game : MonoBehaviour, IStoreListener
 			if (disabledAds)
 			{
 				continueText.text = LanguageManager.Instance.GetTextValue("CONTINUE");
+				continueText.text = LanguageManager.Instance.GetTextValue("VIDEO_CONTINUE");
+				
+			}
+			else
+			{
+				continueText.text = LanguageManager.Instance.GetTextValue("VIDEO_CONTINUE");
 			}
 			continueButton.interactable = true;
 			continueSecs.text = "5";

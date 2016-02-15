@@ -126,7 +126,8 @@
 		<value>Назад</value>
 	</data>
 	<data name="BEST" xml:space="preserve">
-		<value>Лучший результат</value>
+		<value>Лучший
+результат</value>
 	</data>
 	<data name="CLOSE" xml:space="preserve">
 		<value>Закрыть</value>
@@ -177,6 +178,7 @@
 		<value>Включить звук</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value>Смотреть видео, чтобы продолжить?</value>
+		<value>Смотреть видео,
+чтобы продолжить?</value>
 	</data>
 </root>
