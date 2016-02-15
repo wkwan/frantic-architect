@@ -117,66 +117,66 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 	<data name="ACHIEVEMENTS" xml:space="preserve">
-		<value />
+		<value>Logros</value>
 	</data>
 	<data name="AVERAGE_HEIGHT" xml:space="preserve">
-		<value />
+		<value>Altura media</value>
 	</data>
 	<data name="BACK" xml:space="preserve">
-		<value />
+		<value>Atrás</value>
 	</data>
 	<data name="BEST" xml:space="preserve">
-		<value />
+		<value>Mejor</value>
 	</data>
 	<data name="CLOSE" xml:space="preserve">
-		<value />
+		<value>Cerrar</value>
 	</data>
 	<data name="CONTINUE" xml:space="preserve">
-		<value />
+		<value>¿Continuar?</value>
 	</data>
 	<data name="FRANTIC_ARCHITECT" xml:space="preserve">
-		<value />
+		<value>Frantic Architect</value>
 	</data>
 	<data name="GAMES_PLAYED" xml:space="preserve">
-		<value />
+		<value>Partidas jugadas</value>
 	</data>
 	<data name="HEIGHT" xml:space="preserve">
-		<value />
+		<value>Altura</value>
 	</data>
 	<data name="LEADERBOARD" xml:space="preserve">
-		<value />
+		<value>Clasificación</value>
 	</data>
 	<data name="MENU" xml:space="preserve">
-		<value />
+		<value>Menú</value>
 	</data>
 	<data name="MUTE" xml:space="preserve">
-		<value />
+		<value>Silenciar</value>
 	</data>
 	<data name="RATE" xml:space="preserve">
-		<value />
+		<value>Puntuar</value>
 	</data>
 	<data name="REMOVE_ADS" xml:space="preserve">
-		<value />
+		<value>Quitar publicidad</value>
 	</data>
 	<data name="RESTORE_PURCHASES" xml:space="preserve">
-		<value />
+		<value>Restaurar compras</value>
 	</data>
 	<data name="STATS" xml:space="preserve">
-		<value />
+		<value>Estadísticas</value>
 	</data>
 	<data name="TALLEST_TODAY" xml:space="preserve">
-		<value />
+		<value>Más alta hoy</value>
 	</data>
 	<data name="TALLEST_TOWER" xml:space="preserve">
-		<value />
+		<value>Torre más alta</value>
 	</data>
 	<data name="TOTAL_CUBES" xml:space="preserve">
-		<value />
+		<value>Nº total de cubos</value>
 	</data>
 	<data name="UNMUTE" xml:space="preserve">
-		<value />
+		<value>Sonido</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value />
+		<value>¿Ver un vídeo para continuar?</value>
 	</data>
 </root>

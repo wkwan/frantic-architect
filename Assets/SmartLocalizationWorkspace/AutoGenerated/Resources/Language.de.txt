@@ -117,66 +117,66 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 	<data name="ACHIEVEMENTS" xml:space="preserve">
-		<value />
+		<value>Ergebnisse</value>
 	</data>
 	<data name="AVERAGE_HEIGHT" xml:space="preserve">
-		<value />
+		<value>Durchschnittshöhe</value>
 	</data>
 	<data name="BACK" xml:space="preserve">
-		<value />
+		<value>Zurück</value>
 	</data>
 	<data name="BEST" xml:space="preserve">
-		<value />
+		<value>Bester</value>
 	</data>
 	<data name="CLOSE" xml:space="preserve">
-		<value />
+		<value>Geschlossen</value>
 	</data>
 	<data name="CONTINUE" xml:space="preserve">
-		<value />
+		<value>Weiter?</value>
 	</data>
 	<data name="FRANTIC_ARCHITECT" xml:space="preserve">
-		<value />
+		<value>Frantic Architect</value>
 	</data>
 	<data name="GAMES_PLAYED" xml:space="preserve">
-		<value />
+		<value>Anzahl der Spielpartien</value>
 	</data>
 	<data name="HEIGHT" xml:space="preserve">
-		<value />
+		<value>Höhe</value>
 	</data>
 	<data name="LEADERBOARD" xml:space="preserve">
-		<value />
+		<value>Bestenliste</value>
 	</data>
 	<data name="MENU" xml:space="preserve">
-		<value />
+		<value>Menü</value>
 	</data>
 	<data name="MUTE" xml:space="preserve">
-		<value />
+		<value>Stummschalten</value>
 	</data>
 	<data name="RATE" xml:space="preserve">
-		<value />
+		<value>Bewerten</value>
 	</data>
 	<data name="REMOVE_ADS" xml:space="preserve">
-		<value />
+		<value>Werbung entfernen</value>
 	</data>
 	<data name="RESTORE_PURCHASES" xml:space="preserve">
-		<value />
+		<value>Käufe wiederherstellen</value>
 	</data>
 	<data name="STATS" xml:space="preserve">
-		<value />
+		<value>Statistik</value>
 	</data>
 	<data name="TALLEST_TODAY" xml:space="preserve">
-		<value />
+		<value>Rekordhöhe heute</value>
 	</data>
 	<data name="TALLEST_TOWER" xml:space="preserve">
-		<value />
+		<value>Rekordhöhe</value>
 	</data>
 	<data name="TOTAL_CUBES" xml:space="preserve">
-		<value />
+		<value>Würfel insgesamt</value>
 	</data>
 	<data name="UNMUTE" xml:space="preserve">
-		<value />
+		<value>Stummschaltung aufheben</value>
 	</data>
 	<data name="VIDEO_CONTINUE" xml:space="preserve">
-		<value />
+		<value>Ein Video sehen, um fortzufahren?</value>
 	</data>
 </root>
