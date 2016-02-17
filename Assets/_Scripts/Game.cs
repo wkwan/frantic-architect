@@ -772,8 +772,7 @@ public class Game : MonoBehaviour, IStoreListener
 			if (!isReloading && isDead)
 			{
 				#if UNITY_IOS && !UNITY_EDITOR
-			//todo: real url
-				Application.OpenURL("itms-apps:itunes.apple.com/app/hasty-enemies/id1000237335");
+				Application.OpenURL("itms-apps:itunes.apple.com/app/frantic-architect/id1062825120");
 				#endif
 			}
 		});
