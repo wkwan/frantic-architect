@@ -404,7 +404,6 @@ public class Game : MonoBehaviour, IStoreListener
 		//Debug.Log("lang manager lang is " + LanguageManager.Instance.GetSystemLanguageEnglishName() + " " + LanguageManager.Instance.GetSupportedSystemLanguageCode());
 		
 		
-		
 		if (systemLanguage != null)
 		{
 			//Debug.Log("lang " + systemLanguage.languageCode + " supported");
@@ -428,11 +427,18 @@ public class Game : MonoBehaviour, IStoreListener
 		}
 		else
 		{
+			string appSysLang = Application.systemLanguage.ToString();
+			
 			//Debug.Log("null sys lang");
-			if (Application.systemLanguage.ToString() == "ChineseTraditional")
+			if (appSysLang == "ChineseTraditional")
 			{
 				lang = "zh-CHT";
 				//Debug.Log("chinese traditional!!, should be the Hong Kong case");
+			}
+			else if (appSysLang == "ChineseSimplified")
+			{
+				lang = "zh-CHS";
+				//Debug.Log("chinese simplified!!, but got null");
 			}
 			else
 			{
@@ -772,7 +778,7 @@ public class Game : MonoBehaviour, IStoreListener
 			if (!isReloading && isDead)
 			{
 				#if UNITY_IOS && !UNITY_EDITOR
-				Application.OpenURL("itms-apps:itunes.apple.com/app/frantic-architect/id1062825120");
+				Application.OpenURL("https://itunes.apple.com/app/frantic-architect/id1062825120?mt=8");
 				#endif
 			}
 		});
