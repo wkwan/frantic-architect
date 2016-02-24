@@ -779,6 +779,8 @@ public class Game : MonoBehaviour, IStoreListener
 			{
 				#if UNITY_IOS && !UNITY_EDITOR
 				Application.OpenURL("https://itunes.apple.com/app/frantic-architect/id1062825120?mt=8");
+				#elif UNITY_ANDROID && !UNITY_EDITOR
+				Application.OpenURL("market://details?id=com.bulkypix.franticarchitect");
 				#endif
 			}
 		});
@@ -1099,7 +1101,139 @@ public class Game : MonoBehaviour, IStoreListener
 					
 					});
 				}
+			//#endif
+			#elif UNITY_ANDROID && !UNITY_EDITOR
+				if (Social.localUser.authenticated)
+				{
+					Social.LoadAchievements((achievements) =>
+					{
+						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
+						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
+						{
+							doneAchievements[achievement.id] = true;
+						}
+						Debug.Log("load achievement");
+						//if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
+						if (true)
+						{
+							Debug.Log("send height achievement");
+							//GKAchievementReporter.ReportAchievement(A_height_10_ID, 100f, true);
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+								Debug.Log("height achievement unlocked");
+							});
 			
+						}
+						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
+			
+						}
+						if (curScore >= 30 && !doneAchievements.ContainsKey(A_height_30_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_30_ID, 100f, true);
+			
+						}
+						if (curScore >= 40 && !doneAchievements.ContainsKey(A_height_40_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_40_ID, 100f, true);
+			
+						}
+						if (curScore >= 50 && !doneAchievements.ContainsKey(A_height_50_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_50_ID, 100f, true);
+			
+						}
+						if (curScore >= 60 && !doneAchievements.ContainsKey(A_height_60_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_60_ID, 100f, true);
+						}
+			
+						if (curScore >= 70 && !doneAchievements.ContainsKey(A_height_70_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_70_ID, 100f, true);
+						}
+			
+						if (curScore >= 80 && !doneAchievements.ContainsKey(A_height_80_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_80_ID, 100f, true);
+			
+						}
+			
+						if (curScore >= 90 && !doneAchievements.ContainsKey(A_height_90_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_90_ID, 100f, true);
+			
+						}
+			
+						if (curScore >= 100 && !doneAchievements.ContainsKey(A_height_100_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_height_100_ID, 100f, true);
+			
+						}
+			
+			
+			
+						if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
+						}
+			
+						if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
+						}
+			
+						if (cubes.Count >= 60 && !doneAchievements.ContainsKey(A_total_60_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_60_ID, 100f, true);
+			
+						}
+			
+						if (cubes.Count >= 80 && !doneAchievements.ContainsKey(A_total_80_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_80_ID, 100f, true);
+			
+						}
+			
+						if (cubes.Count >= 100 && !doneAchievements.ContainsKey(A_total_100_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_100_ID, 100f, true);
+			
+						}
+			
+						if (cubes.Count >= 120 && !doneAchievements.ContainsKey(A_total_120_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_120_ID, 100f, true);
+			
+						}
+			
+						if (cubes.Count >= 140 && !doneAchievements.ContainsKey(A_total_140_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_140_ID, 100f, true);
+			
+						}
+			
+						if (cubes.Count >= 160 && !doneAchievements.ContainsKey(A_total_160_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_160_ID, 100f, true);
+			
+						}
+			
+						if (cubes.Count >= 180 && !doneAchievements.ContainsKey(A_total_180_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_180_ID, 100f, true);
+			
+						}
+			
+						if (cubes.Count >= 200 && !doneAchievements.ContainsKey(A_total_200_ID))
+						{
+							//GKAchievementReporter.ReportAchievement(A_total_200_ID, 100f, true);
+			
+						}
+			
+					});
+				}
 			#endif
 			
 			if (curScore > best)

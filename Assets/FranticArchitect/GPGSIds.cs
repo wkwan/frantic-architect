@@ -25,8 +25,28 @@ namespace FranticArchitect
 {
 public static class GPGSIds
 {
-        public const string leaderboard_height = "CgkIpbyk6fQBEAIQAA"; // <GPGSID>
-        public const string leaderboard_total_cubes = "CgkIpbyk6fQBEAIQAQ"; // <GPGSID>
+        public const string achievement_manager = "CgkI757d0-ccEAIQBA"; // <GPGSID>
+        public const string achievement_space_elevator = "CgkI757d0-ccEAIQEw"; // <GPGSID>
+        public const string achievement_intern = "CgkI757d0-ccEAIQAQ"; // <GPGSID>
+        public const string achievement_president = "CgkI757d0-ccEAIQBg"; // <GPGSID>
+        public const string achievement_mansion = "CgkI757d0-ccEAIQDw"; // <GPGSID>
+        public const string achievement_skyscrapper = "CgkI757d0-ccEAIQEQ"; // <GPGSID>
+        public const string achievement_student = "CgkI757d0-ccEAIQAA"; // <GPGSID>
+        public const string achievement_cottage = "CgkI757d0-ccEAIQDg"; // <GPGSID>
+        public const string achievement_igloo = "CgkI757d0-ccEAIQCw"; // <GPGSID>
+        public const string leaderboard_total_cubes = "CgkI757d0-ccEAIQFQ"; // <GPGSID>
+        public const string leaderboard_top_height = "CgkI757d0-ccEAIQFA"; // <GPGSID>
+        public const string achievement_tipi = "CgkI757d0-ccEAIQCg"; // <GPGSID>
+        public const string achievement_junior = "CgkI757d0-ccEAIQAg"; // <GPGSID>
+        public const string achievement_barn = "CgkI757d0-ccEAIQDA"; // <GPGSID>
+        public const string achievement_vice_president = "CgkI757d0-ccEAIQBQ"; // <GPGSID>
+        public const string achievement_senior = "CgkI757d0-ccEAIQAw"; // <GPGSID>
+        public const string achievement_pyramid = "CgkI757d0-ccEAIQEA"; // <GPGSID>
+        public const string achievement_god = "CgkI757d0-ccEAIQCQ"; // <GPGSID>
+        public const string achievement_owner = "CgkI757d0-ccEAIQBw"; // <GPGSID>
+        public const string achievement_castle = "CgkI757d0-ccEAIQEg"; // <GPGSID>
+        public const string achievement_legend = "CgkI757d0-ccEAIQCA"; // <GPGSID>
+        public const string achievement_hobbit_hole = "CgkI757d0-ccEAIQDQ"; // <GPGSID>
 
 }
 }
