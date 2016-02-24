@@ -262,18 +262,18 @@ public class Game : MonoBehaviour, IStoreListener
 	}
 	public void OnInitializeFailed(InitializationFailureReason error) 
 	{
-		//Debug.Log("store initialize fail " + error.ToString());
+		Debug.Log("store initialize fail " + error.ToString());
 		
 	}
 	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) 
 	{ 
-		//Debug.Log("store purchase complete");
+		Debug.Log("store purchase complete");
 		PlayerPrefs.SetInt(NO_ADS_ID, 1);
 		return PurchaseProcessingResult.Complete; 
 	}
 	public void OnPurchaseFailed(Product item, PurchaseFailureReason r) 
 	{
-		//Debug.Log("store purchase fail");
+		Debug.Log("store purchase fail");
 	}
 	
 	void InitializeIAP()
@@ -317,12 +317,18 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
+			
+			#if !UNITY_ANDROID
+				InitializeIAP();
+			#endif
 		}
 		
+		#if !UNITY_ANDROID
 		if (storeController == null || storeExtensions == null)
 		{
 			InitializeIAP();
 		}
+		#endif
 		
 		
 
