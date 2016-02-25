@@ -302,6 +302,7 @@ public class Game : MonoBehaviour, IStoreListener
 	
 	void InitializeIAP()
 	{
+		Debug.Log("~~~~~init iap");
 		var module = StandardPurchasingModule.Instance();
 		ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
 		builder.AddProduct(NO_ADS_ID, ProductType.NonConsumable);
@@ -342,7 +343,7 @@ public class Game : MonoBehaviour, IStoreListener
 			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
 			
-			#if !UNITY_ANDROID
+			#if UNITY_ANDROID
 				InitializeIAP();
 			#endif
 		}
@@ -350,6 +351,7 @@ public class Game : MonoBehaviour, IStoreListener
 		#if !UNITY_ANDROID
 		if (storeController == null || storeExtensions == null)
 		{
+			Debug.Log("store controller or extensions is null so reinit");
 			InitializeIAP();
 		}
 		#endif
