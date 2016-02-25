@@ -103,13 +103,14 @@ public class Game : MonoBehaviour, IStoreListener
 	const string LEADERBOARD_ID = "com.bulkypix.franticarchitect.leaderboard.height";
 	const string LEADERBOARD_TOTAL_ID = "com.bulkypix.franticarchitect.leaderboard.total";
 	#elif UNITY_ANDROID
-	const string LEADERBOARD_ID = "CgkIpbyk6fQBEAIQAA";
-	const string LEADERBOARD_TOTAL_ID = "CgkIpbyk6fQBEAIQAQ";
+	const string LEADERBOARD_ID = "CgkI757d0-ccEAIQFA";
+	const string LEADERBOARD_TOTAL_ID = "CgkI757d0-ccEAIQFQ";
 	#endif
 	
-	//TODO: change for ANDROID
+
 	const string NO_ADS_ID = "com.bulkypix.franticarchitect.inapp.noads";
 	
+	#if UNITY_IOS
 	const string A_total_20_ID = "com.bulkypix.franticarchitect.achievement.student";
 	const string A_total_40_ID = "com.bulkypix.franticarchitect.achievement.intern";
 	const string A_total_60_ID = "com.bulkypix.franticarchitect.achievement.junior";
@@ -131,6 +132,29 @@ public class Game : MonoBehaviour, IStoreListener
 	const string A_height_80_ID = "com.bulkypix.franticarchitect.achievement.skyscraper";
 	const string A_height_90_ID = "com.bulkypix.franticarchitect.achievement.castle";
 	const string A_height_100_ID = "com.bulkypix.franticarchitect.achievement.spaceelevator";
+	#elif UNITY_ANDROID
+	const string A_total_20_ID = "CgkI757d0-ccEAIQAA";
+	const string A_total_40_ID = "CgkI757d0-ccEAIQAQ";
+	const string A_total_60_ID = "CgkI757d0-ccEAIQAg";
+	const string A_total_80_ID = "CgkI757d0-ccEAIQAw";
+	const string A_total_100_ID = "CgkI757d0-ccEAIQBA";
+	const string A_total_120_ID = "CgkI757d0-ccEAIQBQ";
+	const string A_total_140_ID = "CgkI757d0-ccEAIQBg";
+	const string A_total_160_ID = "CgkI757d0-ccEAIQBw";
+	const string A_total_180_ID = "CgkI757d0-ccEAIQCA";
+	const string A_total_200_ID = "CgkI757d0-ccEAIQCQ";
+	
+	const string A_height_10_ID = "CgkI757d0-ccEAIQCg";
+	const string A_height_20_ID = "CgkI757d0-ccEAIQCw";
+	const string A_height_30_ID = "CgkI757d0-ccEAIQDA";
+	const string A_height_40_ID = "CgkI757d0-ccEAIQDQ";
+	const string A_height_50_ID = "CgkI757d0-ccEAIQDg";
+	const string A_height_60_ID = "CgkI757d0-ccEAIQDw";
+	const string A_height_70_ID = "CgkI757d0-ccEAIQEA";
+	const string A_height_80_ID = "CgkI757d0-ccEAIQEQ";
+	const string A_height_90_ID = "CgkI757d0-ccEAIQEg";
+	const string A_height_100_ID = "CgkI757d0-ccEAIQEw";
+	#endif
 	
 	
 	
@@ -688,15 +712,13 @@ public class Game : MonoBehaviour, IStoreListener
 					#elif UNITY_ANDROID
 					if (Social.localUser.authenticated)
 					{
-						//Social.ShowLeaderboardUI();
-						PlayGamesPlatform.Instance.ShowLeaderboardUI(LEADERBOARD_ID);
+						Social.ShowLeaderboardUI();
 					}
 					else
 					{
 						Social.localUser.Authenticate((success) =>
 						{
-							//Social.ShowLeaderboardUI();
-						PlayGamesPlatform.Instance.ShowLeaderboardUI(LEADERBOARD_ID);
+							Social.ShowLeaderboardUI();
 						});
 					}
 					#endif
@@ -711,6 +733,7 @@ public class Game : MonoBehaviour, IStoreListener
 				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
+					Debug.Log("is authenticated");
 					Social.ShowAchievementsUI();
 				}
 				else
@@ -1119,123 +1142,144 @@ public class Game : MonoBehaviour, IStoreListener
 							doneAchievements[achievement.id] = true;
 						}
 						Debug.Log("load achievement");
-						//if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
-						if (true)
+						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
 						{
-							Debug.Log("send height achievement");
-							//GKAchievementReporter.ReportAchievement(A_height_10_ID, 100f, true);
 							Social.ReportProgress("", 100.0f, (bool success) => 
 							{
-								Debug.Log("height achievement unlocked");
 							});
 			
 						}
 						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 			
 						}
 						if (curScore >= 30 && !doneAchievements.ContainsKey(A_height_30_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_30_ID, 100f, true);
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 			
 						}
 						if (curScore >= 40 && !doneAchievements.ContainsKey(A_height_40_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_40_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 						if (curScore >= 50 && !doneAchievements.ContainsKey(A_height_50_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_50_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 						if (curScore >= 60 && !doneAchievements.ContainsKey(A_height_60_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_60_ID, 100f, true);
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (curScore >= 70 && !doneAchievements.ContainsKey(A_height_70_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_70_ID, 100f, true);
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (curScore >= 80 && !doneAchievements.ContainsKey(A_height_80_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_80_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (curScore >= 90 && !doneAchievements.ContainsKey(A_height_90_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_90_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (curScore >= 100 && !doneAchievements.ContainsKey(A_height_100_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_height_100_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 			
 			
 						if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 60 && !doneAchievements.ContainsKey(A_total_60_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_60_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 80 && !doneAchievements.ContainsKey(A_total_80_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_80_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 100 && !doneAchievements.ContainsKey(A_total_100_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_100_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 120 && !doneAchievements.ContainsKey(A_total_120_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_120_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 140 && !doneAchievements.ContainsKey(A_total_140_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_140_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 160 && !doneAchievements.ContainsKey(A_total_160_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_160_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 180 && !doneAchievements.ContainsKey(A_total_180_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_180_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 						if (cubes.Count >= 200 && !doneAchievements.ContainsKey(A_total_200_ID))
 						{
-							//GKAchievementReporter.ReportAchievement(A_total_200_ID, 100f, true);
-			
+							Social.ReportProgress("", 100.0f, (bool success) => 
+							{
+							});
 						}
 			
 					});
