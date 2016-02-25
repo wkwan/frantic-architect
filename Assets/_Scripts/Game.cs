@@ -719,7 +719,6 @@ public class Game : MonoBehaviour
 		//TODO: remove button if not iOS
 		restorePurchases.onClick.AddListener(() =>
 		{
-
 			if (!isReloading && isDead)
 			{
 				store.RestoreNoAdsPurchaseIOS();
