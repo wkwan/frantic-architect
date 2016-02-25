@@ -716,7 +716,6 @@ public class Game : MonoBehaviour
 			}
 		});
 		
-		//TODO: remove button if not iOS
 		restorePurchases.onClick.AddListener(() =>
 		{
 			if (!isReloading && isDead)
@@ -724,7 +723,7 @@ public class Game : MonoBehaviour
 				store.RestoreNoAdsPurchaseIOS();
 			}
 		});
-		
+
 		rate.onClick.AddListener(() =>
 		{
 			if (!isReloading && isDead)
@@ -776,16 +775,24 @@ public class Game : MonoBehaviour
 		yield return new WaitForSeconds(0.1f);
 		achievementsRect.DOAnchorPos(new Vector2(0, achievementsRect.anchoredPosition.y), duration);
 		yield return new WaitForSeconds(0.1f);
-		removeAdsRect.DOAnchorPos(new Vector2(0, removeAdsRect.anchoredPosition.y), duration);
-		yield return new WaitForSeconds(0.1f);
-		restorePurchasesRect.DOAnchorPos(new Vector2(0, restorePurchasesRect.anchoredPosition.y), duration);
-		yield return new WaitForSeconds(0.1f);
 		muteRect.DOAnchorPos(new Vector2(0, muteRect.anchoredPosition.y), duration);
 		yield return new WaitForSeconds(0.1f);
-		rateRect.DOAnchorPos(new Vector2(0, rateRect.anchoredPosition.y), duration).OnComplete(() =>
+		rateRect.DOAnchorPos(new Vector2(0, rateRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		#if UNITY_IOS
+		removeAdsRect.DOAnchorPos(new Vector2(0, removeAdsRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		restorePurchasesRect.DOAnchorPos(new Vector2(0, restorePurchasesRect.anchoredPosition.y), duration).OnComplete(() =>
 		{
 			menuFinishedTransitioning = true;
 		});
+		#else
+		removeAdsRect.DOAnchorPos(new Vector2(0, removeAdsRect.anchoredPosition.y), duration).OnComplete(() =>
+		{
+			menuFinishedTransitioning = true;
+		});
+		#endif
+
 	}
 	
 	IEnumerator CloseMenu()
@@ -798,13 +805,15 @@ public class Game : MonoBehaviour
 		float outsideX = 500f;
 		float duration = 0.7f;
 		
+		#if UNITY_IOS
+		restorePurchasesRect.DOAnchorPos(new Vector2(outsideX, restorePurchasesRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
+		#endif
+		removeAdsRect.DOAnchorPos(new Vector2(outsideX, removeAdsRect.anchoredPosition.y), duration);
+		yield return new WaitForSeconds(0.1f);
 		rateRect.DOAnchorPos(new Vector2(outsideX, rateRect.anchoredPosition.y), duration);
 		yield return new WaitForSeconds(0.1f);
 		muteRect.DOAnchorPos(new Vector2(outsideX, muteRect.anchoredPosition.y), duration);
-		yield return new WaitForSeconds(0.1f);
-		restorePurchasesRect.DOAnchorPos(new Vector2(outsideX, restorePurchasesRect.anchoredPosition.y), duration);
-		yield return new WaitForSeconds(0.1f);
-		removeAdsRect.DOAnchorPos(new Vector2(outsideX, removeAdsRect.anchoredPosition.y), duration);
 		yield return new WaitForSeconds(0.1f);
 		achievementsRect.DOAnchorPos(new Vector2(outsideX, achievementsRect.anchoredPosition.y), duration);
 		yield return new WaitForSeconds(0.1f);
