@@ -24,8 +24,9 @@ using System.Runtime.InteropServices;
 //TODO: Double character wave when clicking fast on game over
 
 
-public class Game : MonoBehaviour, IStoreListener
+public class Game : MonoBehaviour
 {
+	public Store store;
 	
 	#if UNITY_IOS
 	[DllImport ("__Internal")]
@@ -108,7 +109,7 @@ public class Game : MonoBehaviour, IStoreListener
 	#endif
 	
 
-	const string NO_ADS_ID = "com.bulkypix.franticarchitect.inapp.noads";
+	public const string NO_ADS_ID = "com.bulkypix.franticarchitect.inapp.noads";
 	
 	#if UNITY_IOS
 	const string A_total_20_ID = "com.bulkypix.franticarchitect.achievement.student";
@@ -222,9 +223,6 @@ public class Game : MonoBehaviour, IStoreListener
 	int curNeighbourInd;
 	
 	float switchNeighbourSpeed = 0.35f;
-	//float switchNeighbourSpeed = 1f;
-	
-	
 	
 	Transform cubeToPlace;
 	
@@ -275,40 +273,6 @@ public class Game : MonoBehaviour, IStoreListener
 		}  
 	}
 	
-	static IStoreController storeController;
-	static IExtensionProvider storeExtensions;
-	
-	public void OnInitialized(IStoreController controller, IExtensionProvider extensions) 
-	{
-		storeController = controller;
-		storeExtensions = extensions;
-		//Debug.Log("store initialize success");
-	}
-	public void OnInitializeFailed(InitializationFailureReason error) 
-	{
-		Debug.Log("store initialize fail " + error.ToString());
-		
-	}
-	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) 
-	{ 
-		Debug.Log("store purchase complete");
-		PlayerPrefs.SetInt(NO_ADS_ID, 1);
-		return PurchaseProcessingResult.Complete; 
-	}
-	public void OnPurchaseFailed(Product item, PurchaseFailureReason r) 
-	{
-		Debug.Log("store purchase fail");
-	}
-	
-	void InitializeIAP()
-	{
-		Debug.Log("~~~~~init iap");
-		var module = StandardPurchasingModule.Instance();
-		ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
-		builder.AddProduct(NO_ADS_ID, ProductType.NonConsumable);
-		UnityPurchasing.Initialize(this, builder);
-	}
-	
 	void Awake()
 	{
 		if (!initialized)
@@ -338,26 +302,8 @@ public class Game : MonoBehaviour, IStoreListener
 				});
 			#endif
 			
-			
-			
-			
 			curMat = PlayerPrefs.GetInt(CUR_MAT, 0);
-			
-			#if UNITY_ANDROID
-				InitializeIAP();
-			#endif
 		}
-		
-		#if !UNITY_ANDROID
-		if (storeController == null || storeExtensions == null)
-		{
-			Debug.Log("store controller or extensions is null so reinit");
-			InitializeIAP();
-		}
-		#endif
-		
-		
-
 	}
 	
 	
@@ -766,43 +712,19 @@ public class Game : MonoBehaviour, IStoreListener
 		{
 			if (!isReloading && isDead)
 			{
-				if (storeController != null)
-				{
-					storeController.InitiatePurchase(NO_ADS_ID);
-				}
-				else
-				{
-					InitializeIAP();
-				}
+				store.InitiateNoAdsPurchase();
 			}
 		});
 		
 		//TODO: remove button if not iOS
-		#if UNITY_IOS
 		restorePurchases.onClick.AddListener(() =>
 		{
 
 			if (!isReloading && isDead)
 			{
-				if (storeController != null)
-				{
-					var apple = storeExtensions.GetExtension<IAppleExtensions>();
-					apple.RestoreTransactions((result) =>
-					{
-						if (result) {
-							//purchase restored
-							//TODO: show dialog box
-						}
-					});
-				}
-				else
-				{
-					InitializeIAP();
-				}
-
+				store.RestoreNoAdsPurchaseIOS();
 			}
 		});
-		#endif 
 		
 		rate.onClick.AddListener(() =>
 		{
@@ -1010,6 +932,7 @@ public class Game : MonoBehaviour, IStoreListener
 				{
 					Social.LoadAchievements((achievements) =>
 					{
+						Debug.Log("loaded achievements");
 						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
 						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
 						{
@@ -1017,11 +940,14 @@ public class Game : MonoBehaviour, IStoreListener
 						}
 						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
 						{
+							Debug.Log("unlock height 10");
 							GKAchievementReporter.ReportAchievement(A_height_10_ID, 100f, true);
 					
 						}
 						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
 						{
+							Debug.Log("unlock height 20");
+			
 							GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
 					
 						}
@@ -1074,11 +1000,15 @@ public class Game : MonoBehaviour, IStoreListener
 					
 						if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
 						{
+							Debug.Log("unlock total 20");
+			
 							GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
 						}
 					
 						if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
 						{
+							Debug.Log("unlock height 40");
+			
 							GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
 						}
 					
@@ -1143,71 +1073,70 @@ public class Game : MonoBehaviour, IStoreListener
 						{
 							doneAchievements[achievement.id] = true;
 						}
-						Debug.Log("load achievement");
 						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
 							{
 							});
 			
 						}
 						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_20_ID, 100.0f, (bool success) => 
 							{
 							});
 			
 						}
 						if (curScore >= 30 && !doneAchievements.ContainsKey(A_height_30_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_30_ID, 100.0f, (bool success) => 
 							{
 							});
 			
 						}
 						if (curScore >= 40 && !doneAchievements.ContainsKey(A_height_40_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_40_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 						if (curScore >= 50 && !doneAchievements.ContainsKey(A_height_50_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_50_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 						if (curScore >= 60 && !doneAchievements.ContainsKey(A_height_60_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_60_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (curScore >= 70 && !doneAchievements.ContainsKey(A_height_70_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_70_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (curScore >= 80 && !doneAchievements.ContainsKey(A_height_80_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_80_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (curScore >= 90 && !doneAchievements.ContainsKey(A_height_90_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_90_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (curScore >= 100 && !doneAchievements.ContainsKey(A_height_100_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_height_100_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
@@ -1216,70 +1145,70 @@ public class Game : MonoBehaviour, IStoreListener
 			
 						if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_20_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_40_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 60 && !doneAchievements.ContainsKey(A_total_60_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_60_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 80 && !doneAchievements.ContainsKey(A_total_80_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_80_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 100 && !doneAchievements.ContainsKey(A_total_100_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_100_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 120 && !doneAchievements.ContainsKey(A_total_120_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_120_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 140 && !doneAchievements.ContainsKey(A_total_140_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_140_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 160 && !doneAchievements.ContainsKey(A_total_160_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_160_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 180 && !doneAchievements.ContainsKey(A_total_180_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_180_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
 			
 						if (cubes.Count >= 200 && !doneAchievements.ContainsKey(A_total_200_ID))
 						{
-							Social.ReportProgress("", 100.0f, (bool success) => 
+							Social.ReportProgress(A_total_200_ID, 100.0f, (bool success) => 
 							{
 							});
 						}
