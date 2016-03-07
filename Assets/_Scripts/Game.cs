@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 
 public class Game : MonoBehaviour
 {
-	public Store store;
+	public static Store store;
 	
 	#if UNITY_IOS
 	[DllImport ("__Internal")]
@@ -1083,22 +1083,25 @@ public class Game : MonoBehaviour
 						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
 						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
 						{
-							doneAchievements[achievement.id] = true;
-							Debug.Log("done achievement id " + achievement.id);
+							if (!achievement.completed) //not necessary on iOS but on Android all achievements seem to be returned here
+							{
+								doneAchievements[achievement.id] = true;
+								Debug.Log("done achievement id " + achievement.id);
+							}
 						}
-						//if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
-						//{
-						//	Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
-						//	{
-						//		Debug.Log("report achievement callback " + success);
-						//	});
-			
-						//}
-						Debug.Log("try reporting the first achievement");
-						Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
+						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
 						{
-							Debug.Log("report achievement callback " + success);
-						});
+							Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
+							{
+								Debug.Log("report achievement callback " + success);
+							});
+			
+						}
+						//Debug.Log("try reporting the first achievement");
+						//Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
+						//{
+						//	Debug.Log("report achievement callback " + success);
+						//});
 			
 						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
 						{
@@ -1426,9 +1429,9 @@ public class Game : MonoBehaviour
 	{
 		if (dead)
 		{
+			isPlaying = false;
 			isDead = true;
 			if (!muted) dieSound.Play();
-			isPlaying = false;
 			
 			CancelInvoke("SwapHover");
 			if (cubeToPlace != null)
