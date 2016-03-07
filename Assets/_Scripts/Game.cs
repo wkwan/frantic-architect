@@ -660,12 +660,17 @@ public class Game : MonoBehaviour
 					#elif UNITY_ANDROID
 					if (Social.localUser.authenticated)
 					{
+						Debug.Log("is authenticated, show leaderboard");
 						Social.ShowLeaderboardUI();
 					}
 					else
 					{
+						Debug.Log("is not authenticated when trying to show leaderboard");
+				
 						Social.localUser.Authenticate((success) =>
 						{
+							Debug.Log("authenticated, now show leaderboard");
+				
 							Social.ShowLeaderboardUI();
 						});
 					}
@@ -681,13 +686,15 @@ public class Game : MonoBehaviour
 				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
-					Debug.Log("is authenticated");
+					Debug.Log("is authenticated, show achievements");
 					Social.ShowAchievementsUI();
 				}
 				else
 				{
+					Debug.Log("is not authenticated when trying to show achievements");
 					Social.localUser.Authenticate((success) =>
 					{
+						Debug.Log("authenticated, now show achievements");
 						Social.ShowAchievementsUI();
 						
 					});
@@ -940,7 +947,6 @@ public class Game : MonoBehaviour
 				{
 					Social.LoadAchievements((achievements) =>
 					{
-						Debug.Log("loaded achievements");
 						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
 						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
 						{
@@ -948,14 +954,11 @@ public class Game : MonoBehaviour
 						}
 						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
 						{
-							Debug.Log("unlock height 10");
 							GKAchievementReporter.ReportAchievement(A_height_10_ID, 100f, true);
 					
 						}
 						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
-						{
-							Debug.Log("unlock height 20");
-			
+						{			
 							GKAchievementReporter.ReportAchievement(A_height_20_ID, 100f, true);
 					
 						}
@@ -1070,24 +1073,33 @@ public class Game : MonoBehaviour
 					
 					});
 				}
-			//#endif
 			#elif UNITY_ANDROID && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
+					Debug.Log("try to load achievements");
 					Social.LoadAchievements((achievements) =>
 					{
+						Debug.Log("Load achievements callback");
 						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
 						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
 						{
 							doneAchievements[achievement.id] = true;
+							Debug.Log("done achievement id " + achievement.id);
 						}
-						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
-						{
-							Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
-							{
-							});
+						//if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
+						//{
+						//	Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
+						//	{
+						//		Debug.Log("report achievement callback " + success);
+						//	});
 			
-						}
+						//}
+						Debug.Log("try reporting the first achievement");
+						Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
+						{
+							Debug.Log("report achievement callback " + success);
+						});
+			
 						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
 						{
 							Social.ReportProgress(A_height_20_ID, 100.0f, (bool success) => 
@@ -1250,8 +1262,11 @@ public class Game : MonoBehaviour
 			#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR 
 			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
 			{
+				Debug.Log("try submitting best height");
 				Social.ReportScore(newBest, LEADERBOARD_ID, (submitSuccess) =>
 				{
+					Debug.Log("submitting best height callback " + submitSuccess);
+			
 					if (submitSuccess)
 					{
 						PlayerPrefs.DeleteKey(BEST_SCORE_NOT_SAVED_TO_CLOUD);
@@ -1260,8 +1275,12 @@ public class Game : MonoBehaviour
 			}
 			if (PlayerPrefs.HasKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD) && Social.localUser.authenticated)
 			{
+				Debug.Log("try submitting best total");
+			
 				Social.ReportScore(newBestTotal, LEADERBOARD_TOTAL_ID, (submitSuccess) =>
 				{
+					Debug.Log("submitting best total callback " + submitSuccess);
+			
 					if (submitSuccess)
 					{
 						PlayerPrefs.DeleteKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD);
