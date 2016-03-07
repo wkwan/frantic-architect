@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 
 public class Game : MonoBehaviour
 {
-	public static Store store;
+	public Store store;
 	
 	#if UNITY_IOS
 	[DllImport ("__Internal")]

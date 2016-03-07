@@ -1,27 +1,42 @@
 ﻿using UnityEngine;
 using UnityEngine.Purchasing;
 
-public class Store : MonoBehaviour, IStoreListener {
+public class Store : MonoBehaviour 
+{
 	
+	private static StoreListener instance = null;
+	void Awake(){
+		if(instance == null)
+		{
+			instance = new StoreListener();
+			instance.InitializeIAP();
+		} 
+	}
+	
+	public void InitiateNoAdsPurchase()
+	{
+		instance.InitiateNoAdsPurchase();
+	}
+	
+	public void RestoreNoAdsPurchaseIOS()
+	{
+		instance.RestoreNoAdsPurchaseIOS();
+	}
+}
+
+public class StoreListener: IStoreListener 
+{
 	IStoreController storeController;
 	IExtensionProvider storeExtensions;
 	
-	private static Store instance = null;
-	void Awake(){
-		if(instance == null){
-			instance = this;
-			DontDestroyOnLoad(gameObject);
-			
-			//  Initialize Unity IAP here.
-			Debug.Log("~~~~~init iap");
-			var module = StandardPurchasingModule.Instance();
-			ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
-			builder.AddProduct(Game.NO_ADS_ID, ProductType.NonConsumable);
-			UnityPurchasing.Initialize(this, builder);
-		}else if(instance != this){
-			Destroy(this.gameObject);
-			return;
-		}
+	public void InitializeIAP()
+	{
+		//  Initialize Unity IAP here.
+		Debug.Log("~~~~~init iap");
+		var module = StandardPurchasingModule.Instance();
+		ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
+		builder.AddProduct(Game.NO_ADS_ID, ProductType.NonConsumable);
+		UnityPurchasing.Initialize(this, builder);
 	}
 	
 	public void OnInitialized(IStoreController controller, IExtensionProvider extensions) 
@@ -33,7 +48,7 @@ public class Store : MonoBehaviour, IStoreListener {
 	public void OnInitializeFailed(InitializationFailureReason error) 
 	{
 		Debug.Log("store initialize fail " + error.ToString());
-
+		
 	}
 	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) 
 	{ 
