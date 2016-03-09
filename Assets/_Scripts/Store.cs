@@ -43,30 +43,30 @@ public class StoreListener: IStoreListener
 	{
 		storeController = controller;
 		storeExtensions = extensions;
-		Debug.Log("store initialize success");
+		//Debug.Log("store initialize success");
 	}
 	public void OnInitializeFailed(InitializationFailureReason error) 
 	{
-		Debug.Log("store initialize fail " + error.ToString());
+		//Debug.Log("store initialize fail " + error.ToString());
 		
 	}
 	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) 
 	{ 
-		Debug.Log("store purchase complete");
+		//Debug.Log("store purchase complete");
 		PlayerPrefs.SetInt(Game.NO_ADS_ID, 1);
 		return PurchaseProcessingResult.Complete; 
 	}
 	public void OnPurchaseFailed(Product item, PurchaseFailureReason r) 
 	{
-		Debug.Log("store purchase fail");
+		//Debug.Log("store purchase fail");
 	}
 	
 	public void InitiateNoAdsPurchase()
 	{
-		Debug.Log("initiate no ads purchase");
+		//Debug.Log("initiate no ads purchase");
 		if (storeController != null)
 		{
-			Debug.Log("have a store controller");
+			//Debug.Log("have a store controller");
 			storeController.InitiatePurchase(Game.NO_ADS_ID);
 		}
 	}

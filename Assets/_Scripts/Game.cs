@@ -21,11 +21,10 @@ using UnityEngine.Purchasing;
 using SmartLocalization;
 using System.Runtime.InteropServices;
 
-//TODO: Double character wave when clicking fast on game over
-
 
 public class Game : MonoBehaviour
 {
+	bool isFirstTry = true;
 	public Store store;
 	
 	#if UNITY_IOS
@@ -61,7 +60,7 @@ public class Game : MonoBehaviour
 	public TextMeshProUGUI continueText;
 	public TextMeshProUGUI continueSecs;
 	
-	static int gamesPlayedSinceSeendAd = 0;
+	static int gamesPlayedSinceSeenAd = 0;
 	
 	public TextMeshProUGUI fps;
 	
@@ -295,10 +294,8 @@ public class Game : MonoBehaviour
 				#if UNITY_ANDROID
 					PlayGamesPlatform.Activate();
 				#endif
-				Debug.Log("~~~~~try authenticate");
 				Social.localUser.Authenticate((success) =>
 				{
-					Debug.Log("~~~~done authenticating social: " + success);
 				});
 			#endif
 			
@@ -344,7 +341,6 @@ public class Game : MonoBehaviour
 			tower.transform.position = Vector3.zero;
 			tower.transform.eulerAngles = Vector3.zero;
 			SetupNewHover();
-			//Debug.Log("transition fade back out after undo");
 			transition.DOFade(0f, 0.5f).OnComplete(() =>
 			{
 				tower.WakeUp();
@@ -361,14 +357,9 @@ public class Game : MonoBehaviour
 		if (!initializedWithStart)
 		{
 			initializedWithStart = true;
-			//Debug.Log("set should request interstitials first session");
-			//Chartboost.setShouldRequestInterstitialsInFirstSession(false);
+
 			if (!PlayerPrefs.HasKey(NO_ADS_ID) && playedBefore) 
 			{
-				//	Chartboost.didFailToLoadInterstitial += (CBLocation location, CBImpressionError error) =>
-				//	{
-				//		Debug.Log("failed to load interstial at " + location.ToString() + " " + error.ToString());
-				//	};
 				Chartboost.showInterstitial(CBLocation.locationFromName("FranticArchitect_Startup"));
 				Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 			}
@@ -491,11 +482,9 @@ public class Game : MonoBehaviour
 		}
 		
 		HZVideoAd.AdDisplayListener listener = delegate(string adState, string adTag){
-			//Debug.Log("hz ad callback");
 			if ( adState.Equals("hide") ) {
 				        // Sent when an ad has been removed from view.
 				        // This is a good place to unpause your app, if applicable.
-				//Debug.Log("hide ad callback");
 				UndoMoves();
 			}
 		};
@@ -660,17 +649,12 @@ public class Game : MonoBehaviour
 					#elif UNITY_ANDROID
 					if (Social.localUser.authenticated)
 					{
-						Debug.Log("is authenticated, show leaderboard");
 						Social.ShowLeaderboardUI();
 					}
 					else
-					{
-						Debug.Log("is not authenticated when trying to show leaderboard");
-				
+					{				
 						Social.localUser.Authenticate((success) =>
-						{
-							Debug.Log("authenticated, now show leaderboard");
-				
+						{				
 							Social.ShowLeaderboardUI();
 						});
 					}
@@ -686,15 +670,12 @@ public class Game : MonoBehaviour
 				#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
-					Debug.Log("is authenticated, show achievements");
 					Social.ShowAchievementsUI();
 				}
 				else
 				{
-					Debug.Log("is not authenticated when trying to show achievements");
 					Social.localUser.Authenticate((success) =>
 					{
-						Debug.Log("authenticated, now show achievements");
 						Social.ShowAchievementsUI();
 						
 					});
@@ -719,6 +700,7 @@ public class Game : MonoBehaviour
 		{
 			if (!isReloading && isDead)
 			{
+				//Debug.Log("initiate no ads purchase from game");
 				store.InitiateNoAdsPurchase();
 			}
 		});
@@ -738,7 +720,9 @@ public class Game : MonoBehaviour
 				#if UNITY_IOS && !UNITY_EDITOR
 				Application.OpenURL("https://itunes.apple.com/app/frantic-architect/id1062825120?mt=8");
 				#elif UNITY_ANDROID && !UNITY_EDITOR
-				Application.OpenURL("market://details?id=com.bulkypix.franticarchitect");
+				//Application.OpenURL("market://details?id=com.bulkypix.franticarchitect");
+				//TODO: update when fix bundle id
+				Application.OpenURL("market://details?id=com.voidupdate.franticarchitect");
 				#endif
 			}
 		});
@@ -882,7 +866,6 @@ public class Game : MonoBehaviour
 		yield return new WaitForEndOfFrame(); //need to do this in order to call readpixels;
 		sharePic.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
 		sharePic.Apply();
-		continueJustClicked = false;
 		StartCoroutine(BringInUI(0.5f)); 
 		
 		yield break;
@@ -890,6 +873,8 @@ public class Game : MonoBehaviour
 	
 	IEnumerator BringInUI(float delay)
 	{					
+		bool isFirstTryCopy = isFirstTry;
+		isFirstTry = false;
 		bool disabledAds = PlayerPrefs.HasKey(NO_ADS_ID);
 		if ((HZVideoAd.IsAvailable() || disabledAds) && !continueUsed && cubePositionsByTime.Count > 9)
 		{
@@ -939,8 +924,7 @@ public class Game : MonoBehaviour
 			yield return new WaitForSeconds(1f);
 		}
 
-		
-		if (!continueJustClicked) //continue button not clicked
+		if ((isFirstTryCopy && !continueJustClicked) || !isFirstTryCopy)
 		{
 			#if UNITY_IOS && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
@@ -1010,16 +994,12 @@ public class Game : MonoBehaviour
 					
 					
 						if (cubes.Count >= 20 && !doneAchievements.ContainsKey(A_total_20_ID))
-						{
-							Debug.Log("unlock total 20");
-			
+						{			
 							GKAchievementReporter.ReportAchievement(A_total_20_ID, 100f, true);
 						}
 					
 						if (cubes.Count >= 40 && !doneAchievements.ContainsKey(A_total_40_ID))
-						{
-							Debug.Log("unlock height 40");
-			
+						{			
 							GKAchievementReporter.ReportAchievement(A_total_40_ID, 100f, true);
 						}
 					
@@ -1076,32 +1056,23 @@ public class Game : MonoBehaviour
 			#elif UNITY_ANDROID && !UNITY_EDITOR
 				if (Social.localUser.authenticated)
 				{
-					Debug.Log("try to load achievements");
 					Social.LoadAchievements((achievements) =>
 					{
-						Debug.Log("Load achievements callback");
 						Dictionary<string, bool> doneAchievements = new Dictionary<string, bool>();
 						foreach (UnityEngine.SocialPlatforms.IAchievement achievement in achievements)
 						{
-							if (!achievement.completed) //not necessary on iOS but on Android all achievements seem to be returned here
+							if (achievement.completed) //not necessary on iOS but on Android all achievements seem to be returned here
 							{
 								doneAchievements[achievement.id] = true;
-								Debug.Log("done achievement id " + achievement.id);
 							}
 						}
 						if (curScore >= 10 && !doneAchievements.ContainsKey(A_height_10_ID))
 						{
 							Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
 							{
-								Debug.Log("report achievement callback " + success);
 							});
 			
 						}
-						//Debug.Log("try reporting the first achievement");
-						//Social.ReportProgress(A_height_10_ID, 100.0f, (bool success) => 
-						//{
-						//	Debug.Log("report achievement callback " + success);
-						//});
 			
 						if (curScore >= 20 && !doneAchievements.ContainsKey(A_height_20_ID))
 						{
@@ -1239,7 +1210,7 @@ public class Game : MonoBehaviour
 					});
 				}
 			#endif
-			
+						
 			if (curScore > best)
 			{
 				PlayerPrefs.SetInt(BEST, curScore);
@@ -1265,11 +1236,8 @@ public class Game : MonoBehaviour
 			#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR 
 			if (PlayerPrefs.HasKey(BEST_SCORE_NOT_SAVED_TO_CLOUD) && Social.localUser.authenticated)
 			{
-				Debug.Log("try submitting best height");
 				Social.ReportScore(newBest, LEADERBOARD_ID, (submitSuccess) =>
-				{
-					Debug.Log("submitting best height callback " + submitSuccess);
-			
+				{			
 					if (submitSuccess)
 					{
 						PlayerPrefs.DeleteKey(BEST_SCORE_NOT_SAVED_TO_CLOUD);
@@ -1277,13 +1245,9 @@ public class Game : MonoBehaviour
 				});
 			}
 			if (PlayerPrefs.HasKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD) && Social.localUser.authenticated)
-			{
-				Debug.Log("try submitting best total");
-			
+			{			
 				Social.ReportScore(newBestTotal, LEADERBOARD_TOTAL_ID, (submitSuccess) =>
-				{
-					Debug.Log("submitting best total callback " + submitSuccess);
-			
+				{			
 					if (submitSuccess)
 					{
 						PlayerPrefs.DeleteKey(BEST_TOTAL_CUBES_SAVED_TO_CLOUD);
@@ -1292,8 +1256,8 @@ public class Game : MonoBehaviour
 			}
 			
 			#endif
-			
-			gamesPlayedSinceSeendAd++;
+						
+			gamesPlayedSinceSeenAd++;
 			
 			
 			int dailyRecord = PlayerPrefs.GetInt(DAILY_RECORD + System.DateTime.Today.ToString(), 0);
@@ -1314,9 +1278,7 @@ public class Game : MonoBehaviour
 			int numCubes = PlayerPrefs.GetInt(CUBES, 0) + cubes.Count - 1;
 			PlayerPrefs.SetInt(CUBES, numCubes);
 			statCubes.text = LanguageManager.Instance.GetTextValue("TOTAL_CUBES") + ": " + numCubes.ToString();
-			
-			
-			
+						
 			yield return StartCoroutine(Wave(score));
 			yield return StartCoroutine(Wave(totalCubesScore));
 			
@@ -1333,20 +1295,13 @@ public class Game : MonoBehaviour
 			
 			menuRect.DOAnchorPos(new Vector2(menuRect.anchoredPosition.x, visibleMenuY), 0.5f).SetDelay(delay).OnComplete(() =>
 			{
-				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeendAd > 2 && playedBefore)
+				if (!PlayerPrefs.HasKey(NO_ADS_ID) && gamesPlayedSinceSeenAd > 2 && playedBefore)
 				{
 					if (Chartboost.hasInterstitial(CBLocation.LevelComplete))
 					{
-						//Debug.Log("show interstitial");
-						gamesPlayedSinceSeendAd = 0;
+						gamesPlayedSinceSeenAd = 0;
 						Chartboost.showInterstitial(CBLocation.LevelComplete);
 					}
-					//Debug.Log("cache interstitial");
-					
-					//Debug.Log("show and cache interstitial");
-					//gamesPlayedSinceSeendAd = 0;
-					//Chartboost.showInterstitial(CBLocation.LevelComplete);
-					
 					
 					Chartboost.cacheInterstitial(CBLocation.LevelComplete);
 				}
