@@ -32,7 +32,7 @@ public class StoreListener: IStoreListener
 	public void InitializeIAP()
 	{
 		//  Initialize Unity IAP here.
-		Debug.Log("~~~~~init iap");
+		//Debug.Log("~~~~~init iap");
 		var module = StandardPurchasingModule.Instance();
 		ConfigurationBuilder builder = ConfigurationBuilder.Instance(module);
 		builder.AddProduct(Game.NO_ADS_ID, ProductType.NonConsumable);
